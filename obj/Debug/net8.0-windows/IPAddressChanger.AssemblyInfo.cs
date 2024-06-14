@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IPAddressChanger")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12981115cca2b3a87041499100dca21e284a413f")]
 [assembly: System.Reflection.AssemblyProductAttribute("IPAddressChanger")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IPAddressChanger")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

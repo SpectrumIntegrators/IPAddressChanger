@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "H:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj": {}
+    "D:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj": {}
   },
   "projects": {
-    "H:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj": {
+    "D:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj",
+        "projectUniqueName": "D:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj",
         "projectName": "IPAddressChanger",
-        "projectPath": "H:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj",
+        "projectPath": "D:\\Programming Projects\\IPAddressChanger\\IPAddressChanger.csproj",
         "packagesPath": "C:\\Users\\JonathanDean\\.nuget\\packages\\",
-        "outputPath": "H:\\Programming Projects\\IPAddressChanger\\obj\\",
+        "outputPath": "D:\\Programming Projects\\IPAddressChanger\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\JonathanDean\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -34,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -69,7 +64,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

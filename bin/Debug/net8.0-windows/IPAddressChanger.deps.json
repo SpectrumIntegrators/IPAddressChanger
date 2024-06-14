@@ -867,7 +867,14 @@
           }
         }
       },
-      "System.Diagnostics.DiagnosticSource/8.0.1": {},
+      "System.Diagnostics.DiagnosticSource/8.0.1": {
+        "runtime": {
+          "lib/net8.0/System.Diagnostics.DiagnosticSource.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.424.16909"
+          }
+        }
+      },
       "System.Diagnostics.EventLog/8.0.0": {},
       "System.Diagnostics.PerformanceCounter/8.0.0": {
         "dependencies": {

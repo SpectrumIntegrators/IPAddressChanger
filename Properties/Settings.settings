@@ -11,10 +11,31 @@
     <Setting Name="WindowHeight" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">600</Value>
     </Setting>
-    <Setting Name="SplitterDistance" Type="System.Int32" Scope="User">
+    <Setting Name="SplitterWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
     <Setting Name="HideOfflineAdapters" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ColumnsOrder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0,1,2,3,4</Value>
+    </Setting>
+    <Setting Name="ColumnsWidths" Type="System.String" Scope="User">
+      <Value Profile="(Default)">120,60,60,100,100</Value>
+    </Setting>
+    <Setting Name="SplitterHeight" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="Shortcuts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">[]</Value>
+    </Setting>
+    <Setting Name="HideWhenMinimized" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShortcutDoubleClick" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="StartMinimized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

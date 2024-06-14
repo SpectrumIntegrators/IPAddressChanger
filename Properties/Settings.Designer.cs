@@ -12,7 +12,7 @@ namespace IPAddressChanger.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -62,12 +62,12 @@ namespace IPAddressChanger.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public int SplitterDistance {
+        public int SplitterWidth {
             get {
-                return ((int)(this["SplitterDistance"]));
+                return ((int)(this["SplitterWidth"]));
             }
             set {
-                this["SplitterDistance"] = value;
+                this["SplitterWidth"] = value;
             }
         }
         
@@ -80,6 +80,90 @@ namespace IPAddressChanger.Properties {
             }
             set {
                 this["HideOfflineAdapters"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0,1,2,3,4")]
+        public string ColumnsOrder {
+            get {
+                return ((string)(this["ColumnsOrder"]));
+            }
+            set {
+                this["ColumnsOrder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("120,60,60,100,100")]
+        public string ColumnsWidths {
+            get {
+                return ((string)(this["ColumnsWidths"]));
+            }
+            set {
+                this["ColumnsWidths"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int SplitterHeight {
+            get {
+                return ((int)(this["SplitterHeight"]));
+            }
+            set {
+                this["SplitterHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[]")]
+        public string Shortcuts {
+            get {
+                return ((string)(this["Shortcuts"]));
+            }
+            set {
+                this["Shortcuts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideWhenMinimized {
+            get {
+                return ((bool)(this["HideWhenMinimized"]));
+            }
+            set {
+                this["HideWhenMinimized"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ShortcutDoubleClick {
+            get {
+                return ((int)(this["ShortcutDoubleClick"]));
+            }
+            set {
+                this["ShortcutDoubleClick"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartMinimized {
+            get {
+                return ((bool)(this["StartMinimized"]));
+            }
+            set {
+                this["StartMinimized"] = value;
             }
         }
     }
