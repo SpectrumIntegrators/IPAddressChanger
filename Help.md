@@ -26,6 +26,7 @@ The network adapter settings functionality is provided by PowerShell. If PowerSh
 The functionality of the program revolves around Shortcuts, which are configuration presets for specific adapters. If the adapter name is changed, the shortcut should still work (it's based on its device ID). The adapter must be present for the shortcut to work, but the current adapter index does not matter because the shortcuts are based on the device ID.
 
 ## Main Window
+![Main Window](https://spectrumintegrators.github.io/IPAddressChanger/images/main.png)
 
 ### Layout
 The main window is divided into a [Tool Bar](#tool-bar), a [Status Bar](#status-bar), and four areas: [Adapters List](#adapters-listadapters), [Shortcuts List](#shortcuts-list), [Adapter Details](#adapter-details), and [Adapters Address List](#adapter-addresses-list). The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).
@@ -112,6 +113,8 @@ The origin of the host  portion of the address.
 ## Notification Area Icon
 The notification area icon appears in the notification area of the task bar near the clock (you may need to click the expand button to see it). Double-clicking the icon will show the application. Right clicking it will show a quick-access menu.
 
+![Notification Area](https://spectrumintegrators.github.io/IPAddressChanger/images/notificationmenu.png)
+
 ### Notificaion Area Icon Menu
 
 #### Show
@@ -130,6 +133,7 @@ Launches the network adapters control panel.
 This menu contains all of the configured network adapter shortcuts. It is the same list as the [Shortcuts List](#shortcuts-list). Clicking one of these items will recall that shortcut.
 
 ## New/Edit Shortcut Window
+![Shortcut Window](https://spectrumintegrators.github.io/IPAddressChanger/images/shortcut.png)
 
 ### Shortcut Name
 This is the name you will see in the [Shortcuts List](#shortcuts-list) and in the [Notification Area Icon Menu](#notificaion-area-icon-menu).
@@ -154,6 +158,8 @@ When editing an existing shortcut, you can instead choose to delete the shortcut
 ## Settings Window
 This window allows changing the functionality of the program.
 
+![Settings Window](https://spectrumintegrators.github.io/IPAddressChanger/images/settings.png)
+
 ### Hide when minimized
 Hides the window from the task bar when it is minimized (it can be shown again from the [Notification Area Icon Menu](#notificaion-area-icon-menu)).
 
@@ -168,6 +174,8 @@ Path to the network adapters control panel file. This should be able to be left 
 
 ## Debug Messages Window
 This window shows additional information about the actions the program is performing and the results of those actions.
+
+![Debug Messages Window](https://spectrumintegrators.github.io/IPAddressChanger/images/debug.png)
 
 ### Tool Bar
 
