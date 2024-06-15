@@ -23,6 +23,7 @@ namespace IPAddressChanger {
 			chkHideWhenMinimized.Checked = Settings.Default.HideWhenMinimized;
 			cboShortcutDoubleClick.SelectedIndex = Settings.Default.ShortcutDoubleClick;
 			chkStartMinimized.Checked = Settings.Default.StartMinimized;
+			txtControlPanelFile.Text = Settings.Default.AdaptersControlPanelFile;
 			cmdOK.Enabled = false;
 			this.controlsDirty = false;
 		}
@@ -31,6 +32,7 @@ namespace IPAddressChanger {
 			Settings.Default.HideWhenMinimized = chkHideWhenMinimized.Checked;
 			Settings.Default.ShortcutDoubleClick = cboShortcutDoubleClick.SelectedIndex;
 			Settings.Default.StartMinimized = chkStartMinimized.Checked;
+			Settings.Default.AdaptersControlPanelFile = txtControlPanelFile.Text;
 			this.controlsDirty = false;
 			Settings.Default.Save();
 		}
@@ -95,6 +97,24 @@ namespace IPAddressChanger {
 
 		private void lblStartMinimized_Click(object sender, EventArgs e) {
 			chkStartMinimized.Checked = !chkStartMinimized.Checked;
+		}
+
+		private void cmdControlPanelBrowse_Click(object sender, EventArgs e) {
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.FileName = txtControlPanelFile.Text;
+			ofd.Filter = "Control Panel Files|*.cpl|Executables|*.exe|All Files|*.*";
+			ofd.Multiselect = false;
+			ofd.Title = "Selet Network Adapters Control Panel Applet";
+			ofd.DefaultExt = ".cpl";
+			ofd.ValidateNames = true;
+			if (ofd.ShowDialog(this) == DialogResult.OK) {
+				txtControlPanelFile.Text = ofd.FileName;
+				MarkDirty();
+			}
+		}
+
+		private void txtControlPanelFile_TextChanged(object sender, EventArgs e) {
+			MarkDirty();
 		}
 	}
 }

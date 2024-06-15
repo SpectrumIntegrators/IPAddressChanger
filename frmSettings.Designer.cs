@@ -23,190 +23,267 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			tableLayoutPanel1 = new TableLayoutPanel();
-			tableLayoutPanel2 = new TableLayoutPanel();
-			cmdCancel = new Button();
-			cmdOK = new Button();
-			tableLayoutPanel3 = new TableLayoutPanel();
-			lblHideWhenMinimized = new Label();
-			chkHideWhenMinimized = new CheckBox();
-			label2 = new Label();
-			cboShortcutDoubleClick = new ComboBox();
-			lblStartMinimized = new Label();
-			chkStartMinimized = new CheckBox();
-			tableLayoutPanel1.SuspendLayout();
-			tableLayoutPanel2.SuspendLayout();
-			tableLayoutPanel3.SuspendLayout();
-			SuspendLayout();
+			this.tableLayoutPanel1 = new TableLayoutPanel();
+			this.tableLayoutPanel2 = new TableLayoutPanel();
+			this.cmdCancel = new Button();
+			this.cmdOK = new Button();
+			this.tableLayoutPanel3 = new TableLayoutPanel();
+			this.lblHideWhenMinimized = new Label();
+			this.chkHideWhenMinimized = new CheckBox();
+			this.label2 = new Label();
+			this.cboShortcutDoubleClick = new ComboBox();
+			this.lblStartMinimized = new Label();
+			this.chkStartMinimized = new CheckBox();
+			this.label1 = new Label();
+			this.tableLayoutPanel4 = new TableLayoutPanel();
+			this.cmdControlPanelBrowse = new Button();
+			this.txtControlPanelFile = new TextBox();
+			this.helpProvider1 = new HelpProvider();
+			this.tableLayoutPanel1.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel3.SuspendLayout();
+			this.tableLayoutPanel4.SuspendLayout();
+			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
 			// 
-			tableLayoutPanel1.ColumnCount = 1;
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 0, 1);
-			tableLayoutPanel1.Controls.Add(tableLayoutPanel3, 0, 0);
-			tableLayoutPanel1.Dock = DockStyle.Fill;
-			tableLayoutPanel1.Location = new Point(0, 0);
-			tableLayoutPanel1.Name = "tableLayoutPanel1";
-			tableLayoutPanel1.RowCount = 2;
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-			tableLayoutPanel1.Size = new Size(800, 450);
-			tableLayoutPanel1.TabIndex = 0;
+			this.tableLayoutPanel1.ColumnCount = 1;
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 0);
+			this.tableLayoutPanel1.Dock = DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new Point(0, 0);
+			this.tableLayoutPanel1.Margin = new Padding(2);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
+			this.tableLayoutPanel1.Size = new Size(560, 270);
+			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
 			// 
-			tableLayoutPanel2.ColumnCount = 3;
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-			tableLayoutPanel2.Controls.Add(cmdCancel, 2, 0);
-			tableLayoutPanel2.Controls.Add(cmdOK, 1, 0);
-			tableLayoutPanel2.Dock = DockStyle.Fill;
-			tableLayoutPanel2.Location = new Point(3, 393);
-			tableLayoutPanel2.Name = "tableLayoutPanel2";
-			tableLayoutPanel2.RowCount = 1;
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel2.Size = new Size(794, 54);
-			tableLayoutPanel2.TabIndex = 0;
+			this.tableLayoutPanel2.ColumnCount = 3;
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140F));
+			this.tableLayoutPanel2.Controls.Add(this.cmdCancel, 2, 0);
+			this.tableLayoutPanel2.Controls.Add(this.cmdOK, 1, 0);
+			this.tableLayoutPanel2.Dock = DockStyle.Fill;
+			this.tableLayoutPanel2.Location = new Point(2, 236);
+			this.tableLayoutPanel2.Margin = new Padding(2);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 1;
+			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel2.Size = new Size(556, 32);
+			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// cmdCancel
 			// 
-			cmdCancel.Anchor = AnchorStyles.Top;
-			cmdCancel.Location = new Point(638, 3);
-			cmdCancel.Name = "cmdCancel";
-			cmdCancel.Size = new Size(112, 40);
-			cmdCancel.TabIndex = 0;
-			cmdCancel.Text = "&Cancel";
-			cmdCancel.UseVisualStyleBackColor = true;
-			cmdCancel.Click += cmdCancel_Click;
+			this.cmdCancel.Anchor = AnchorStyles.Top;
+			this.cmdCancel.Location = new Point(447, 2);
+			this.cmdCancel.Margin = new Padding(2);
+			this.cmdCancel.Name = "cmdCancel";
+			this.cmdCancel.Size = new Size(78, 24);
+			this.cmdCancel.TabIndex = 0;
+			this.cmdCancel.Text = "&Cancel";
+			this.cmdCancel.UseVisualStyleBackColor = true;
+			this.cmdCancel.Click += this.cmdCancel_Click;
 			// 
 			// cmdOK
 			// 
-			cmdOK.Anchor = AnchorStyles.Top;
-			cmdOK.Enabled = false;
-			cmdOK.Location = new Point(438, 3);
-			cmdOK.Name = "cmdOK";
-			cmdOK.Size = new Size(112, 40);
-			cmdOK.TabIndex = 3;
-			cmdOK.Text = "&OK";
-			cmdOK.UseVisualStyleBackColor = true;
-			cmdOK.Click += cmdOK_Click;
+			this.cmdOK.Anchor = AnchorStyles.Top;
+			this.cmdOK.Enabled = false;
+			this.cmdOK.Location = new Point(307, 2);
+			this.cmdOK.Margin = new Padding(2);
+			this.cmdOK.Name = "cmdOK";
+			this.cmdOK.Size = new Size(78, 24);
+			this.cmdOK.TabIndex = 3;
+			this.cmdOK.Text = "&OK";
+			this.cmdOK.UseVisualStyleBackColor = true;
+			this.cmdOK.Click += this.cmdOK_Click;
 			// 
 			// tableLayoutPanel3
 			// 
-			tableLayoutPanel3.ColumnCount = 2;
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38.66499F));
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 61.3350143F));
-			tableLayoutPanel3.Controls.Add(lblHideWhenMinimized, 0, 0);
-			tableLayoutPanel3.Controls.Add(chkHideWhenMinimized, 1, 0);
-			tableLayoutPanel3.Controls.Add(label2, 0, 2);
-			tableLayoutPanel3.Controls.Add(cboShortcutDoubleClick, 1, 2);
-			tableLayoutPanel3.Controls.Add(lblStartMinimized, 0, 1);
-			tableLayoutPanel3.Controls.Add(chkStartMinimized, 1, 1);
-			tableLayoutPanel3.Dock = DockStyle.Fill;
-			tableLayoutPanel3.Location = new Point(3, 3);
-			tableLayoutPanel3.Name = "tableLayoutPanel3";
-			tableLayoutPanel3.RowCount = 4;
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel3.Size = new Size(794, 384);
-			tableLayoutPanel3.TabIndex = 1;
+			this.tableLayoutPanel3.ColumnCount = 2;
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38.66499F));
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 61.3350143F));
+			this.tableLayoutPanel3.Controls.Add(this.lblHideWhenMinimized, 0, 0);
+			this.tableLayoutPanel3.Controls.Add(this.chkHideWhenMinimized, 1, 0);
+			this.tableLayoutPanel3.Controls.Add(this.label2, 0, 2);
+			this.tableLayoutPanel3.Controls.Add(this.cboShortcutDoubleClick, 1, 2);
+			this.tableLayoutPanel3.Controls.Add(this.lblStartMinimized, 0, 1);
+			this.tableLayoutPanel3.Controls.Add(this.chkStartMinimized, 1, 1);
+			this.tableLayoutPanel3.Controls.Add(this.label1, 0, 3);
+			this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel4, 1, 3);
+			this.tableLayoutPanel3.Dock = DockStyle.Fill;
+			this.tableLayoutPanel3.Location = new Point(2, 2);
+			this.tableLayoutPanel3.Margin = new Padding(2);
+			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+			this.tableLayoutPanel3.RowCount = 5;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel3.Size = new Size(556, 230);
+			this.tableLayoutPanel3.TabIndex = 1;
 			// 
 			// lblHideWhenMinimized
 			// 
-			lblHideWhenMinimized.AutoSize = true;
-			lblHideWhenMinimized.Dock = DockStyle.Fill;
-			lblHideWhenMinimized.Location = new Point(3, 0);
-			lblHideWhenMinimized.Name = "lblHideWhenMinimized";
-			lblHideWhenMinimized.Size = new Size(301, 40);
-			lblHideWhenMinimized.TabIndex = 0;
-			lblHideWhenMinimized.Text = "Hide when minimized";
-			lblHideWhenMinimized.TextAlign = ContentAlignment.MiddleLeft;
-			lblHideWhenMinimized.Click += lblHideWhenMinimized_Click;
+			this.lblHideWhenMinimized.AutoSize = true;
+			this.lblHideWhenMinimized.Dock = DockStyle.Fill;
+			this.lblHideWhenMinimized.Location = new Point(2, 0);
+			this.lblHideWhenMinimized.Margin = new Padding(2, 0, 2, 0);
+			this.lblHideWhenMinimized.Name = "lblHideWhenMinimized";
+			this.lblHideWhenMinimized.Size = new Size(210, 32);
+			this.lblHideWhenMinimized.TabIndex = 0;
+			this.lblHideWhenMinimized.Text = "Hide when minimized";
+			this.lblHideWhenMinimized.TextAlign = ContentAlignment.MiddleLeft;
+			this.lblHideWhenMinimized.Click += this.lblHideWhenMinimized_Click;
 			// 
 			// chkHideWhenMinimized
 			// 
-			chkHideWhenMinimized.Anchor = AnchorStyles.Left;
-			chkHideWhenMinimized.AutoSize = true;
-			chkHideWhenMinimized.Location = new Point(310, 9);
-			chkHideWhenMinimized.Name = "chkHideWhenMinimized";
-			chkHideWhenMinimized.Size = new Size(22, 21);
-			chkHideWhenMinimized.TabIndex = 1;
-			chkHideWhenMinimized.UseVisualStyleBackColor = true;
-			chkHideWhenMinimized.CheckedChanged += chkHideWhenMinimized_CheckedChanged;
+			this.chkHideWhenMinimized.Anchor = AnchorStyles.Left;
+			this.chkHideWhenMinimized.AutoSize = true;
+			this.chkHideWhenMinimized.Location = new Point(216, 9);
+			this.chkHideWhenMinimized.Margin = new Padding(2);
+			this.chkHideWhenMinimized.Name = "chkHideWhenMinimized";
+			this.chkHideWhenMinimized.Size = new Size(15, 14);
+			this.chkHideWhenMinimized.TabIndex = 1;
+			this.chkHideWhenMinimized.UseVisualStyleBackColor = true;
+			this.chkHideWhenMinimized.CheckedChanged += this.chkHideWhenMinimized_CheckedChanged;
 			// 
 			// label2
 			// 
-			label2.AutoSize = true;
-			label2.Dock = DockStyle.Fill;
-			label2.Location = new Point(3, 80);
-			label2.Name = "label2";
-			label2.Size = new Size(301, 40);
-			label2.TabIndex = 2;
-			label2.Text = "Double clicking a shortcut will";
-			label2.TextAlign = ContentAlignment.MiddleLeft;
+			this.label2.AutoSize = true;
+			this.label2.Dock = DockStyle.Fill;
+			this.label2.Location = new Point(2, 64);
+			this.label2.Margin = new Padding(2, 0, 2, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new Size(210, 32);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "Double clicking a shortcut will";
+			this.label2.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// cboShortcutDoubleClick
 			// 
-			cboShortcutDoubleClick.Anchor = AnchorStyles.Left;
-			cboShortcutDoubleClick.DropDownStyle = ComboBoxStyle.DropDownList;
-			cboShortcutDoubleClick.FormattingEnabled = true;
-			cboShortcutDoubleClick.Items.AddRange(new object[] { "Edit the shortcut", "Recall the shortcut" });
-			cboShortcutDoubleClick.Location = new Point(310, 83);
-			cboShortcutDoubleClick.Name = "cboShortcutDoubleClick";
-			cboShortcutDoubleClick.Size = new Size(441, 33);
-			cboShortcutDoubleClick.TabIndex = 2;
-			cboShortcutDoubleClick.SelectedIndexChanged += cboShortcutDoubleClick_SelectedIndexChanged;
+			this.cboShortcutDoubleClick.Anchor = AnchorStyles.Left;
+			this.cboShortcutDoubleClick.DropDownStyle = ComboBoxStyle.DropDownList;
+			this.cboShortcutDoubleClick.FormattingEnabled = true;
+			this.cboShortcutDoubleClick.Items.AddRange(new object[] { "Edit the shortcut", "Recall the shortcut" });
+			this.cboShortcutDoubleClick.Location = new Point(216, 68);
+			this.cboShortcutDoubleClick.Margin = new Padding(2);
+			this.cboShortcutDoubleClick.Name = "cboShortcutDoubleClick";
+			this.cboShortcutDoubleClick.Size = new Size(310, 23);
+			this.cboShortcutDoubleClick.TabIndex = 2;
+			this.cboShortcutDoubleClick.SelectedIndexChanged += this.cboShortcutDoubleClick_SelectedIndexChanged;
 			// 
 			// lblStartMinimized
 			// 
-			lblStartMinimized.AutoSize = true;
-			lblStartMinimized.Dock = DockStyle.Fill;
-			lblStartMinimized.Location = new Point(3, 40);
-			lblStartMinimized.Name = "lblStartMinimized";
-			lblStartMinimized.Size = new Size(301, 40);
-			lblStartMinimized.TabIndex = 3;
-			lblStartMinimized.Text = "Start minimized";
-			lblStartMinimized.TextAlign = ContentAlignment.MiddleLeft;
-			lblStartMinimized.Click += lblStartMinimized_Click;
+			this.lblStartMinimized.AutoSize = true;
+			this.lblStartMinimized.Dock = DockStyle.Fill;
+			this.lblStartMinimized.Location = new Point(2, 32);
+			this.lblStartMinimized.Margin = new Padding(2, 0, 2, 0);
+			this.lblStartMinimized.Name = "lblStartMinimized";
+			this.lblStartMinimized.Size = new Size(210, 32);
+			this.lblStartMinimized.TabIndex = 3;
+			this.lblStartMinimized.Text = "Start minimized";
+			this.lblStartMinimized.TextAlign = ContentAlignment.MiddleLeft;
+			this.lblStartMinimized.Click += this.lblStartMinimized_Click;
 			// 
 			// chkStartMinimized
 			// 
-			chkStartMinimized.Anchor = AnchorStyles.Left;
-			chkStartMinimized.AutoSize = true;
-			chkStartMinimized.Location = new Point(310, 49);
-			chkStartMinimized.Name = "chkStartMinimized";
-			chkStartMinimized.Size = new Size(22, 21);
-			chkStartMinimized.TabIndex = 4;
-			chkStartMinimized.UseVisualStyleBackColor = true;
-			chkStartMinimized.CheckedChanged += chkStartMinimized_CheckedChanged;
+			this.chkStartMinimized.Anchor = AnchorStyles.Left;
+			this.chkStartMinimized.AutoSize = true;
+			this.chkStartMinimized.Location = new Point(216, 41);
+			this.chkStartMinimized.Margin = new Padding(2);
+			this.chkStartMinimized.Name = "chkStartMinimized";
+			this.chkStartMinimized.Size = new Size(15, 14);
+			this.chkStartMinimized.TabIndex = 4;
+			this.chkStartMinimized.UseVisualStyleBackColor = true;
+			this.chkStartMinimized.CheckedChanged += this.chkStartMinimized_CheckedChanged;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Dock = DockStyle.Fill;
+			this.label1.Location = new Point(3, 96);
+			this.label1.Name = "label1";
+			this.label1.Size = new Size(208, 32);
+			this.label1.TabIndex = 5;
+			this.label1.Text = "Control Panel file";
+			this.label1.TextAlign = ContentAlignment.MiddleLeft;
+			// 
+			// tableLayoutPanel4
+			// 
+			this.tableLayoutPanel4.ColumnCount = 2;
+			this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 90.93567F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.064327F));
+			this.tableLayoutPanel4.Controls.Add(this.cmdControlPanelBrowse, 1, 0);
+			this.tableLayoutPanel4.Controls.Add(this.txtControlPanelFile, 0, 0);
+			this.tableLayoutPanel4.Dock = DockStyle.Fill;
+			this.tableLayoutPanel4.Location = new Point(214, 96);
+			this.tableLayoutPanel4.Margin = new Padding(0);
+			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+			this.tableLayoutPanel4.RowCount = 1;
+			this.tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+			this.tableLayoutPanel4.Size = new Size(342, 32);
+			this.tableLayoutPanel4.TabIndex = 6;
+			// 
+			// cmdControlPanelBrowse
+			// 
+			this.cmdControlPanelBrowse.Dock = DockStyle.Fill;
+			this.cmdControlPanelBrowse.Location = new Point(313, 3);
+			this.cmdControlPanelBrowse.Name = "cmdControlPanelBrowse";
+			this.cmdControlPanelBrowse.Size = new Size(26, 26);
+			this.cmdControlPanelBrowse.TabIndex = 0;
+			this.cmdControlPanelBrowse.Text = "...";
+			this.cmdControlPanelBrowse.UseVisualStyleBackColor = true;
+			this.cmdControlPanelBrowse.Click += this.cmdControlPanelBrowse_Click;
+			// 
+			// txtControlPanelFile
+			// 
+			this.txtControlPanelFile.Anchor = AnchorStyles.Left;
+			this.txtControlPanelFile.Location = new Point(3, 4);
+			this.txtControlPanelFile.Name = "txtControlPanelFile";
+			this.txtControlPanelFile.Size = new Size(304, 23);
+			this.txtControlPanelFile.TabIndex = 1;
+			this.txtControlPanelFile.TextChanged += this.txtControlPanelFile_TextChanged;
+			// 
+			// helpProvider1
+			// 
+			this.helpProvider1.HelpNamespace = "http://127.0.0.1:8000/Help.html";
 			// 
 			// frmSettings
 			// 
-			AcceptButton = cmdOK;
-			AutoScaleDimensions = new SizeF(10F, 25F);
-			AutoScaleMode = AutoScaleMode.Font;
-			CancelButton = cmdCancel;
-			ClientSize = new Size(800, 450);
-			Controls.Add(tableLayoutPanel1);
-			FormBorderStyle = FormBorderStyle.FixedDialog;
-			MaximizeBox = false;
-			MinimizeBox = false;
-			Name = "frmSettings";
-			ShowIcon = false;
-			ShowInTaskbar = false;
-			Text = "Settings";
-			FormClosing += frmSettings_FormClosing;
-			FormClosed += frmSettings_FormClosed;
-			Load += frmSettings_Load;
-			tableLayoutPanel1.ResumeLayout(false);
-			tableLayoutPanel2.ResumeLayout(false);
-			tableLayoutPanel3.ResumeLayout(false);
-			tableLayoutPanel3.PerformLayout();
-			ResumeLayout(false);
+			this.AcceptButton = this.cmdOK;
+			this.AutoScaleDimensions = new SizeF(7F, 15F);
+			this.AutoScaleMode = AutoScaleMode.Font;
+			this.CancelButton = this.cmdCancel;
+			this.ClientSize = new Size(560, 270);
+			this.Controls.Add(this.tableLayoutPanel1);
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.helpProvider1.SetHelpKeyword(this, "settings-window");
+			this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
+			this.Margin = new Padding(2);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
+			this.Name = "frmSettings";
+			this.helpProvider1.SetShowHelp(this, true);
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
+			this.Text = "Settings";
+			this.FormClosing += this.frmSettings_FormClosing;
+			this.FormClosed += this.frmSettings_FormClosed;
+			this.Load += this.frmSettings_Load;
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel3.ResumeLayout(false);
+			this.tableLayoutPanel3.PerformLayout();
+			this.tableLayoutPanel4.ResumeLayout(false);
+			this.tableLayoutPanel4.PerformLayout();
+			this.ResumeLayout(false);
 		}
 
 		#endregion
@@ -222,5 +299,10 @@
 		private ComboBox cboShortcutDoubleClick;
 		private Label lblStartMinimized;
 		private CheckBox chkStartMinimized;
+		private Label label1;
+		private TableLayoutPanel tableLayoutPanel4;
+		private Button cmdControlPanelBrowse;
+		private TextBox txtControlPanelFile;
+		private HelpProvider helpProvider1;
 	}
 }

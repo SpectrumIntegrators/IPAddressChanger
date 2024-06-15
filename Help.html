@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Help.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ip-address-changer">IP Address Changer</h1>
+<h2 id="overview">Overview</h2>
+<p>This application allows changing IP address settings for network adapters from a quick list of predefined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)</p>
+<p>The application requires elevated privileges and may only be run by a user who has administrator acces to the system.</p>
+<p>The network adapter settings functionality is provided by PowerShell. If PowerShell is restricted or disabled, the application will not function properly.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#shortcuts">Shortcuts</a></li>
+<li><a href="#main-window">Main Window</a>
+<ol>
+<li><a href="#tool-bar">Tool Bar</a></li>
+<li><a href="#status-bar">Status Bar</a></li>
+<li><a href="#adapters-list">Adapters List</a></li>
+<li><a href="#shortcuts-list">Shortcuts List</a></li>
+<li><a href="#adapter-details">Adapter Details</a></li>
+<li><a href="#adapter-addresses-list">Adapter Address List</a></li>
+</ol>
+</li>
+<li><a href="#notification-area-icon">Notification Area Icon</a></li>
+<li><a href="#newedit-shortcut-window">New/Edit Shortcut Window</a></li>
+<li><a href="#settings-window">Settings Window</a></li>
+<li><a href="#debug-messages-window">Debug Messages Window</a></li>
+</ol>
+<h2 id="shortcuts">Shortcuts</h2>
+<p>The functionality of the program revolves around Shortcuts, which are configuration presets for specific adapters. If the adapter name is changed, the shortcut should still work (it's based on its device ID). The adapter must be present for the shortcut to work, but the current adapter index does not matter because the shortcuts are based on the device ID.</p>
+<h2 id="main-window">Main Window</h2>
+<h3 id="layout">Layout</h3>
+<p>The main window is divided into a <a href="#tool-bar">Tool Bar</a>, a <a href="#status-bar">Status Bar</a>, and four areas: <a href="#adapters-listadapters">Adapters List</a>, <a href="#shortcuts-list">Shortcuts List</a>, <a href="#adapter-details">Adapter Details</a>, and <a href="#adapter-addresses-list">Adapters Address List</a>. The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).</p>
+<h3 id="tool-bar">Tool Bar</h3>
+<h4 id="refresh">Refresh</h4>
+<p>Refresh the list of adapters.</p>
+<h4 id="hide-offline-adapters">Hide Offline Adapters</h4>
+<p>Toggles hiding and showing offline adapters.</p>
+<h4 id="new-shortcut">New Shortcut</h4>
+<p>Creates a new address configuration shortcut for the currently selected network adapter.</p>
+<h4 id="delete-shortcut">Delete Shortcut</h4>
+<p>Deletes the currently selected shortcut.</p>
+<h4 id="edit-shortcut">Edit Shortcut</h4>
+<p>Edits the currently selected shortcut.</p>
+<h4 id="recall-shortcut">Recall Shortcut</h4>
+<p>Sets the adapter configuration information for the adapter referened in the curently selecte shortcut.</p>
+<h4 id="settings">Settings</h4>
+<p>Displays the settings window.</p>
+<h4 id="debug">Debug</h4>
+<p>Displays the debug messages window.</p>
+<h4 id="control-panel">Control Panel</h4>
+<p>Launches the network adatpers control panel.</p>
+<h3 id="status-bar">Status Bar</h3>
+<h3 id="adapters-list">Adapters List</h3>
+<p>This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down state.</p>
+<p>Selecting an adapter will display additional details in the <a href="#adapter-details">Adapter Details</a> area and associated addresses in the <a href="#adapter-addresses-list">Adapter Addresses List</a>.</p>
+<p>Double-clicking an adapter will create a new shortcut for that adapter.</p>
+<h3 id="shortcuts-list">Shortcuts List</h3>
+<p>This list shows all of the stored configuration preset shortcuts.</p>
+<p>Double-clicking a shortcut will either edit the shortcut or recall the shortcut, depending on the value of the <a href="#start-minimized">Start minimized</a> setting.</p>
+<p>These shortcuts are also available in the Shortcuts menu of the <a href="#notificaion-area-icon-menu">Notification Area Icon Menu</a>.</p>
+<h3 id="adapter-details">Adapter Details</h3>
+<h4 id="hardware-address">Hardware Address</h4>
+<p>The unformatted hardware address of the adapter (usually the MAC address for an Ethernet device)</p>
+<h4 id="speed">Speed</h4>
+<p>The one-way data rate of the adatper in scaled bits per second (bits, kilobits, megabits, etc.).</p>
+<h4 id="driver-description">Driver Description</h4>
+<p>The description of the driver that is used to interface with the adapter hardware.</p>
+<h4 id="device-id">Device ID</h4>
+<p>The unique identifier of this adapter.</p>
+<h3 id="adapter-addresses-list">Adapter Addresses List</h3>
+<p>This shows all of the addresses configured for the selected adapter. You may resize and rearrange the columns (size and position will be saved on exit).</p>
+<p>Double-clicking an address will create a shortcut for the adapter using that address and prefix length or DHCP.</p>
+<h4 id="address">Address</h4>
+<p>The address value for this address.</p>
+<h4 id="prefix-length">Prefix Length</h4>
+<p>The number of bits of the address that are used for the network segment.</p>
+<h4 id="family">Family</h4>
+<p>The address family this address uses.</p>
+<h4 id="prefix-origin">Prefix Origin</h4>
+<p>The origin of the network portion of the address.</p>
+<h4 id="suffix-origin">Suffix Origin</h4>
+<p>The origin of the host  portion of the address.</p>
+<h2 id="notification-area-icon">Notification Area Icon</h2>
+<p>The notification area icon appears in the notification area of the task bar near the clock (you may need to click the expand button to see it). Double-clicking the icon will show the application. Right clicking it will show a quick-access menu.</p>
+<h3 id="notificaion-area-icon-menu">Notificaion Area Icon Menu</h3>
+<h4 id="show">Show</h4>
+<p>Shows the application.</p>
+<h4 id="hide">Hide</h4>
+<p>Hides the application (it will not appear on the taskbar, but the icon remains in the notification area).</p>
+<h4 id="exit">Exit</h4>
+<p>Closes the application.</p>
+<h4 id="control-panel">Control Panel</h4>
+<p>Launches the network adapters control panel.</p>
+<h4 id="shortcuts">Shortcuts</h4>
+<p>This menu contains all of the configured network adapter shortcuts. It is the same list as the <a href="#shortcuts-list">Shortcuts List</a>. Clicking one of these items will recall that shortcut.</p>
+<h2 id="newedit-shortcut-window">New/Edit Shortcut Window</h2>
+<h3 id="shortcut-name">Shortcut Name</h3>
+<p>This is the name you will see in the <a href="#shortcuts-list">Shortcuts List</a> and in the <a href="#notificaion-area-icon-menu">Notification Area Icon Menu</a>.</p>
+<p>When creating a new shortcut, this name will be automatically generated, but once you edit it manually it will retain whatever value you provide.</p>
+<h3 id="adapter">Adapter</h3>
+<p>The name and device ID of the adapter this shortcut applies to, for reference.</p>
+<h3 id="dhcp-enabled">DHCP Enabled</h3>
+<p>Check this to use DHCP for this shortcut instead of specifying an address (the IP Address and Prefix Length fields are disabled while the DHCP checkbox is checked).</p>
+<h3 id="ip-address">IP Address</h3>
+<p>The IP address to use for this shortcut.</p>
+<h3 id="prefix-length">Prefix Length</h3>
+<p>The length of the network portion of the address to use for this shortcut. For IPv4 addresses, the subnet mask is automatically displayed as well.</p>
+<h3 id="delete-button">Delete Button</h3>
+<p>When editing an existing shortcut, you can instead choose to delete the shortcut from this window.</p>
+<h2 id="settings-window">Settings Window</h2>
+<p>This window allows changing the functionality of the program.</p>
+<h3 id="hide-when-minimized">Hide when minimized</h3>
+<p>Hides the window from the task bar when it is minimized (it can be shown again from the <a href="#notificaion-area-icon-menu">Notification Area Icon Menu</a>).</p>
+<h3 id="start-minimized">Start minimized</h3>
+<p>Automatically minimizes the application as soon as it launches. (If Hide when minimized is checked, it will also be hidden at launch.) The <a href="#notification-area-icon">Notification Area Icon</a> is still available for shortcuts and to show the application.</p>
+<h3 id="double-clicking-a-shortcut-will">Double clicking a shortcut will</h3>
+<p>Chooses what action to perform when a shortcut from the <a href="#shortcuts-list">Shortcuts List</a> is double-clicked: edit the selected shortcut, or recall the selected shortcut.</p>
+<h3 id="control-panel-file">Control Panel file</h3>
+<p>Path to the network adapters control panel file. This should be able to be left to the default value (<code>ncpa.cpl</code>), but if for some reason that file is moved or not available on your system, any other file may be specified here and it will be launched when the <a href="#control-panel">Control Panel</a> button is clicked.</p>
+<h2 id="debug-messages-window">Debug Messages Window</h2>
+<p>This window shows additional information about the actions the program is performing and the results of those actions.</p>
+<h3 id="tool-bar">Tool Bar</h3>
+<h4 id="clear-log">Clear Log</h4>
+<p>Clears all entries from the debug messages log.</p>
+<h4 id="copy-messages">Copy Messages</h4>
+<p>Copies all of the selected debug messages to the clipboard.</p>
+<h4 id="save-log">Save Log</h4>
+<p>Saves the entire log to a file.</p>
+<h3 id="debug-messages">Debug Messages</h3>
+<p>This list contains all of the debug messages. Clicking a line will select it, using <code>CTRL</code> and <code>Shift</code> will allow selecting multiple items.</p>
+<p><code>CTRL+C</code> will copy selected items to the clipboard. <code>CTRL+A</code> will select all items.</p>
+
+</body>
+</html>

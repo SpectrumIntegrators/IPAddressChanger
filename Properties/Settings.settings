@@ -38,5 +38,8 @@
     <Setting Name="StartMinimized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="AdaptersControlPanelFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ncpa.cpl</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

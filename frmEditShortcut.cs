@@ -17,6 +17,9 @@ namespace IPAddressChanger {
 		private Regex ipv4Pattern = new Regex(@"^(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$");
 		internal string DeviceID { get; set; } = "";
 		internal int? ShortcutIndex { get; set; } = null;
+		internal bool nameHasChanged = false;
+		internal string adapterName = "";
+
 		public frmEditShortcut() {
 			InitializeComponent();
 		}
@@ -75,10 +78,22 @@ namespace IPAddressChanger {
 
 		private void txtIPAddress_TextChanged(object sender, EventArgs e) {
 			CalculateAndDisplaySubnetMask();
+			if (!nameHasChanged) {
+				txtName.Text = $"{adapterName} - {txtIPAddress.Text}/{nudPrefixLength.Value}";
+				nameHasChanged = false;
+			}
 		}
 
 		private void nudPrefixLength_ValueChanged(object sender, EventArgs e) {
 			CalculateAndDisplaySubnetMask();
+			if (!nameHasChanged) {
+				txtName.Text = $"{adapterName} - {txtIPAddress.Text}/{nudPrefixLength.Value}";
+				nameHasChanged = false;
+			}
+		}
+
+		private void txtName_TextChanged(object sender, EventArgs e) {
+			nameHasChanged = true;
 		}
 	}
 }

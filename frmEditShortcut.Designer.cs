@@ -23,255 +23,306 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			tableLayoutPanel1 = new TableLayoutPanel();
-			label1 = new Label();
-			txtName = new TextBox();
-			tableLayoutPanel2 = new TableLayoutPanel();
-			cmdDelete = new Button();
-			cmdCancel = new Button();
-			cmdOK = new Button();
-			label4 = new Label();
-			txtIPAddress = new TextBox();
-			label3 = new Label();
-			label2 = new Label();
-			chkUseDHCP = new CheckBox();
-			label5 = new Label();
-			txtAdapterName = new TextBox();
-			tableLayoutPanel3 = new TableLayoutPanel();
-			nudPrefixLength = new NumericUpDown();
-			lblIPv4SubnetMask = new Label();
-			tableLayoutPanel1.SuspendLayout();
-			tableLayoutPanel2.SuspendLayout();
-			tableLayoutPanel3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)nudPrefixLength).BeginInit();
-			SuspendLayout();
+			this.tableLayoutPanel1 = new TableLayoutPanel();
+			this.label1 = new Label();
+			this.txtName = new TextBox();
+			this.tableLayoutPanel2 = new TableLayoutPanel();
+			this.cmdDelete = new Button();
+			this.cmdCancel = new Button();
+			this.cmdOK = new Button();
+			this.label4 = new Label();
+			this.txtIPAddress = new TextBox();
+			this.label3 = new Label();
+			this.label2 = new Label();
+			this.chkUseDHCP = new CheckBox();
+			this.label5 = new Label();
+			this.txtAdapterName = new TextBox();
+			this.tableLayoutPanel3 = new TableLayoutPanel();
+			this.nudPrefixLength = new NumericUpDown();
+			this.lblIPv4SubnetMask = new Label();
+			this.helpProvider1 = new HelpProvider();
+			this.tableLayoutPanel1.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)this.nudPrefixLength).BeginInit();
+			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
 			// 
-			tableLayoutPanel1.ColumnCount = 2;
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.375F));
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 79.625F));
-			tableLayoutPanel1.Controls.Add(label1, 0, 0);
-			tableLayoutPanel1.Controls.Add(txtName, 1, 0);
-			tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 1, 5);
-			tableLayoutPanel1.Controls.Add(label4, 0, 4);
-			tableLayoutPanel1.Controls.Add(txtIPAddress, 1, 3);
-			tableLayoutPanel1.Controls.Add(label3, 0, 3);
-			tableLayoutPanel1.Controls.Add(label2, 0, 2);
-			tableLayoutPanel1.Controls.Add(chkUseDHCP, 1, 2);
-			tableLayoutPanel1.Controls.Add(label5, 0, 1);
-			tableLayoutPanel1.Controls.Add(txtAdapterName, 1, 1);
-			tableLayoutPanel1.Controls.Add(tableLayoutPanel3, 1, 4);
-			tableLayoutPanel1.Dock = DockStyle.Fill;
-			tableLayoutPanel1.Location = new Point(0, 0);
-			tableLayoutPanel1.Name = "tableLayoutPanel1";
-			tableLayoutPanel1.RowCount = 6;
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
-			tableLayoutPanel1.Size = new Size(800, 268);
-			tableLayoutPanel1.TabIndex = 0;
+			this.tableLayoutPanel1.ColumnCount = 2;
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.375F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 79.625F));
+			this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.txtName, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 5);
+			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 4);
+			this.tableLayoutPanel1.Controls.Add(this.txtIPAddress, 1, 3);
+			this.tableLayoutPanel1.Controls.Add(this.label3, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(this.label2, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.chkUseDHCP, 1, 2);
+			this.tableLayoutPanel1.Controls.Add(this.label5, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.txtAdapterName, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 4);
+			this.tableLayoutPanel1.Dock = DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new Point(0, 0);
+			this.tableLayoutPanel1.Margin = new Padding(2);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 6;
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+			this.tableLayoutPanel1.Size = new Size(560, 161);
+			this.tableLayoutPanel1.TabIndex = 9;
 			// 
 			// label1
 			// 
-			label1.Anchor = AnchorStyles.Left;
-			label1.AutoSize = true;
-			label1.Location = new Point(3, 9);
-			label1.Name = "label1";
-			label1.Size = new Size(131, 25);
-			label1.TabIndex = 0;
-			label1.Text = "Shortcut Name";
+			this.label1.Anchor = AnchorStyles.Left;
+			this.label1.AutoSize = true;
+			this.label1.Location = new Point(2, 5);
+			this.label1.Margin = new Padding(2, 0, 2, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new Size(87, 15);
+			this.label1.TabIndex = 9;
+			this.label1.Text = "Shortcut Name";
 			// 
 			// txtName
 			// 
-			txtName.Anchor = AnchorStyles.Left;
-			txtName.Location = new Point(166, 6);
-			txtName.Name = "txtName";
-			txtName.Size = new Size(628, 31);
-			txtName.TabIndex = 0;
+			this.txtName.Anchor = AnchorStyles.Left;
+			this.helpProvider1.SetHelpKeyword(this.txtName, "shortcut-name");
+			this.helpProvider1.SetHelpNavigator(this.txtName, HelpNavigator.Topic);
+			this.txtName.Location = new Point(116, 2);
+			this.txtName.Margin = new Padding(2);
+			this.txtName.Name = "txtName";
+			this.helpProvider1.SetShowHelp(this.txtName, true);
+			this.txtName.Size = new Size(441, 23);
+			this.txtName.TabIndex = 0;
+			this.txtName.TextChanged += this.txtName_TextChanged;
 			// 
 			// tableLayoutPanel2
 			// 
-			tableLayoutPanel2.ColumnCount = 3;
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-			tableLayoutPanel2.Controls.Add(cmdDelete, 0, 0);
-			tableLayoutPanel2.Controls.Add(cmdCancel, 2, 0);
-			tableLayoutPanel2.Controls.Add(cmdOK, 1, 0);
-			tableLayoutPanel2.Dock = DockStyle.Right;
-			tableLayoutPanel2.Location = new Point(339, 223);
-			tableLayoutPanel2.Name = "tableLayoutPanel2";
-			tableLayoutPanel2.RowCount = 1;
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel2.Size = new Size(458, 42);
-			tableLayoutPanel2.TabIndex = 7;
+			this.tableLayoutPanel2.ColumnCount = 3;
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+			this.tableLayoutPanel2.Controls.Add(this.cmdDelete, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.cmdCancel, 2, 0);
+			this.tableLayoutPanel2.Controls.Add(this.cmdOK, 1, 0);
+			this.tableLayoutPanel2.Dock = DockStyle.Right;
+			this.tableLayoutPanel2.Location = new Point(239, 130);
+			this.tableLayoutPanel2.Margin = new Padding(0);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 1;
+			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel2.Size = new Size(321, 31);
+			this.tableLayoutPanel2.TabIndex = 7;
 			// 
 			// cmdDelete
 			// 
-			cmdDelete.Anchor = AnchorStyles.Right;
-			cmdDelete.Location = new Point(37, 4);
-			cmdDelete.Name = "cmdDelete";
-			cmdDelete.Size = new Size(112, 34);
-			cmdDelete.TabIndex = 6;
-			cmdDelete.Text = "&Delete";
-			cmdDelete.UseVisualStyleBackColor = true;
-			cmdDelete.Click += cmdDelete_Click;
+			this.cmdDelete.Anchor = AnchorStyles.Right;
+			this.helpProvider1.SetHelpKeyword(this.cmdDelete, "delete-button");
+			this.helpProvider1.SetHelpNavigator(this.cmdDelete, HelpNavigator.Topic);
+			this.cmdDelete.Location = new Point(27, 2);
+			this.cmdDelete.Margin = new Padding(2);
+			this.cmdDelete.Name = "cmdDelete";
+			this.helpProvider1.SetShowHelp(this.cmdDelete, true);
+			this.cmdDelete.Size = new Size(78, 27);
+			this.cmdDelete.TabIndex = 6;
+			this.cmdDelete.Text = "&Delete";
+			this.cmdDelete.UseVisualStyleBackColor = true;
+			this.cmdDelete.Click += this.cmdDelete_Click;
 			// 
 			// cmdCancel
 			// 
-			cmdCancel.Anchor = AnchorStyles.Right;
-			cmdCancel.DialogResult = DialogResult.Cancel;
-			cmdCancel.Location = new Point(343, 4);
-			cmdCancel.Name = "cmdCancel";
-			cmdCancel.Size = new Size(112, 34);
-			cmdCancel.TabIndex = 4;
-			cmdCancel.Text = "&Cancel";
-			cmdCancel.UseVisualStyleBackColor = true;
+			this.cmdCancel.Anchor = AnchorStyles.Right;
+			this.cmdCancel.DialogResult = DialogResult.Cancel;
+			this.helpProvider1.SetHelpKeyword(this.cmdCancel, "newedit-shortcut-window");
+			this.helpProvider1.SetHelpNavigator(this.cmdCancel, HelpNavigator.Topic);
+			this.cmdCancel.Location = new Point(241, 2);
+			this.cmdCancel.Margin = new Padding(2);
+			this.cmdCancel.Name = "cmdCancel";
+			this.helpProvider1.SetShowHelp(this.cmdCancel, true);
+			this.cmdCancel.Size = new Size(78, 27);
+			this.cmdCancel.TabIndex = 4;
+			this.cmdCancel.Text = "&Cancel";
+			this.cmdCancel.UseVisualStyleBackColor = true;
 			// 
 			// cmdOK
 			// 
-			cmdOK.Anchor = AnchorStyles.Right;
-			cmdOK.Location = new Point(189, 4);
-			cmdOK.Name = "cmdOK";
-			cmdOK.Size = new Size(112, 34);
-			cmdOK.TabIndex = 5;
-			cmdOK.Text = "&OK";
-			cmdOK.UseVisualStyleBackColor = true;
-			cmdOK.Click += cmdOK_Click;
+			this.cmdOK.Anchor = AnchorStyles.Right;
+			this.helpProvider1.SetHelpKeyword(this.cmdOK, "newedit-shortcut-window");
+			this.helpProvider1.SetHelpNavigator(this.cmdOK, HelpNavigator.Topic);
+			this.cmdOK.Location = new Point(134, 2);
+			this.cmdOK.Margin = new Padding(2);
+			this.cmdOK.Name = "cmdOK";
+			this.helpProvider1.SetShowHelp(this.cmdOK, true);
+			this.cmdOK.Size = new Size(78, 27);
+			this.cmdOK.TabIndex = 5;
+			this.cmdOK.Text = "&OK";
+			this.cmdOK.UseVisualStyleBackColor = true;
+			this.cmdOK.Click += this.cmdOK_Click;
 			// 
 			// label4
 			// 
-			label4.Anchor = AnchorStyles.Left;
-			label4.AutoSize = true;
-			label4.Location = new Point(3, 185);
-			label4.Name = "label4";
-			label4.Size = new Size(114, 25);
-			label4.TabIndex = 6;
-			label4.Text = "Prefix Length";
+			this.label4.Anchor = AnchorStyles.Left;
+			this.label4.AutoSize = true;
+			this.label4.Location = new Point(2, 109);
+			this.label4.Margin = new Padding(2, 0, 2, 0);
+			this.label4.Name = "label4";
+			this.label4.Size = new Size(77, 15);
+			this.label4.TabIndex = 9;
+			this.label4.Text = "Prefix Length";
 			// 
 			// txtIPAddress
 			// 
-			txtIPAddress.Anchor = AnchorStyles.Left;
-			txtIPAddress.Location = new Point(166, 138);
-			txtIPAddress.Name = "txtIPAddress";
-			txtIPAddress.Size = new Size(628, 31);
-			txtIPAddress.TabIndex = 2;
-			txtIPAddress.TextChanged += txtIPAddress_TextChanged;
+			this.txtIPAddress.Anchor = AnchorStyles.Left;
+			this.helpProvider1.SetHelpKeyword(this.txtIPAddress, "ip-address");
+			this.helpProvider1.SetHelpNavigator(this.txtIPAddress, HelpNavigator.Topic);
+			this.txtIPAddress.Location = new Point(116, 80);
+			this.txtIPAddress.Margin = new Padding(2);
+			this.txtIPAddress.Name = "txtIPAddress";
+			this.helpProvider1.SetShowHelp(this.txtIPAddress, true);
+			this.txtIPAddress.Size = new Size(441, 23);
+			this.txtIPAddress.TabIndex = 2;
+			this.txtIPAddress.TextChanged += this.txtIPAddress_TextChanged;
 			// 
 			// label3
 			// 
-			label3.Anchor = AnchorStyles.Left;
-			label3.AutoSize = true;
-			label3.Location = new Point(3, 141);
-			label3.Name = "label3";
-			label3.Size = new Size(97, 25);
-			label3.TabIndex = 3;
-			label3.Text = "IP Address";
+			this.label3.Anchor = AnchorStyles.Left;
+			this.label3.AutoSize = true;
+			this.label3.Location = new Point(2, 83);
+			this.label3.Margin = new Padding(2, 0, 2, 0);
+			this.label3.Name = "label3";
+			this.label3.Size = new Size(62, 15);
+			this.label3.TabIndex = 9;
+			this.label3.Text = "IP Address";
 			// 
 			// label2
 			// 
-			label2.Anchor = AnchorStyles.Left;
-			label2.AutoSize = true;
-			label2.Location = new Point(3, 97);
-			label2.Name = "label2";
-			label2.Size = new Size(127, 25);
-			label2.TabIndex = 1;
-			label2.Text = "DHCP Enabled";
+			this.label2.Anchor = AnchorStyles.Left;
+			this.label2.AutoSize = true;
+			this.label2.Location = new Point(2, 57);
+			this.label2.Margin = new Padding(2, 0, 2, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new Size(84, 15);
+			this.label2.TabIndex = 9;
+			this.label2.Text = "DHCP Enabled";
 			// 
 			// chkUseDHCP
 			// 
-			chkUseDHCP.Anchor = AnchorStyles.Left;
-			chkUseDHCP.AutoSize = true;
-			chkUseDHCP.Location = new Point(166, 99);
-			chkUseDHCP.Name = "chkUseDHCP";
-			chkUseDHCP.Size = new Size(22, 21);
-			chkUseDHCP.TabIndex = 1;
-			chkUseDHCP.UseVisualStyleBackColor = true;
-			chkUseDHCP.CheckedChanged += chkUseDHCP_CheckedChanged;
+			this.chkUseDHCP.Anchor = AnchorStyles.Left;
+			this.chkUseDHCP.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkUseDHCP, "dhcp-enabled");
+			this.helpProvider1.SetHelpNavigator(this.chkUseDHCP, HelpNavigator.Topic);
+			this.chkUseDHCP.Location = new Point(116, 58);
+			this.chkUseDHCP.Margin = new Padding(2);
+			this.chkUseDHCP.Name = "chkUseDHCP";
+			this.helpProvider1.SetShowHelp(this.chkUseDHCP, true);
+			this.chkUseDHCP.Size = new Size(15, 14);
+			this.chkUseDHCP.TabIndex = 1;
+			this.chkUseDHCP.UseVisualStyleBackColor = true;
+			this.chkUseDHCP.CheckedChanged += this.chkUseDHCP_CheckedChanged;
 			// 
 			// label5
 			// 
-			label5.Anchor = AnchorStyles.Left;
-			label5.AutoSize = true;
-			label5.Location = new Point(3, 53);
-			label5.Name = "label5";
-			label5.Size = new Size(76, 25);
-			label5.TabIndex = 8;
-			label5.Text = "Adapter";
+			this.label5.Anchor = AnchorStyles.Left;
+			this.label5.AutoSize = true;
+			this.label5.Location = new Point(2, 31);
+			this.label5.Margin = new Padding(2, 0, 2, 0);
+			this.label5.Name = "label5";
+			this.label5.Size = new Size(49, 15);
+			this.label5.TabIndex = 9;
+			this.label5.Text = "Adapter";
 			// 
 			// txtAdapterName
 			// 
-			txtAdapterName.Anchor = AnchorStyles.Left;
-			txtAdapterName.Location = new Point(166, 50);
-			txtAdapterName.Name = "txtAdapterName";
-			txtAdapterName.ReadOnly = true;
-			txtAdapterName.Size = new Size(628, 31);
-			txtAdapterName.TabIndex = 9;
+			this.txtAdapterName.Anchor = AnchorStyles.Left;
+			this.helpProvider1.SetHelpKeyword(this.txtAdapterName, "adapter");
+			this.helpProvider1.SetHelpNavigator(this.txtAdapterName, HelpNavigator.Topic);
+			this.txtAdapterName.Location = new Point(116, 28);
+			this.txtAdapterName.Margin = new Padding(2);
+			this.txtAdapterName.Name = "txtAdapterName";
+			this.txtAdapterName.ReadOnly = true;
+			this.helpProvider1.SetShowHelp(this.txtAdapterName, true);
+			this.txtAdapterName.Size = new Size(441, 23);
+			this.txtAdapterName.TabIndex = 7;
 			// 
 			// tableLayoutPanel3
 			// 
-			tableLayoutPanel3.ColumnCount = 2;
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.5974655F));
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 66.4025345F));
-			tableLayoutPanel3.Controls.Add(nudPrefixLength, 0, 0);
-			tableLayoutPanel3.Controls.Add(lblIPv4SubnetMask, 1, 0);
-			tableLayoutPanel3.Dock = DockStyle.Fill;
-			tableLayoutPanel3.Location = new Point(166, 179);
-			tableLayoutPanel3.Name = "tableLayoutPanel3";
-			tableLayoutPanel3.RowCount = 1;
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-			tableLayoutPanel3.Size = new Size(631, 38);
-			tableLayoutPanel3.TabIndex = 10;
+			this.tableLayoutPanel3.ColumnCount = 2;
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.5974655F));
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 66.4025345F));
+			this.tableLayoutPanel3.Controls.Add(this.nudPrefixLength, 0, 0);
+			this.tableLayoutPanel3.Controls.Add(this.lblIPv4SubnetMask, 1, 0);
+			this.tableLayoutPanel3.Dock = DockStyle.Fill;
+			this.tableLayoutPanel3.Location = new Point(114, 104);
+			this.tableLayoutPanel3.Margin = new Padding(0);
+			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+			this.tableLayoutPanel3.RowCount = 1;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+			this.tableLayoutPanel3.Size = new Size(446, 26);
+			this.tableLayoutPanel3.TabIndex = 10;
 			// 
 			// nudPrefixLength
 			// 
-			nudPrefixLength.Anchor = AnchorStyles.Left;
-			nudPrefixLength.Location = new Point(3, 3);
-			nudPrefixLength.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
-			nudPrefixLength.Name = "nudPrefixLength";
-			nudPrefixLength.Size = new Size(180, 31);
-			nudPrefixLength.TabIndex = 3;
-			nudPrefixLength.ValueChanged += nudPrefixLength_ValueChanged;
+			this.nudPrefixLength.Dock = DockStyle.Fill;
+			this.helpProvider1.SetHelpKeyword(this.nudPrefixLength, "prefix-length");
+			this.helpProvider1.SetHelpNavigator(this.nudPrefixLength, HelpNavigator.Topic);
+			this.nudPrefixLength.Location = new Point(2, 2);
+			this.nudPrefixLength.Margin = new Padding(2);
+			this.nudPrefixLength.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+			this.nudPrefixLength.Name = "nudPrefixLength";
+			this.helpProvider1.SetShowHelp(this.nudPrefixLength, true);
+			this.nudPrefixLength.Size = new Size(145, 23);
+			this.nudPrefixLength.TabIndex = 3;
+			this.nudPrefixLength.ValueChanged += this.nudPrefixLength_ValueChanged;
 			// 
 			// lblIPv4SubnetMask
 			// 
-			lblIPv4SubnetMask.AutoSize = true;
-			lblIPv4SubnetMask.Dock = DockStyle.Fill;
-			lblIPv4SubnetMask.Location = new Point(215, 0);
-			lblIPv4SubnetMask.Name = "lblIPv4SubnetMask";
-			lblIPv4SubnetMask.Size = new Size(413, 38);
-			lblIPv4SubnetMask.TabIndex = 4;
-			lblIPv4SubnetMask.Text = "255.255.255.255";
-			lblIPv4SubnetMask.TextAlign = ContentAlignment.MiddleLeft;
-			lblIPv4SubnetMask.Visible = false;
+			this.lblIPv4SubnetMask.AutoSize = true;
+			this.lblIPv4SubnetMask.Dock = DockStyle.Fill;
+			this.lblIPv4SubnetMask.Location = new Point(151, 0);
+			this.lblIPv4SubnetMask.Margin = new Padding(2, 0, 2, 0);
+			this.lblIPv4SubnetMask.Name = "lblIPv4SubnetMask";
+			this.lblIPv4SubnetMask.Size = new Size(293, 26);
+			this.lblIPv4SubnetMask.TabIndex = 8;
+			this.lblIPv4SubnetMask.Text = "255.255.255.255";
+			this.lblIPv4SubnetMask.TextAlign = ContentAlignment.MiddleLeft;
+			this.lblIPv4SubnetMask.Visible = false;
+			// 
+			// helpProvider1
+			// 
+			this.helpProvider1.HelpNamespace = "http://127.0.0.1:8000/Help.html";
 			// 
 			// frmEditShortcut
 			// 
-			AcceptButton = cmdOK;
-			AutoScaleDimensions = new SizeF(10F, 25F);
-			AutoScaleMode = AutoScaleMode.Font;
-			CancelButton = cmdCancel;
-			ClientSize = new Size(800, 268);
-			ControlBox = false;
-			Controls.Add(tableLayoutPanel1);
-			FormBorderStyle = FormBorderStyle.FixedDialog;
-			Name = "frmEditShortcut";
-			ShowIcon = false;
-			ShowInTaskbar = false;
-			StartPosition = FormStartPosition.CenterParent;
-			Text = "Edit Shortcut";
-			Load += frmEditShortcut_Load;
-			tableLayoutPanel1.ResumeLayout(false);
-			tableLayoutPanel1.PerformLayout();
-			tableLayoutPanel2.ResumeLayout(false);
-			tableLayoutPanel3.ResumeLayout(false);
-			tableLayoutPanel3.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)nudPrefixLength).EndInit();
-			ResumeLayout(false);
+			this.AcceptButton = this.cmdOK;
+			this.AutoScaleDimensions = new SizeF(7F, 15F);
+			this.AutoScaleMode = AutoScaleMode.Font;
+			this.CancelButton = this.cmdCancel;
+			this.ClientSize = new Size(560, 161);
+			this.ControlBox = false;
+			this.Controls.Add(this.tableLayoutPanel1);
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.helpProvider1.SetHelpKeyword(this, "newedit-shortcut-window");
+			this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
+			this.Margin = new Padding(2);
+			this.Name = "frmEditShortcut";
+			this.helpProvider1.SetShowHelp(this, true);
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
+			this.StartPosition = FormStartPosition.CenterParent;
+			this.Text = "Edit Shortcut";
+			this.Load += this.frmEditShortcut_Load;
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel3.ResumeLayout(false);
+			this.tableLayoutPanel3.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)this.nudPrefixLength).EndInit();
+			this.ResumeLayout(false);
 		}
 
 		#endregion
@@ -293,5 +344,6 @@
 		internal TextBox txtAdapterName;
 		private TableLayoutPanel tableLayoutPanel3;
 		private Label lblIPv4SubnetMask;
+		private HelpProvider helpProvider1;
 	}
 }

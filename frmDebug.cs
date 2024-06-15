@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace IPAddressChanger {
 	public partial class frmDebug : Form {
+		private delegate void AddMessageCallback(string message);
 		public frmDebug() {
 			InitializeComponent();
 		}
@@ -23,11 +24,77 @@ namespace IPAddressChanger {
 		}
 
 		internal void AddMessage(string message) {
-			txtDebugLog.Text += $"{DateTime.Now.ToString("%s.%fff")}: {message}\r\n";
+			if (this.InvokeRequired) {
+				AddMessageCallback amc = new AddMessageCallback(this.AddMessage);
+				this.Invoke(amc, new object[] { message });
+
+			} else {
+				lsbDebug.Items.Add($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {message.Replace("\r\n", " ")}");
+			}
 		}
 
 		internal void AddMessage(string format, params object[] args) {
 			AddMessage(string.Format(format, args));
+		}
+
+		private void frmDebug_Load(object sender, EventArgs e) {
+
+		}
+
+		private void lsbDebug_SelectedIndexChanged(object sender, EventArgs e) {
+
+		}
+
+		private void tsbClear_Click(object sender, EventArgs e) {
+			lsbDebug.Items.Clear();
+		}
+
+		private void tsbCopy_Click(object sender, EventArgs e) {
+			StringBuilder toClipboard = new StringBuilder();
+			foreach (var item in lsbDebug.SelectedItems) {
+				toClipboard.AppendLine(item.ToString());
+			}
+			Clipboard.SetText(toClipboard.ToString());
+		}
+
+		private void lsbDebug_DoubleClick(object sender, EventArgs e) {
+			Clipboard.SetText(lsbDebug.Text + "\r\n");
+		}
+
+		private void frmDebug_KeyDown(object sender, KeyEventArgs e) {
+			if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control) {
+				tsbCopy.PerformClick();
+			} else if (e.KeyCode == Keys.A && e.Modifiers == Keys.Control) {
+				for (int i = 0; i < lsbDebug.Items.Count; i++) {
+					lsbDebug.SetSelected(i, true);
+				}
+			}
+		}
+
+		private void tsbSave_Click(object sender, EventArgs e) {
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "Log Fils|*.log|All Files|*.*";
+			sfd.AddExtension = true;
+			sfd.CheckWriteAccess = true;
+			sfd.CheckPathExists = true;
+			sfd.DefaultExt = ".log";
+			sfd.OverwritePrompt = true;
+			sfd.Title = "Save Debug Log";
+			sfd.ValidateNames = true;
+			if (sfd.ShowDialog() == DialogResult.OK) {
+				try {
+					StreamWriter sw = new StreamWriter(sfd.FileName, false);
+					for (int i = 0; i<lsbDebug.Items.Count; i++) {
+						sw.WriteLine(lsbDebug.Items[i].ToString());
+					}
+					sw.Close();
+					sw.Dispose();
+				} catch (Exception ex) {
+					string errMsg = $"Error saving debug log: {ex.Message}";
+					MessageBox.Show(errMsg, "Error Saving Log", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					AddMessage(errMsg);
+				}
+			}
 		}
 	}
 }
