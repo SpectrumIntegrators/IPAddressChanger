@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Help.html">
+    <None Update="index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Properties\Settings.settings">

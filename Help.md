@@ -20,6 +20,7 @@ The network adapter settings functionality is provided by PowerShell. If PowerSh
 1. [New/Edit Shortcut Window](#newedit-shortcut-window)
 1. [Settings Window](#settings-window)
 1. [Debug Messages Window](#debug-messages-window)
+1. [Copyright](#copyright)
 
 ## Shortcuts
 The functionality of the program revolves around Shortcuts, which are configuration presets for specific adapters. If the adapter name is changed, the shortcut should still work (it's based on its device ID). The adapter must be present for the shortcut to work, but the current adapter index does not matter because the shortcuts are based on the device ID.
@@ -183,3 +184,20 @@ Saves the entire log to a file.
 This list contains all of the debug messages. Clicking a line will select it, using `CTRL` and `Shift` will allow selecting multiple items.
 
 `CTRL+C` will copy selected items to the clipboard. `CTRL+A` will select all items.
+
+## Copyright
+	IP Address Changer - Windows GUI application to quickly change network address settings.
+    Copyright (C) 2024 Jonathan Dean (jonathand at spectrumintegrators.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
