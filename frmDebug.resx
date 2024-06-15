@@ -136,10 +136,10 @@
   <data name="tsbCopy.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACHSURBVDhP3Y/BDYAgDEXrBm7gRo7gAhwIsLqJCRe1pBCs
-        rcDVl/xgaXmxYK2dnXOnkOi9X6FFFlBZwMfGmL0p0QRIl0QS0Ap9K2kCvM8JISx4J/6NJqDPRJ4RVxoR
-        0Lnd51EkIwKW+GimguC1RJn5kYAnNT+oZyaU1BkVvMAml/I0BT0BALgAJa3carQDgHEAAAAASUVORK5C
-        YII=
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACGSURBVDhP3Y/BDYAgDEXrBm7gRo7gnRMBVjcx4aKWFIK1
+        Fbj6kh8sLS8WrLWzc+4UEr33K7TIAioL+NgYszclmgDpkkgCWqFvJU2A9zkhhAXvxL/RBPSZyDPiSiMC
+        Orf7PIpkRMASH81UELyWKDM/EvCk5gf1zISSOqOCF9jkUp6moCcAABfaJtxSek6EjQAAAABJRU5ErkJg
+        gg==
 </value>
   </data>
   <data name="tsbSave.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

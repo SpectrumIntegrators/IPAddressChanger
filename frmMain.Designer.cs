@@ -635,7 +635,7 @@
 			// 
 			// helpProvider1
 			// 
-			this.helpProvider1.HelpNamespace = "http://127.0.0.1:8000/Help.html";
+			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
 			// 
 			// frmMain
 			// 
