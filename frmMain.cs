@@ -495,10 +495,49 @@ namespace IPAddressChanger {
 			RunShortcut(ipAddressShortcuts[(int)tsmi.Tag]);
 		}
 
-		private void frmMain_Load(object sender, EventArgs e) {
+		private async void frmMain_Load(object sender, EventArgs e) {
 
 			debugForm.AddMessage("Main form loading");
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
+
+			debugForm.AddMessage("Enabling PowerShell scripts");
+			powerShell.Commands.Clear();
+			powerShell.AddCommand("Set-ExecutionPolicy");
+			powerShell.AddParameter("-Scope", "Process");
+			powerShell.AddParameter("-ExecutionPolicy", "Bypass");
+			try {
+				PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
+			} catch (Exception ex) {
+				ShowAndLogError($"Error setting execution policy:\r\n{ex.Message}\r\nThe application can not continue.", "Error Setting Policy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.Close();
+				return;
+			}
+			if (powerShell.HadErrors) {
+				ShowAndLogError($"Error setting execution policy:\r\n{GetPowerShellErrors()}\r\nThe application can not continue.", "Error Setting Policy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.Close();
+				return;
+			}
+
+
+
+			debugForm.AddMessage("Importing NetTCPIP PowerShell module");
+			powerShell.Commands.Clear();
+			powerShell.AddCommand("Import-Module");
+			powerShell.AddArgument("NetTCPIP");
+			try {
+				PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
+			} catch (Exception ex) {
+				ShowAndLogError($"Error importing NetTCPIP:\r\n{ex.Message}\r\nThe application can not continue.", "Error Importing Module", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.Close();
+				return;
+			}
+			if (powerShell.HadErrors) {
+				ShowAndLogError($"Error importing NetTCPIP:\r\n{GetPowerShellErrors()}\r\nThe application can not continue.", "Error Importing Module", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.Close();
+				return;
+			}
+
+
 			LoadSettings();
 			LoadShortcuts();
 			GetAdapters();

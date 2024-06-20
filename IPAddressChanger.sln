@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPAddressChanger", "IPAddressChanger.csproj", "{DE4007F9-9A3D-4004-A10A-F55DB91120FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPAddressChanger", "IPAddressChanger.csproj", "{DE4007F9-9A3D-4004-A10A-F55DB91120FA}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "IPAddressChangerInstaller", "IPAddressChangerInstaller\IPAddressChangerInstaller.vdproj", "{3478BB07-6650-4A54-8199-7C5D63728742}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,8 @@ Global
 		{DE4007F9-9A3D-4004-A10A-F55DB91120FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE4007F9-9A3D-4004-A10A-F55DB91120FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE4007F9-9A3D-4004-A10A-F55DB91120FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3478BB07-6650-4A54-8199-7C5D63728742}.Debug|Any CPU.ActiveCfg = Debug
+		{3478BB07-6650-4A54-8199-7C5D63728742}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
