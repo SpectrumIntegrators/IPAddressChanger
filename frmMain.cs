@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Reflection;
 using System.Runtime.InteropServices;
-
+using System.Net.NetworkInformation;
 
 
 namespace IPAddressChanger {
@@ -83,6 +83,14 @@ namespace IPAddressChanger {
 			InitializeComponent();
 		}
 
+		public void AddressChangedCallback(object? sender, EventArgs e) {
+
+			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+			foreach (NetworkInterface n in adapters) {
+				debugForm.AddMessage("NetworkAdapterChanged: {0} is {1}", n.Name, n.OperationalStatus);
+			}
+			tsbRefresh.Image = Resources.refreshwarning;
+		}
 		private string GetHRBitrate(UInt64 byteCount) {
 			string[] suf = { "B/sec", "KBit", "MBit", "GBit", "TBit", "PBit", "EBit" }; //Longs run out around EB
 			if (byteCount == 0)
@@ -163,6 +171,7 @@ namespace IPAddressChanger {
 						}
 					}
 				}
+				tsbRefresh.Image = Resources.Refresh_16x;
 			} else {
 				ShowAndLogError($"Error getting adapters:\r\n{GetPowerShellErrors()}", "Error Getting Adapters");
 				thereWereErrors = true;
@@ -499,6 +508,7 @@ namespace IPAddressChanger {
 
 			debugForm.AddMessage("Main form loading");
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
+<<<<<<< Updated upstream
 
 			debugForm.AddMessage("Enabling PowerShell scripts");
 			powerShell.Commands.Clear();
@@ -538,6 +548,10 @@ namespace IPAddressChanger {
 			}
 
 
+=======
+			NetworkChange.NetworkAddressChanged += new
+			NetworkAddressChangedEventHandler(AddressChangedCallback);
+>>>>>>> Stashed changes
 			LoadSettings();
 			LoadShortcuts();
 			GetAdapters();

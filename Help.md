@@ -1,7 +1,7 @@
 ﻿# IP Address Changer
 
 ## Overview
-This application allows changing IP address settings for network adapters from a quick list of predefined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)
+This application allows changing IP address settings for network adapters from a quick list of user-defined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)
 
 The application requires elevated privileges and may only be run by a user who has administrator acces to the system.
 

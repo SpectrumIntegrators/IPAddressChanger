@@ -9,6 +9,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <StartupObject>IPAddressChanger.Program</StartupObject>
     <ApplicationIcon>NetworkAdapter.ico</ApplicationIcon>
+    <Title>IP Address Changer</Title>
+    <RepositoryUrl>https://github.com/SpectrumIntegrators/IPAddressChanger</RepositoryUrl>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Copyright>GNU GPLv3</Copyright>
+    <Description>This application allows changing IP address settings for network adapters from a quick list of user-defined configurations.</Description>
   </PropertyGroup>
 
   <ItemGroup>
