@@ -49,6 +49,7 @@
 			this.tsbDebug = new ToolStripButton();
 			this.tsbControlPanel = new ToolStripButton();
 			this.tsbHelp = new ToolStripButton();
+			this.tsbBugReport = new ToolStripButton();
 			this.splitContainer2 = new SplitContainer();
 			this.tableLayoutPanel1 = new TableLayoutPanel();
 			this.label4 = new Label();
@@ -107,7 +108,7 @@
 			this.lsbAdapters.Location = new Point(3, 27);
 			this.lsbAdapters.Name = "lsbAdapters";
 			this.helpProvider1.SetShowHelp(this.lsbAdapters, true);
-			this.lsbAdapters.Size = new Size(315, 168);
+			this.lsbAdapters.Size = new Size(345, 168);
 			this.lsbAdapters.TabIndex = 2;
 			this.lsbAdapters.SelectedIndexChanged += this.lsbAdapters_SelectedIndexChanged;
 			this.lsbAdapters.DoubleClick += this.lsbAdapters_DoubleClick;
@@ -151,7 +152,7 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
 			this.splitContainer1.Size = new Size(800, 428);
-			this.splitContainer1.SplitterDistance = 321;
+			this.splitContainer1.SplitterDistance = 351;
 			this.splitContainer1.TabIndex = 4;
 			// 
 			// splitContainer3
@@ -169,7 +170,7 @@
 			// splitContainer3.Panel2
 			// 
 			this.splitContainer3.Panel2.Controls.Add(this.tableLayoutPanel2);
-			this.splitContainer3.Size = new Size(321, 397);
+			this.splitContainer3.Size = new Size(351, 397);
 			this.splitContainer3.SplitterDistance = 198;
 			this.splitContainer3.SplitterWidth = 2;
 			this.splitContainer3.TabIndex = 3;
@@ -187,7 +188,7 @@
 			this.tableLayoutPanel3.RowCount = 2;
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new Size(321, 198);
+			this.tableLayoutPanel3.Size = new Size(351, 198);
 			this.tableLayoutPanel3.TabIndex = 3;
 			// 
 			// label6
@@ -197,7 +198,7 @@
 			this.label6.Location = new Point(2, 9);
 			this.label6.Margin = new Padding(2, 0, 2, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new Size(317, 15);
+			this.label6.Size = new Size(347, 15);
 			this.label6.TabIndex = 3;
 			this.label6.Text = "Adapters";
 			this.label6.TextAlign = ContentAlignment.MiddleCenter;
@@ -215,7 +216,7 @@
 			this.tableLayoutPanel2.RowCount = 2;
 			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
 			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			this.tableLayoutPanel2.Size = new Size(321, 197);
+			this.tableLayoutPanel2.Size = new Size(351, 197);
 			this.tableLayoutPanel2.TabIndex = 1;
 			// 
 			// lsbShortcuts
@@ -230,7 +231,7 @@
 			this.lsbShortcuts.Margin = new Padding(2);
 			this.lsbShortcuts.Name = "lsbShortcuts";
 			this.helpProvider1.SetShowHelp(this.lsbShortcuts, true);
-			this.lsbShortcuts.Size = new Size(317, 169);
+			this.lsbShortcuts.Size = new Size(347, 169);
 			this.lsbShortcuts.TabIndex = 0;
 			this.lsbShortcuts.SelectedIndexChanged += this.lsbShortcuts_SelectedIndexChanged;
 			this.lsbShortcuts.DoubleClick += this.lsbShortcuts_DoubleClick;
@@ -242,7 +243,7 @@
 			this.label5.Location = new Point(2, 9);
 			this.label5.Margin = new Padding(2, 0, 2, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new Size(317, 15);
+			this.label5.Size = new Size(347, 15);
 			this.label5.TabIndex = 1;
 			this.label5.Text = "Shortcuts";
 			this.label5.TextAlign = ContentAlignment.MiddleCenter;
@@ -252,13 +253,13 @@
 			this.helpProvider1.SetHelpKeyword(this.tsMain, "tool-bar");
 			this.helpProvider1.SetHelpNavigator(this.tsMain, HelpNavigator.Topic);
 			this.tsMain.ImageScalingSize = new Size(24, 24);
-			this.tsMain.Items.AddRange(new ToolStripItem[] { this.tsbRefresh, this.tsbOnlineOnly, this.toolStripSeparator3, this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.toolStripSeparator4, this.tsbSettings, this.tsbDebug, this.tsbControlPanel, this.tsbHelp });
+			this.tsMain.Items.AddRange(new ToolStripItem[] { this.tsbRefresh, this.tsbOnlineOnly, this.toolStripSeparator3, this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.toolStripSeparator4, this.tsbSettings, this.tsbDebug, this.tsbControlPanel, this.tsbHelp, this.tsbBugReport });
 			this.tsMain.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.tsMain.Location = new Point(0, 0);
 			this.tsMain.Name = "tsMain";
 			this.tsMain.Padding = new Padding(0, 0, 2, 0);
 			this.helpProvider1.SetShowHelp(this.tsMain, true);
-			this.tsMain.Size = new Size(321, 31);
+			this.tsMain.Size = new Size(351, 31);
 			this.tsMain.TabIndex = 0;
 			this.tsMain.Text = "toolStrip1";
 			// 
@@ -389,6 +390,17 @@
 			this.tsbHelp.ToolTipText = "Show the help document";
 			this.tsbHelp.Click += this.tsbHelp_Click;
 			// 
+			// tsbBugReport
+			// 
+			this.tsbBugReport.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbBugReport.Image = (Image)resources.GetObject("tsbBugReport.Image");
+			this.tsbBugReport.ImageTransparentColor = Color.Magenta;
+			this.tsbBugReport.Name = "tsbBugReport";
+			this.tsbBugReport.Size = new Size(28, 28);
+			this.tsbBugReport.Text = "Bug Report";
+			this.tsbBugReport.ToolTipText = "Submit bug reports or other feedback";
+			this.tsbBugReport.Click += this.tsbBugReport_Click;
+			// 
 			// splitContainer2
 			// 
 			this.splitContainer2.Dock = DockStyle.Fill;
@@ -403,7 +415,7 @@
 			// splitContainer2.Panel2
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.lsvAddresses);
-			this.splitContainer2.Size = new Size(475, 428);
+			this.splitContainer2.Size = new Size(445, 428);
 			this.splitContainer2.SplitterDistance = 147;
 			this.splitContainer2.TabIndex = 1;
 			// 
@@ -428,7 +440,7 @@
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			this.tableLayoutPanel1.Size = new Size(475, 147);
+			this.tableLayoutPanel1.Size = new Size(445, 147);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// label4
@@ -447,12 +459,12 @@
 			this.txtDeviceID.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtDeviceID, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtDeviceID, HelpNavigator.Topic);
-			this.txtDeviceID.Location = new Point(121, 116);
+			this.txtDeviceID.Location = new Point(114, 116);
 			this.txtDeviceID.Name = "txtDeviceID";
 			this.txtDeviceID.PlaceholderText = "Select an Adapter";
 			this.txtDeviceID.ReadOnly = true;
 			this.helpProvider1.SetShowHelp(this.txtDeviceID, true);
-			this.txtDeviceID.Size = new Size(351, 22);
+			this.txtDeviceID.Size = new Size(327, 22);
 			this.txtDeviceID.TabIndex = 7;
 			// 
 			// txtDriver
@@ -461,12 +473,12 @@
 			this.txtDriver.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtDriver, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtDriver, HelpNavigator.Topic);
-			this.txtDriver.Location = new Point(121, 79);
+			this.txtDriver.Location = new Point(114, 79);
 			this.txtDriver.Name = "txtDriver";
 			this.txtDriver.PlaceholderText = "Select an Adapter";
 			this.txtDriver.ReadOnly = true;
 			this.helpProvider1.SetShowHelp(this.txtDriver, true);
-			this.txtDriver.Size = new Size(351, 22);
+			this.txtDriver.Size = new Size(327, 22);
 			this.txtDriver.TabIndex = 5;
 			// 
 			// label1
@@ -495,12 +507,12 @@
 			this.txtHardwareAddress.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtHardwareAddress, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtHardwareAddress, HelpNavigator.Topic);
-			this.txtHardwareAddress.Location = new Point(121, 7);
+			this.txtHardwareAddress.Location = new Point(114, 7);
 			this.txtHardwareAddress.Name = "txtHardwareAddress";
 			this.txtHardwareAddress.PlaceholderText = "Select an Adapter";
 			this.txtHardwareAddress.ReadOnly = true;
 			this.helpProvider1.SetShowHelp(this.txtHardwareAddress, true);
-			this.txtHardwareAddress.Size = new Size(351, 22);
+			this.txtHardwareAddress.Size = new Size(327, 22);
 			this.txtHardwareAddress.TabIndex = 2;
 			// 
 			// txtSpeed
@@ -509,12 +521,12 @@
 			this.txtSpeed.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtSpeed, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtSpeed, HelpNavigator.Topic);
-			this.txtSpeed.Location = new Point(121, 43);
+			this.txtSpeed.Location = new Point(114, 43);
 			this.txtSpeed.Name = "txtSpeed";
 			this.txtSpeed.PlaceholderText = "Select an Adapter";
 			this.txtSpeed.ReadOnly = true;
 			this.helpProvider1.SetShowHelp(this.txtSpeed, true);
-			this.txtSpeed.Size = new Size(351, 22);
+			this.txtSpeed.Size = new Size(327, 22);
 			this.txtSpeed.TabIndex = 3;
 			// 
 			// label3
@@ -539,7 +551,7 @@
 			this.lsvAddresses.Location = new Point(0, 0);
 			this.lsvAddresses.Name = "lsvAddresses";
 			this.helpProvider1.SetShowHelp(this.lsvAddresses, true);
-			this.lsvAddresses.Size = new Size(475, 277);
+			this.lsvAddresses.Size = new Size(445, 277);
 			this.lsvAddresses.TabIndex = 0;
 			this.lsvAddresses.UseCompatibleStateImageBehavior = false;
 			this.lsvAddresses.View = View.Details;
@@ -570,6 +582,7 @@
 			// 
 			// notifyIcon1
 			// 
+			this.notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
 			this.notifyIcon1.ContextMenuStrip = this.cmsNotifyIconMenu;
 			this.notifyIcon1.Icon = (Icon)resources.GetObject("notifyIcon1.Icon");
 			this.notifyIcon1.Text = "IP Address Changer";
@@ -732,5 +745,6 @@
 		private ToolStripStatusLabel tsslVersion;
 		private HelpProvider helpProvider1;
 		private ToolStripButton tsbHelp;
+		private ToolStripButton tsbBugReport;
 	}
 }

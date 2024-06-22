@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>IP Address Changer Help</title>
+<title>IP Address Changer Documentation</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -367,7 +367,7 @@ code {
   </script>
 <h1 id="ip-address-changer">IP Address Changer</h1>
 <h2 id="overview">Overview</h2>
-<p>This application allows changing IP address settings for network adapters from a quick list of predefined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)</p>
+<p>This application allows changing IP address settings for network adapters from a quick list of user-defined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)</p>
 <p>The application requires elevated privileges and may only be run by a user who has administrator acces to the system.</p>
 <p>The network adapter settings functionality is provided by PowerShell. If PowerShell is restricted or disabled, the application will not function properly.</p>
 <h2 id="table-of-contents">Table of Contents</h2>
@@ -414,6 +414,10 @@ code {
 <p>Displays the debug messages window.</p>
 <h4 id="control-panel">Control Panel</h4>
 <p>Launches the network adatpers control panel.</p>
+<h4 id="help">Help</h4>
+<p>Shows the program documentation.</p>
+<h4 id="feedback">Feedback</h4>
+<p>Launches a browser window to submit bug reports and feedback.</p>
 <h3 id="status-bar">Status Bar</h3>
 <h3 id="adapters-list">Adapters List</h3>
 <p>This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down state.</p>
@@ -485,6 +489,8 @@ code {
 <p>Chooses what action to perform when a shortcut from the <a href="#shortcuts-list">Shortcuts List</a> is double-clicked: edit the selected shortcut, or recall the selected shortcut.</p>
 <h3 id="control-panel-file">Control Panel file</h3>
 <p>Path to the network adapters control panel file. This should be able to be left to the default value (<code>ncpa.cpl</code>), but if for some reason that file is moved or not available on your system, any other file may be specified here and it will be launched when the <a href="#control-panel">Control Panel</a> button is clicked.</p>
+<h3 id="resetting-the-settings">Resetting the Settings</h3>
+<p>If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the <code>SHIFT</code> key while the program launches to reset all of the settings to their default values.</p>
 <h2 id="debug-messages-window">Debug Messages Window</h2>
 <p>This window shows additional information about the actions the program is performing and the results of those actions.</p>
 <p><img src="https://spectrumintegrators.github.io/IPAddressChanger/images/debug.png" alt="Debug Messages Window"></p>

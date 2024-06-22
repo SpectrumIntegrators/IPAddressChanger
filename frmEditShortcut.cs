@@ -56,6 +56,14 @@ namespace IPAddressChanger {
 		private void chkUseDHCP_CheckedChanged(object sender, EventArgs e) {
 			txtIPAddress.Enabled = !chkUseDHCP.Checked;
 			nudPrefixLength.Enabled = !chkUseDHCP.Checked;
+			if (!nameHasChanged) {
+				if (chkUseDHCP.Checked) {
+					txtName.Text = $"{adapterName} - DHCP";
+				} else {
+					txtName.Text = $"{adapterName} - {txtIPAddress.Text}/{nudPrefixLength.Value}";
+				}
+				nameHasChanged = false;
+			}
 		}
 
 		private void frmEditShortcut_Load(object sender, EventArgs e) {

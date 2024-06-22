@@ -37,7 +37,7 @@ namespace IPAddressChanger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("400")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1200")]
         public int WindowWidth {
             get {
                 return ((int)(this["WindowWidth"]));
@@ -61,7 +61,7 @@ namespace IPAddressChanger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public int SplitterWidth {
             get {
                 return ((int)(this["SplitterWidth"]));
@@ -109,7 +109,7 @@ namespace IPAddressChanger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        [global::System.Configuration.DefaultSettingValueAttribute("150")]
         public int SplitterHeight {
             get {
                 return ((int)(this["SplitterHeight"]));

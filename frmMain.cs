@@ -7,9 +7,8 @@ using System.Net.Sockets;
 using Newtonsoft.Json;
 using System.Text;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Net.NetworkInformation;
-
+using System.Windows;
 
 namespace IPAddressChanger {
 
@@ -81,6 +80,11 @@ namespace IPAddressChanger {
 		private FormWindowState lastWindowState = FormWindowState.Normal;
 		public frmMain() {
 			InitializeComponent();
+			if (Control.ModifierKeys == Keys.Shift) {
+				Settings.Default.Reset();
+				Settings.Default.Save();
+			}
+			LoadSettings();
 		}
 
 		public void AddressChangedCallback(object? sender, EventArgs e) {
@@ -508,7 +512,6 @@ namespace IPAddressChanger {
 
 			debugForm.AddMessage("Main form loading");
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
-<<<<<<< Updated upstream
 
 			debugForm.AddMessage("Enabling PowerShell scripts");
 			powerShell.Commands.Clear();
@@ -547,12 +550,8 @@ namespace IPAddressChanger {
 				return;
 			}
 
-
-=======
 			NetworkChange.NetworkAddressChanged += new
 			NetworkAddressChangedEventHandler(AddressChangedCallback);
->>>>>>> Stashed changes
-			LoadSettings();
 			LoadShortcuts();
 			GetAdapters();
 			notifyIcon1.Visible = true;
@@ -721,6 +720,18 @@ namespace IPAddressChanger {
 
 		private void tsbHelp_Click(object sender, EventArgs e) {
 			Help.ShowHelp(this, helpProvider1.HelpNamespace);
+		}
+
+		private void tsbBugReport_Click(object sender, EventArgs e) {
+			ProcessStartInfo psi = new ProcessStartInfo();
+			psi.UseShellExecute = true;
+			psi.Verb = "open";
+			psi.FileName = Resources.FeedbackURL;
+			try {
+				Process.Start(psi);
+			}catch (Exception ex) {
+				ShowAndLogError($"Could not launch bug report URL... how ironic.\n{ex.Message}", "Error Launching URL");
+			}
 		}
 	}
 
