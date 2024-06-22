@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Reflection;
 using System.Net.NetworkInformation;
-using System.Windows;
 
 namespace IPAddressChanger {
 
@@ -76,6 +75,8 @@ namespace IPAddressChanger {
 
 		internal frmSettings? settingsForm = null;
 		internal frmDebug debugForm = new frmDebug();
+
+		internal KeyboardHook? hook = null;
 
 		private FormWindowState lastWindowState = FormWindowState.Normal;
 		public frmMain() {
@@ -244,7 +245,7 @@ namespace IPAddressChanger {
 			return MessageBox.Show(message, title, buttons, icon);
 		}
 
-		private void LoadSettings() {
+		internal void LoadSettings() {
 			try {
 				this.Width = Settings.Default.WindowWidth;
 				this.Height = Settings.Default.WindowHeight;
@@ -270,9 +271,28 @@ namespace IPAddressChanger {
 
 					}
 				}
+				if (hook is not null) {
+					// make sure we unregistger/get rid of the old keyboard shortcut
+					debugForm.AddMessage("Disposing old hotkey");
+					hook.KeyPressed -= hook_KeyPressed;
+					hook.Dispose();
+					hook = null;
+				}
+				debugForm.AddMessage($"Adding new hotkey (modifiers: {Settings.Default.HotkeyModifier}, key: {Settings.Default.Hotkey})");
+				hook = new KeyboardHook();
+				hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+				hook.RegisterHotKey((ModifierKeys)Settings.Default.HotkeyModifier, (Keys)Settings.Default.Hotkey);
+				hook.KeyPressed += hook_KeyPressed;
 			} catch (Exception ex) {
 				ShowAndLogError($"Error loading settings: {ex.Message}", "Error Loading Settings");
 			}
+		}
+		void hook_KeyPressed(object? sender, KeyPressedEventArgs e) {
+			this.Show();
+			if (this.WindowState == FormWindowState.Minimized) {
+				this.WindowState = lastWindowState;
+			}
+			this.Activate();
 		}
 
 		private void SaveSettings() {

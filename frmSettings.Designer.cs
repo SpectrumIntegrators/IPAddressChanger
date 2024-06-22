@@ -38,11 +38,18 @@
 			this.tableLayoutPanel4 = new TableLayoutPanel();
 			this.cmdControlPanelBrowse = new Button();
 			this.txtControlPanelFile = new TextBox();
+			this.label3 = new Label();
+			this.tableLayoutPanel5 = new TableLayoutPanel();
+			this.chkCtrl = new CheckBox();
+			this.chkAlt = new CheckBox();
+			this.chkShift = new CheckBox();
+			this.cboHotkey = new ComboBox();
 			this.helpProvider1 = new HelpProvider();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
+			this.tableLayoutPanel5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -116,11 +123,14 @@
 			this.tableLayoutPanel3.Controls.Add(this.chkStartMinimized, 1, 1);
 			this.tableLayoutPanel3.Controls.Add(this.label1, 0, 3);
 			this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel4, 1, 3);
+			this.tableLayoutPanel3.Controls.Add(this.label3, 0, 4);
+			this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel5, 1, 4);
 			this.tableLayoutPanel3.Dock = DockStyle.Fill;
 			this.tableLayoutPanel3.Location = new Point(2, 2);
 			this.tableLayoutPanel3.Margin = new Padding(2);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 5;
+			this.tableLayoutPanel3.RowCount = 6;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
@@ -251,6 +261,85 @@
 			this.txtControlPanelFile.TabIndex = 1;
 			this.txtControlPanelFile.TextChanged += this.txtControlPanelFile_TextChanged;
 			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Dock = DockStyle.Fill;
+			this.label3.Location = new Point(3, 128);
+			this.label3.Name = "label3";
+			this.label3.Size = new Size(208, 32);
+			this.label3.TabIndex = 7;
+			this.label3.Text = "Hotkey";
+			this.label3.TextAlign = ContentAlignment.MiddleLeft;
+			// 
+			// tableLayoutPanel5
+			// 
+			this.tableLayoutPanel5.ColumnCount = 4;
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel5.Controls.Add(this.chkCtrl, 0, 0);
+			this.tableLayoutPanel5.Controls.Add(this.chkAlt, 1, 0);
+			this.tableLayoutPanel5.Controls.Add(this.chkShift, 2, 0);
+			this.tableLayoutPanel5.Controls.Add(this.cboHotkey, 3, 0);
+			this.tableLayoutPanel5.Dock = DockStyle.Fill;
+			this.tableLayoutPanel5.Location = new Point(214, 128);
+			this.tableLayoutPanel5.Margin = new Padding(0);
+			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
+			this.tableLayoutPanel5.RowCount = 1;
+			this.tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel5.Size = new Size(342, 32);
+			this.tableLayoutPanel5.TabIndex = 8;
+			// 
+			// chkCtrl
+			// 
+			this.chkCtrl.Anchor = AnchorStyles.Left;
+			this.chkCtrl.AutoSize = true;
+			this.chkCtrl.Location = new Point(3, 6);
+			this.chkCtrl.Name = "chkCtrl";
+			this.chkCtrl.Size = new Size(45, 19);
+			this.chkCtrl.TabIndex = 0;
+			this.chkCtrl.Text = "Ctrl";
+			this.chkCtrl.UseVisualStyleBackColor = true;
+			this.chkCtrl.CheckedChanged += this.chkCtrl_CheckedChanged;
+			// 
+			// chkAlt
+			// 
+			this.chkAlt.Anchor = AnchorStyles.Left;
+			this.chkAlt.AutoSize = true;
+			this.chkAlt.Location = new Point(73, 6);
+			this.chkAlt.Name = "chkAlt";
+			this.chkAlt.Size = new Size(41, 19);
+			this.chkAlt.TabIndex = 1;
+			this.chkAlt.Text = "Alt";
+			this.chkAlt.UseVisualStyleBackColor = true;
+			this.chkAlt.CheckedChanged += this.chkAlt_CheckedChanged;
+			// 
+			// chkShift
+			// 
+			this.chkShift.Anchor = AnchorStyles.Left;
+			this.chkShift.AutoSize = true;
+			this.chkShift.Location = new Point(143, 6);
+			this.chkShift.Name = "chkShift";
+			this.chkShift.Size = new Size(50, 19);
+			this.chkShift.TabIndex = 2;
+			this.chkShift.Text = "Shift";
+			this.chkShift.UseVisualStyleBackColor = true;
+			this.chkShift.CheckedChanged += this.chkShift_CheckedChanged;
+			// 
+			// cboHotkey
+			// 
+			this.cboHotkey.Anchor = AnchorStyles.Left;
+			this.cboHotkey.DropDownStyle = ComboBoxStyle.DropDownList;
+			this.cboHotkey.FormattingEnabled = true;
+			this.cboHotkey.Items.AddRange(new object[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" });
+			this.cboHotkey.Location = new Point(213, 4);
+			this.cboHotkey.Name = "cboHotkey";
+			this.cboHotkey.Size = new Size(121, 23);
+			this.cboHotkey.TabIndex = 3;
+			this.cboHotkey.SelectedIndexChanged += this.cboHotkey_SelectedIndexChanged;
+			// 
 			// helpProvider1
 			// 
 			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
@@ -283,6 +372,8 @@
 			this.tableLayoutPanel3.PerformLayout();
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();
+			this.tableLayoutPanel5.ResumeLayout(false);
+			this.tableLayoutPanel5.PerformLayout();
 			this.ResumeLayout(false);
 		}
 
@@ -304,5 +395,11 @@
 		private Button cmdControlPanelBrowse;
 		private TextBox txtControlPanelFile;
 		private HelpProvider helpProvider1;
+		private Label label3;
+		private TableLayoutPanel tableLayoutPanel5;
+		private CheckBox chkCtrl;
+		private CheckBox chkAlt;
+		private CheckBox chkShift;
+		private ComboBox cboHotkey;
 	}
 }

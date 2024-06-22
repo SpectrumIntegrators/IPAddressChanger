@@ -178,8 +178,11 @@ Chooses what action to perform when a shortcut from the [Shortcuts List](#shortc
 ### Control Panel file
 Path to the network adapters control panel file. This should be able to be left to the default value (`ncpa.cpl`), but if for some reason that file is moved or not available on your system, any other file may be specified here and it will be launched when the [Control Panel](#control-panel) button is clicked.
 
+### Hotkey
+Pressing the key combination set here will show and bring the window to the front. (The default is `Ctrl + Alt + Shift + F11`)
+
 ### Resetting the Settings
-If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the `SHIFT` key while the program launches to reset all of the settings to their default values.
+If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the `Shift` key while the program launches to reset all of the settings to their default values.
 
 ## Debug Messages Window
 This window shows additional information about the actions the program is performing and the results of those actions. Note: this will delete all of your shortcuts too!

@@ -20,6 +20,11 @@ namespace IPAddressChanger {
 		}
 
 		private void LoadSettings() {
+			chkCtrl.Checked = (Settings.Default.HotkeyModifier & (uint)IPAddressChanger.ModifierKeys.Control) != 0;
+			chkAlt.Checked = (Settings.Default.HotkeyModifier & (uint)IPAddressChanger.ModifierKeys.Alt) != 0;
+			chkShift.Checked = (Settings.Default.HotkeyModifier & (uint)IPAddressChanger.ModifierKeys.Shift) != 0;
+			cboHotkey.SelectedIndex = (int)(Settings.Default.Hotkey - 112);
+
 			chkHideWhenMinimized.Checked = Settings.Default.HideWhenMinimized;
 			cboShortcutDoubleClick.SelectedIndex = Settings.Default.ShortcutDoubleClick;
 			chkStartMinimized.Checked = Settings.Default.StartMinimized;
@@ -33,8 +38,15 @@ namespace IPAddressChanger {
 			Settings.Default.ShortcutDoubleClick = cboShortcutDoubleClick.SelectedIndex;
 			Settings.Default.StartMinimized = chkStartMinimized.Checked;
 			Settings.Default.AdaptersControlPanelFile = txtControlPanelFile.Text;
+			Settings.Default.Hotkey = (uint)cboHotkey.SelectedIndex + 112;
+			Settings.Default.HotkeyModifier = (
+				(uint)(chkCtrl.Checked ? IPAddressChanger.ModifierKeys.Control : 0)
+				| (uint)(chkAlt.Checked ? IPAddressChanger.ModifierKeys.Alt : 0)
+				| (uint)(chkShift.Checked ? IPAddressChanger.ModifierKeys.Shift : 0)
+			);
 			this.controlsDirty = false;
 			Settings.Default.Save();
+			this.mainForm.LoadSettings();
 		}
 
 		public frmSettings(frmMain parent) {
@@ -114,6 +126,22 @@ namespace IPAddressChanger {
 		}
 
 		private void txtControlPanelFile_TextChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void chkCtrl_CheckedChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void chkAlt_CheckedChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void chkShift_CheckedChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void cboHotkey_SelectedIndexChanged(object sender, EventArgs e) {
 			MarkDirty();
 		}
 	}

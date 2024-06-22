@@ -178,5 +178,29 @@ namespace IPAddressChanger.Properties {
                 this["AdaptersControlPanelFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7")]
+        public uint HotkeyModifier {
+            get {
+                return ((uint)(this["HotkeyModifier"]));
+            }
+            set {
+                this["HotkeyModifier"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("122")]
+        public uint Hotkey {
+            get {
+                return ((uint)(this["Hotkey"]));
+            }
+            set {
+                this["Hotkey"] = value;
+            }
+        }
     }
 }

@@ -41,5 +41,11 @@
     <Setting Name="AdaptersControlPanelFile" Type="System.String" Scope="User">
       <Value Profile="(Default)">ncpa.cpl</Value>
     </Setting>
+    <Setting Name="HotkeyModifier" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">7</Value>
+    </Setting>
+    <Setting Name="Hotkey" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">122</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
