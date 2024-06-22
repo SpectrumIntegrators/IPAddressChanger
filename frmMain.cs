@@ -78,6 +78,8 @@ namespace IPAddressChanger {
 
 		internal KeyboardHook? hook = null;
 
+		private bool isClosing = false;
+
 		private FormWindowState lastWindowState = FormWindowState.Normal;
 		public frmMain() {
 			InitializeComponent();
@@ -146,6 +148,7 @@ namespace IPAddressChanger {
 			powerShell.Commands.Clear();
 			powerShell.AddCommand("Get-NetAdapter");
 			PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
+			if (isClosing) return;
 			if (!powerShell.HadErrors) {
 				foreach (PSObject result in results) {
 					debugForm.AddMessage("Adapter details: " + PSObjectToString(result));
@@ -196,8 +199,7 @@ namespace IPAddressChanger {
 
 		private async void ShowAdapterInfo(AdapterInfo adapter) {
 			UInt32 adapterIndex = adapter.Index;
-
-
+			if (isClosing) return;
 			debugForm.AddMessage("Getting adapter details");
 			if (powerShell.InvocationStateInfo.State == PSInvocationState.Running) {
 				debugForm.AddMessage("PowerShell is still busy");
@@ -212,6 +214,7 @@ namespace IPAddressChanger {
 			powerShell.Commands.Clear();
 			powerShell.AddCommand("Get-NetIPAddress");
 			powerShell.AddParameter("-InterfaceIndex", adapterIndex);
+			if (isClosing) return;
 			PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
 			if (!powerShell.HadErrors) {
 				foreach (PSObject result in results) {
@@ -533,6 +536,7 @@ namespace IPAddressChanger {
 			debugForm.AddMessage("Main form loading");
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
 
+			if (isClosing) return;
 			debugForm.AddMessage("Enabling PowerShell scripts");
 			powerShell.Commands.Clear();
 			powerShell.AddCommand("Set-ExecutionPolicy");
@@ -552,7 +556,7 @@ namespace IPAddressChanger {
 			}
 
 
-
+			if (isClosing) return;
 			debugForm.AddMessage("Importing NetTCPIP PowerShell module");
 			powerShell.Commands.Clear();
 			powerShell.AddCommand("Import-Module");
@@ -570,6 +574,7 @@ namespace IPAddressChanger {
 				return;
 			}
 
+			if (isClosing) return;
 			NetworkChange.NetworkAddressChanged += new
 			NetworkAddressChangedEventHandler(AddressChangedCallback);
 			LoadShortcuts();
@@ -640,6 +645,7 @@ namespace IPAddressChanger {
 		}
 
 		private void frmMain_FormClosing(object sender, FormClosingEventArgs e) {
+			isClosing = true;
 			powerShell.Stop();
 			powerShell.Dispose();
 			SaveSettings();
