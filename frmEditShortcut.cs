@@ -14,7 +14,7 @@ using System.Net;
 
 namespace IPAddressChanger {
 	public partial class frmEditShortcut : Form {
-		private Regex ipv4Pattern = new Regex(@"^(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$");
+		private Regex ipv4Pattern = new(@"^(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$");
 		internal string DeviceID { get; set; } = "";
 		internal int? ShortcutIndex { get; set; } = null;
 		internal bool nameHasChanged = false;

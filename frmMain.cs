@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Reflection;
 using System.Net.NetworkInformation;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using System.Xml.Linq;
+using System;
 
 namespace IPAddressChanger {
 
@@ -18,7 +21,7 @@ namespace IPAddressChanger {
 			RunShortcut
 		}
 
-		private readonly Dictionary<int, string> PREFIX_ORIGINS = new Dictionary<int, string>() {
+		private readonly Dictionary<int, string> PREFIX_ORIGINS = new() {
 			[0] = "Other",
 			[1] = "Manual",
 			[2] = "Well Known",
@@ -26,7 +29,7 @@ namespace IPAddressChanger {
 			[4] = "Router Advertisement"
 		};
 
-		private readonly Dictionary<int, string> SUFFIX_ORIGINS = new Dictionary<int, string>() {
+		private readonly Dictionary<int, string> SUFFIX_ORIGINS = new() {
 			[0] = "Other",
 			[1] = "Manual",
 			[2] = "Well Known",
@@ -35,7 +38,7 @@ namespace IPAddressChanger {
 			[5] = "Random"
 		};
 
-		private readonly Dictionary<int, string> ADDRESS_FAMILIES = new Dictionary<int, string>() {
+		private readonly Dictionary<int, string> ADDRESS_FAMILIES = new() {
 			[-1] = "Unknown",
 			[0] = "Unspecified",
 			[1] = "Unix",
@@ -69,18 +72,14 @@ namespace IPAddressChanger {
 			[65537] = "ControllerAreaNetwork"
 		};
 
-		private List<IPAddressShortcut> ipAddressShortcuts = new List<IPAddressShortcut>();
+		private List<IPAddressShortcut> ipAddressShortcuts = []; // list of all of the stored network adapter settings shortcuts
+		private readonly PowerShell powerShell = PowerShell.Create(); // Use this PowerShell instance for all commands
+		internal frmSettings? settingsForm = null; // Don't load the settings form now, but keep a reference when we do load it
+		internal frmDebug debugForm = new(); // Create and reference a debug form to send it debug log messages
+		internal KeyboardHook? hook = null;// Global hotkey object
+		private bool isClosing = false; // true if the application is closing and no more PowerShell commands should be executed
+		private FormWindowState lastWindowState = FormWindowState.Normal; // Remember the last window state before minimizing or maximizing
 
-		private PowerShell powerShell = PowerShell.Create();
-
-		internal frmSettings? settingsForm = null;
-		internal frmDebug debugForm = new frmDebug();
-
-		internal KeyboardHook? hook = null;
-
-		private bool isClosing = false;
-
-		private FormWindowState lastWindowState = FormWindowState.Normal;
 		public frmMain() {
 			InitializeComponent();
 			if (Control.ModifierKeys == Keys.Shift) {
@@ -99,7 +98,7 @@ namespace IPAddressChanger {
 			tsbRefresh.Image = Resources.refreshwarning;
 		}
 		private string GetHRBitrate(UInt64 byteCount) {
-			string[] suf = { "B/sec", "KBit", "MBit", "GBit", "TBit", "PBit", "EBit" }; //Longs run out around EB
+			string[] suf = ["B/sec", "KBit", "MBit", "GBit", "TBit", "PBit", "EBit"]; //Longs run out around EB
 			if (byteCount == 0)
 				return "0" + suf[0];
 			long bytes = (long)Math.Abs(new decimal(byteCount));
@@ -118,7 +117,7 @@ namespace IPAddressChanger {
 		}
 
 		private string PSObjectToString(PSObject property) {
-			List<string> propvalues = new List<string>();
+			List<string> propvalues = [];
 			foreach (var p in property.Properties) {
 				propvalues.Add($"[{p.TypeNameOfValue}] {p.Name} = {p.Value ?? "null"}");
 			}
@@ -127,7 +126,7 @@ namespace IPAddressChanger {
 		}
 
 		private void ClearEverything() {
-			lsbAdapters.Items.Clear();
+			lsvAdapters.Items.Clear();
 			lsvAddresses.Items.Clear();
 			txtDriver.Text = "";
 			txtHardwareAddress.Text = "";
@@ -152,25 +151,28 @@ namespace IPAddressChanger {
 			if (!powerShell.HadErrors) {
 				foreach (PSObject result in results) {
 					debugForm.AddMessage("Adapter details: " + PSObjectToString(result));
-					if (result.BaseObject is CimInstance) {
+					if (result.BaseObject is CimInstance ci) {
 						try {
-							CimInstance ci = (CimInstance)result.BaseObject;
 							if (ci is null || ci.CimInstanceProperties is null) {
 								continue;
 							}
 							if ((UInt32)ci.CimInstanceProperties["InterfaceOperationalStatus"].Value == 1 || !tsbOnlineOnly.Checked) {
-								lsbAdapters.Items.Add(
-
-									new AdapterInfo(
+								AdapterInfo adapterInfo = new AdapterInfo(
 										(UInt32)ci.CimInstanceProperties["InterfaceIndex"].Value,
 										ci.CimInstanceProperties["Name"].Value.ToString() ?? "<unknown>",
 										ci.CimInstanceProperties["DriverDescription"].Value.ToString() ?? "<unknown>",
 										(UInt32)ci.CimInstanceProperties["InterfaceOperationalStatus"].Value == 1,
+										(UInt32)ci.CimInstanceProperties["InterfaceAdminStatus"].Value == 1,
 										ci.CimInstanceProperties["Speed"].Value is not null ? (UInt64)ci.CimInstanceProperties["Speed"].Value : 0,
 										ci.CimInstanceProperties["PermanentAddress"].Value.ToString() ?? "<unknown>",
 										ci.CimInstanceProperties["DeviceID"].Value.ToString() ?? "<unknown>"
-									)
-								); ;
+								);
+								ListViewItem li = new() {
+									ImageKey = adapterInfo.Status.ToString().ToLower(),
+									Tag = adapterInfo,
+								};
+								li.SubItems.Add(adapterInfo.ToString());
+								lsvAdapters.Items.Add(li);
 							}
 						} catch (Exception ex) {
 							ShowAndLogError($"Error getting adapter data:\r\n{ex.Message}", "Error Getting Adapter Data");
@@ -185,8 +187,8 @@ namespace IPAddressChanger {
 				thereWereErrors = true;
 			}
 
-			if (lsbAdapters.Items.Count > 0) {
-				lsbAdapters.SelectedIndex = 0;
+			if (lsvAdapters.Items.Count > 0) {
+				lsvAdapters.SelectedIndices.Add(0);
 			}
 			if (!thereWereErrors) {
 				debugForm.AddMessage("Done getting adapters");
@@ -211,33 +213,36 @@ namespace IPAddressChanger {
 			txtSpeed.Text = GetHRBitrate(adapter.Speed);
 			txtDriver.Text = adapter.Driver;
 			txtDeviceID.Text = adapter.DeviceID;
-			powerShell.Commands.Clear();
-			powerShell.AddCommand("Get-NetIPAddress");
-			powerShell.AddParameter("-InterfaceIndex", adapterIndex);
-			if (isClosing) return;
-			PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
-			if (!powerShell.HadErrors) {
-				foreach (PSObject result in results) {
-					debugForm.AddMessage("Adapter Details: " + PSObjectToString(result));
-					if (result.BaseObject is CimInstance) {
-						ListViewItem item = new ListViewItem();
-						CimInstance ci = (CimInstance)result.BaseObject;
-						if ((UInt16)ci.CimInstanceProperties["AddressFamily"].Value == (UInt16)AddressFamily.InterNetwork) {
-							item.Text = ci.CimInstanceProperties["IPv4Address"].Value.ToString();
-						} else if ((UInt16)ci.CimInstanceProperties["AddressFamily"].Value == (UInt16)AddressFamily.InterNetworkV6) {
-							item.Text = ci.CimInstanceProperties["IPv6Address"].Value.ToString();
-						} else {
-							item.Text = ci.CimInstanceProperties["Address"].Value.ToString();
+			if (adapter.IsEnabled) {
+				powerShell.Commands.Clear();
+				powerShell.AddCommand("Get-NetIPAddress");
+				powerShell.AddParameter("-InterfaceIndex", adapterIndex);
+				if (isClosing) return;
+				PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
+				if (!powerShell.HadErrors) {
+					foreach (PSObject result in results) {
+						debugForm.AddMessage("Adapter Details: " + PSObjectToString(result));
+						if (result.BaseObject is CimInstance ci) {
+							ListViewItem item = new();
+							if ((UInt16)ci.CimInstanceProperties["AddressFamily"].Value == (UInt16)AddressFamily.InterNetwork) {
+								item.Text = ci.CimInstanceProperties["IPv4Address"].Value.ToString();
+							} else if ((UInt16)ci.CimInstanceProperties["AddressFamily"].Value == (UInt16)AddressFamily.InterNetworkV6) {
+								item.Text = ci.CimInstanceProperties["IPv6Address"].Value.ToString();
+							} else {
+								item.Text = ci.CimInstanceProperties["Address"].Value.ToString();
+							}
+							item.SubItems.Add(ci.CimInstanceProperties["PrefixLength"].Value.ToString());
+							item.SubItems.Add(ADDRESS_FAMILIES[(UInt16)ci.CimInstanceProperties["AddressFamily"].Value]);
+							item.SubItems.Add(PREFIX_ORIGINS[(UInt16)ci.CimInstanceProperties["PrefixOrigin"].Value]);
+							item.SubItems.Add(SUFFIX_ORIGINS[(UInt16)ci.CimInstanceProperties["SuffixOrigin"].Value]);
+							lsvAddresses.Items.Add(item);
 						}
-						item.SubItems.Add(ci.CimInstanceProperties["PrefixLength"].Value.ToString());
-						item.SubItems.Add(ADDRESS_FAMILIES[(UInt16)ci.CimInstanceProperties["AddressFamily"].Value]);
-						item.SubItems.Add(PREFIX_ORIGINS[(UInt16)ci.CimInstanceProperties["PrefixOrigin"].Value]);
-						item.SubItems.Add(SUFFIX_ORIGINS[(UInt16)ci.CimInstanceProperties["SuffixOrigin"].Value]);
-						lsvAddresses.Items.Add(item);
 					}
+				} else {
+					ShowAndLogError($"Error getting address info for {adapter.Name}: {GetPowerShellErrors()}", "Error Getting Addresses");
 				}
 			} else {
-				ShowAndLogError($"Error getting address info for {adapter.Name}: {GetPowerShellErrors()}", "Error Getting Addresses");
+				lsvAddresses.Items.Add("Adapter disabled");
 			}
 			debugForm.AddMessage("Done getting adapter details");
 			SetStatus("Done", false);
@@ -260,15 +265,13 @@ namespace IPAddressChanger {
 				string[] columnsWidths = Settings.Default.ColumnsWidths.Split(",");
 				for (int i = 0; i < lsvAddresses.Columns.Count; i++) {
 					if (i < columnsOrder.Length) {
-						int newColOrder = 0;
-						if (int.TryParse(columnsOrder[i], out newColOrder)) {
+						if (int.TryParse(columnsOrder[i], out int newColOrder)) {
 							lsvAddresses.Columns[i].DisplayIndex = newColOrder;
 						}
 					}
 
 					if (i < columnsOrder.Length) {
-						int newColWidth = 0;
-						if (int.TryParse(columnsWidths[i], out newColWidth)) {
+						if (int.TryParse(columnsWidths[i], out int newColWidth)) {
 							lsvAddresses.Columns[i].Width = newColWidth;
 						}
 
@@ -313,8 +316,8 @@ namespace IPAddressChanger {
 				Settings.Default.SplitterWidth = splitContainer1.SplitterDistance;
 				Settings.Default.SplitterHeight = splitContainer2.SplitterDistance;
 				Settings.Default.HideOfflineAdapters = tsbOnlineOnly.Checked;
-				List<int> columnDisplayIndexes = new List<int>();
-				List<int> columnWidths = new List<int>();
+				List<int> columnDisplayIndexes = [];
+				List<int> columnWidths = [];
 				foreach (ColumnHeader col in lsvAddresses.Columns) {
 					columnDisplayIndexes.Add(col.DisplayIndex);
 					columnWidths.Add(col.Width);
@@ -340,7 +343,7 @@ namespace IPAddressChanger {
 			debugForm.AddMessage("Loading shortcuts");
 			SetStatus("Loading shortcuts");
 			try {
-				List<IPAddressShortcut> newShortcuts = JsonConvert.DeserializeObject<List<IPAddressShortcut>>(Settings.Default.Shortcuts) ?? new List<IPAddressShortcut>();
+				List<IPAddressShortcut> newShortcuts = JsonConvert.DeserializeObject<List<IPAddressShortcut>>(Settings.Default.Shortcuts) ?? [];
 				ipAddressShortcuts = newShortcuts;
 			} catch (Exception ex) {
 				ShowAndLogError($"Error loading shortcuts: {ex.Message}", "Error Loading Shortcuts");
@@ -356,16 +359,18 @@ namespace IPAddressChanger {
 			tsbDeleteShortcut.Enabled = false;
 			tsbEditShortcut.Enabled = false;
 			tsbRecallShortcut.Enabled = false;
-			if (ipAddressShortcuts.Count() == 0) {
+			if (ipAddressShortcuts.Count == 0) {
 				debugForm.AddMessage("There are no shortcuts saved");
-				ToolStripMenuItem noShortcutsMenuItem = new ToolStripMenuItem("No Shortcuts");
-				noShortcutsMenuItem.Enabled = false;
+				ToolStripMenuItem noShortcutsMenuItem = new("No Shortcuts") {
+					Enabled = false
+				};
 				tsmiShortcuts.DropDownItems.Add(noShortcutsMenuItem);
 			}
-			for (int i = 0; i < ipAddressShortcuts.Count(); i++) {
+			for (int i = 0; i < ipAddressShortcuts.Count; i++) {
 				IPAddressShortcut ips = ipAddressShortcuts[i];
-				ToolStripMenuItem tsmi = new ToolStripMenuItem(ips.Name);
-				tsmi.Tag = i;
+				ToolStripMenuItem tsmi = new(ips.Name) {
+					Tag = i
+				};
 				tsmi.Click += shortcut_Click;
 				tsmiShortcuts.DropDownItems.Add(tsmi);
 				lsbShortcuts.Items.Add($"{i + 1}: {ips.Name}");
@@ -375,8 +380,8 @@ namespace IPAddressChanger {
 		}
 
 		private AdapterInfo? GetAdapterInfoFromDeviceID(string deviceID) {
-			for (int i = 0; i < lsbAdapters.Items.Count; i++) {
-				AdapterInfo ai = (AdapterInfo)lsbAdapters.Items[i];
+			foreach (ListViewItem item in lsvAdapters.Items) {
+				AdapterInfo ai = (AdapterInfo)item.Tag;
 				if (ai.DeviceID == deviceID) {
 					return ai;
 				}
@@ -385,7 +390,7 @@ namespace IPAddressChanger {
 		}
 
 		private string GetPowerShellErrors() {
-			StringBuilder ret = new StringBuilder();
+			StringBuilder ret = new();
 			Collection<ErrorRecord> errors = powerShell.Streams.Error.ReadAll();
 			foreach (ErrorRecord error in errors) {
 				ret.AppendLine(error.ToString());
@@ -465,8 +470,9 @@ namespace IPAddressChanger {
 		}
 
 		private void EditShortcut(int? shortcutIndex = null, AdapterInfo? device = null, IPAddressShortcut? newShortcut = null) {
-			frmEditShortcut frm = new frmEditShortcut();
-			frm.ShortcutIndex = shortcutIndex;
+			frmEditShortcut frm = new() {
+				ShortcutIndex = shortcutIndex
+			};
 			if (shortcutIndex == null && device is not null) {
 				frm.Text = "New Shortcut";
 				frm.DeviceID = device.DeviceID;
@@ -501,7 +507,7 @@ namespace IPAddressChanger {
 			DialogResult result = frm.ShowDialog(this);
 			if (result == DialogResult.OK) {
 				// save/update the shortcut
-				IPAddressShortcut ipas = new IPAddressShortcut() {
+				IPAddressShortcut ipas = new() {
 					Name = frm.txtName.Text,
 					DeviceID = frm.DeviceID,
 					IPAddress = frm.txtIPAddress.Text,
@@ -595,9 +601,9 @@ namespace IPAddressChanger {
 		}
 
 		private void lsbAdapters_SelectedIndexChanged(object sender, EventArgs e) {
-			if (lsbAdapters.SelectedIndex != -1) {
+			if (lsvAdapters.SelectedItems.Count > 0) {
 				tsbNewShortcut.Enabled = true;
-				ShowAdapterInfo((AdapterInfo)lsbAdapters.Items[lsbAdapters.SelectedIndex]);
+				ShowAdapterInfo((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
 			} else {
 				txtSpeed.Text = "";
 				txtHardwareAddress.Text = "";
@@ -653,10 +659,10 @@ namespace IPAddressChanger {
 		}
 
 		private void tsbNewShortcut_Click(object sender, EventArgs e) {
-			if (lsbAdapters.SelectedIndex < 0) {
+			if (lsvAdapters.SelectedItems.Count == 0) {
 				return;
 			}
-			EditShortcut(null, ((AdapterInfo)lsbAdapters.Items[lsbAdapters.SelectedIndex]));
+			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
 		}
 
 		private void lsbShortcuts_DoubleClick(object sender, EventArgs e) {
@@ -669,9 +675,8 @@ namespace IPAddressChanger {
 
 		private void tsbEditShortcut_Click(object sender, EventArgs e) {
 			if (lsbShortcuts.SelectedIndex < 0) return;
-			int idx = -1;
 			string indexpart = ((lsbShortcuts.Items[lsbShortcuts.SelectedIndex].ToString()) ?? "").Split(":")[0];
-			if (int.TryParse(indexpart, out idx)) {
+			if (int.TryParse(indexpart, out int idx)) {
 				EditShortcut(idx - 1, null);
 			}
 		}
@@ -679,9 +684,8 @@ namespace IPAddressChanger {
 		private void tsbDeleteShortcut_Click(object sender, EventArgs e) {
 			if (lsbShortcuts.SelectedIndex < 0) return;
 			if (MessageBox.Show("Are you sure you want to delete this shortcut?", "Delete Shortcut?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
-				int idx = -1;
 				string indexpart = ((lsbShortcuts.Items[lsbShortcuts.SelectedIndex].ToString()) ?? "").Split(":")[0];
-				if (int.TryParse(indexpart, out idx)) {
+				if (int.TryParse(indexpart, out int idx)) {
 					ipAddressShortcuts.RemoveAt(idx - 1);
 					BuildShortcutsList();
 				}
@@ -700,9 +704,8 @@ namespace IPAddressChanger {
 
 		private void tsbRecallShortcut_Click(object sender, EventArgs e) {
 			if (lsbShortcuts.SelectedIndex < 0) return;
-			int idx = -1;
 			string indexpart = ((lsbShortcuts.Items[lsbShortcuts.SelectedIndex].ToString()) ?? "").Split(":")[0];
-			if (int.TryParse(indexpart, out idx)) {
+			if (int.TryParse(indexpart, out int idx)) {
 				RunShortcut(ipAddressShortcuts[idx - 1]);
 			}
 
@@ -723,8 +726,9 @@ namespace IPAddressChanger {
 
 		private void tsbControlPanel_Click(object sender, EventArgs e) {
 			try {
-				ProcessStartInfo psi = new ProcessStartInfo(Settings.Default.AdaptersControlPanelFile);
-				psi.UseShellExecute = true;
+				ProcessStartInfo psi = new(Settings.Default.AdaptersControlPanelFile) {
+					UseShellExecute = true
+				};
 				Process.Start(psi);
 			} catch (Exception ex) {
 				ShowAndLogError($"Error launching control panel: {ex.Message}", "Error Launching Control Panel");
@@ -739,7 +743,7 @@ namespace IPAddressChanger {
 			if (lsvAddresses.SelectedItems.Count == 0) {
 				return;
 			}
-			AdapterInfo ai = (AdapterInfo)lsbAdapters.Items[lsbAdapters.SelectedIndex];
+			AdapterInfo ai = (AdapterInfo)lsvAdapters.SelectedItems[0].Tag;
 			ListViewItem lvi = lsvAddresses.SelectedItems[0];
 			EditShortcut(null, ai, new IPAddressShortcut() { IPAddress = lvi.SubItems[0].Text, PrefixLength = int.Parse(lvi.SubItems[1].Text), UseDHCP = (lvi.SubItems[3].Text == "DHCP") });
 		}
@@ -749,15 +753,34 @@ namespace IPAddressChanger {
 		}
 
 		private void tsbBugReport_Click(object sender, EventArgs e) {
-			ProcessStartInfo psi = new ProcessStartInfo();
-			psi.UseShellExecute = true;
-			psi.Verb = "open";
-			psi.FileName = Resources.FeedbackURL;
+			ProcessStartInfo psi = new() {
+				UseShellExecute = true,
+				Verb = "open",
+				FileName = Resources.FeedbackURL
+			};
 			try {
 				Process.Start(psi);
-			}catch (Exception ex) {
+			} catch (Exception ex) {
 				ShowAndLogError($"Could not launch bug report URL... how ironic.\n{ex.Message}", "Error Launching URL");
 			}
+		}
+
+		private void lsvAdapters_SelectedIndexChanged(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count > 0) {
+				tsbNewShortcut.Enabled = true;
+				ShowAdapterInfo((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+			} else {
+				txtSpeed.Text = "";
+				txtHardwareAddress.Text = "";
+				txtDriver.Text = "";
+				txtDeviceID.Text = "";
+				lsvAddresses.Items.Clear();
+				tsbNewShortcut.Enabled = false;
+			}
+		}
+
+		private void lsvAdapters_DoubleClick(object sender, EventArgs e) {
+			tsbNewShortcut.PerformClick();
 		}
 	}
 
@@ -766,22 +789,38 @@ namespace IPAddressChanger {
 		internal string Name { get; set; } = "";
 		internal string Driver { get; set; } = "";
 		internal bool IsConnected { get; set; } = false;
+		internal bool IsEnabled { get; set; } = false;
 		internal UInt64 Speed { get; set; } = 0;
 		internal string HardwareAddress { get; set; } = "";
 		internal string DeviceID { get; set; } = "";
 
-		public AdapterInfo(UInt32 index = 0, string name = "", string driver = "", bool isConnected = false, UInt64 speed = 0, string hardwareAddress = "", string deviceID = "") {
+		public AdapterInfo() {
+			Index = 0;
+			Name = "";
+			Driver = "";
+			IsConnected = false;
+			IsEnabled = false;
+			Speed = 0;
+			HardwareAddress = "";
+			DeviceID = "";
+		}
+		public AdapterInfo(UInt32 index = 0, string name = "", string driver = "", bool isConnected = false, bool isEnabled = false, UInt64 speed = 0, string hardwareAddress = "", string deviceID = "") {
 			Index = index;
 			Name = name;
 			Driver = driver;
 			IsConnected = isConnected;
+			IsEnabled = isEnabled;
 			Speed = speed;
 			HardwareAddress = hardwareAddress;
 			DeviceID = deviceID;
 		}
 
+		public string Status { get {
+				return (IsEnabled ? (IsConnected ? "UP" : "down") : "disabled");
+			}
+		}
 		public override string ToString() {
-			return $"{Index}: {Name} [{(IsConnected ? "UP" : "down")}]";
+			return $"{Index}: {Name} [{Status}]";
 		}
 	}
 
