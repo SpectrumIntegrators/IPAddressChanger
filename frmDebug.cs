@@ -25,7 +25,7 @@ namespace IPAddressChanger {
 
 		internal void AddMessage(string message) {
 			if (this.InvokeRequired) {
-				AddMessageCallback amc = new AddMessageCallback(this.AddMessage);
+				AddMessageCallback amc = new(this.AddMessage);
 				this.Invoke(amc, new object[] { message });
 
 			} else {
@@ -50,7 +50,7 @@ namespace IPAddressChanger {
 		}
 
 		private void tsbCopy_Click(object sender, EventArgs e) {
-			StringBuilder toClipboard = new StringBuilder();
+			StringBuilder toClipboard = new();
 			foreach (var item in lsbDebug.SelectedItems) {
 				toClipboard.AppendLine(item.ToString());
 			}
@@ -72,7 +72,7 @@ namespace IPAddressChanger {
 		}
 
 		private void tsbSave_Click(object sender, EventArgs e) {
-			SaveFileDialog sfd = new SaveFileDialog();
+			SaveFileDialog sfd = new();
 			sfd.Filter = "Log Fils|*.log|All Files|*.*";
 			sfd.AddExtension = true;
 			sfd.CheckWriteAccess = true;
@@ -83,7 +83,7 @@ namespace IPAddressChanger {
 			sfd.ValidateNames = true;
 			if (sfd.ShowDialog() == DialogResult.OK) {
 				try {
-					StreamWriter sw = new StreamWriter(sfd.FileName, false);
+					StreamWriter sw = new(sfd.FileName, false);
 					for (int i = 0; i<lsbDebug.Items.Count; i++) {
 						sw.WriteLine(lsbDebug.Items[i].ToString());
 					}

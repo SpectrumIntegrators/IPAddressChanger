@@ -112,7 +112,7 @@ namespace IPAddressChanger {
 		}
 
 		private void cmdControlPanelBrowse_Click(object sender, EventArgs e) {
-			OpenFileDialog ofd = new OpenFileDialog();
+			OpenFileDialog ofd = new();
 			ofd.FileName = txtControlPanelFile.Text;
 			ofd.Filter = "Control Panel Files|*.cpl|Executables|*.exe|All Files|*.*";
 			ofd.Multiselect = false;
