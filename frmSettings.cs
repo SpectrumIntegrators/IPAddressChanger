@@ -1,30 +1,25 @@
 ﻿using IPAddressChanger.Properties;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Microsoft.Win32.TaskScheduler;
 
 namespace IPAddressChanger {
 	public partial class frmSettings : Form {
 		internal frmMain mainForm { get; set; }
 
 		private bool controlsDirty = false;
+
+		private TaskService taskService = new();
+		private string taskName = $"{Application.ProductName} - {Environment.UserName}";
 		private void MarkDirty() {
 			controlsDirty = true;
 			cmdOK.Enabled = true;
 		}
 
 		private void LoadSettings() {
+			chkStartAtLogon.Checked = taskService.FindTask(taskName) != null;
 			chkCtrl.Checked = (Settings.Default.HotkeyModifier & (uint)IPAddressChanger.ModifierKeys.Control) != 0;
 			chkAlt.Checked = (Settings.Default.HotkeyModifier & (uint)IPAddressChanger.ModifierKeys.Alt) != 0;
 			chkShift.Checked = (Settings.Default.HotkeyModifier & (uint)IPAddressChanger.ModifierKeys.Shift) != 0;
 			cboHotkey.SelectedIndex = (int)(Settings.Default.Hotkey - 112);
-
 			chkHideWhenMinimized.Checked = Settings.Default.HideWhenMinimized;
 			cboShortcutDoubleClick.SelectedIndex = Settings.Default.ShortcutDoubleClick;
 			chkStartMinimized.Checked = Settings.Default.StartMinimized;
@@ -34,6 +29,17 @@ namespace IPAddressChanger {
 		}
 
 		private void SaveSettings() {
+			if (chkStartAtLogon.Checked) {
+				TaskDefinition td = taskService.NewTask();
+				td.RegistrationInfo.Description = $"Start {Application.ProductName} when {Environment.UserName} logs on";
+				td.Triggers.Add(new LogonTrigger() { UserId = Environment.UserName, Delay = new TimeSpan(0, 0, 30)});
+				td.Principal.RunLevel = TaskRunLevel.Highest;
+				td.Principal.UserId = Environment.UserName;
+				td.Actions.Add(new ExecAction(Application.ExecutablePath));
+				taskService.RootFolder.RegisterTaskDefinition(taskName, td);
+			} else {
+				taskService.RootFolder.DeleteTask(taskName, false);
+			}
 			Settings.Default.HideWhenMinimized = chkHideWhenMinimized.Checked;
 			Settings.Default.ShortcutDoubleClick = cboShortcutDoubleClick.SelectedIndex;
 			Settings.Default.StartMinimized = chkStartMinimized.Checked;
@@ -142,6 +148,15 @@ namespace IPAddressChanger {
 		}
 
 		private void cboHotkey_SelectedIndexChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void lblStartAtLogon_Click(object sender, EventArgs e) {
+			chkStartAtLogon.Checked = !chkStartAtLogon.Checked;
+			MarkDirty();
+		}
+
+		private void chkStartAtLogon_CheckedChanged(object sender, EventArgs e) {
 			MarkDirty();
 		}
 	}

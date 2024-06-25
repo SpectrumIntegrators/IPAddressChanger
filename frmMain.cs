@@ -299,6 +299,8 @@ namespace IPAddressChanger {
 				this.WindowState = lastWindowState;
 			}
 			this.Activate();
+			notifyIcon1.Visible = false;
+			notifyIcon1.Visible = true;
 		}
 
 		private void SaveSettings() {
@@ -585,7 +587,6 @@ namespace IPAddressChanger {
 			NetworkAddressChangedEventHandler(AddressChangedCallback);
 			LoadShortcuts();
 			GetAdapters();
-			notifyIcon1.Visible = true;
 			if (Settings.Default.StartMinimized) {
 				this.WindowState = FormWindowState.Minimized;
 				if (Settings.Default.HideWhenMinimized) {
@@ -593,6 +594,7 @@ namespace IPAddressChanger {
 					this.Hide();
 				}
 			}
+			notifyIcon1.Visible = true;
 			debugForm.AddMessage("Main form loaded, application ready");
 		}
 

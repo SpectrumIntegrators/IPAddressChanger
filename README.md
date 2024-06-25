@@ -3,7 +3,7 @@
 ## Overview
 This application allows changing IP address settings for network adapters from a quick list of user-defined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)
 
-The application requires elevated privileges and may only be run by a user who has administrator acces to the system.
+The application requires elevated privileges and may only be run by a user who has administrator access to the system.
 
 The network adapter settings functionality is provided by PowerShell. If PowerShell is restricted or disabled, the application will not function properly.
 
@@ -49,7 +49,7 @@ Deletes the currently selected shortcut.
 Edits the currently selected shortcut.
 
 #### Recall Shortcut
-Sets the adapter configuration information for the adapter referened in the curently selecte shortcut.
+Sets the adapter configuration information for the adapter referenced in the currently selected shortcut.
 
 #### Settings
 Displays the settings window.
@@ -58,7 +58,7 @@ Displays the settings window.
 Displays the debug messages window.
 
 #### Control Panel
-Launches the network adatpers control panel.
+Launches the network adapters control panel.
 
 #### Help
 Shows the program documentation.
@@ -69,9 +69,9 @@ Launches a browser window to submit bug reports and feedback.
 ### Status Bar
 
 ### Adapters List
-This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down state.
+This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down/disabled state. (The icons correspond to up, down, or disabled; they look awful right now, someday they'll look better.)
 
-Selecting an adapter will display additional details in the [Adapter Details](#adapter-details) area and associated addresses in the [Adapter Addresses List](#adapter-addresses-list).
+Selecting an adapter will display additional details in the [Adapter Details](#adapter-details) area and associated addresses in the [Adapter Addresses List](#adapter-addresses-list). Selecting a disabled adapter will only show "Adapter disabled" in the addresses list.
 
 Double-clicking an adapter will create a new shortcut for that adapter.
 
@@ -170,7 +170,7 @@ This window allows changing the functionality of the program.
 Hides the window from the task bar when it is minimized (it can be shown again from the [Notification Area Icon Menu](#notificaion-area-icon-menu)).
 
 ### Start minimized
-Automatically minimizes the application as soon as it launches. (If Hide when minimized is checked, it will also be hidden at launch.) The [Notification Area Icon](#notification-area-icon) is still available for shortcuts and to show the application.
+Automatically minimizes the application as soon as it launches. (If Hide when minimized is checked, it will also be hidden at launch.) The [Notification Area Icon](#notification-area-icon) is still available for shortcuts and to show the application. (The window may still appear briefly before minimizing; this is annoying but I haven't gotten around to fixing it yet.)
 
 ### Double clicking a shortcut will
 Chooses what action to perform when a shortcut from the [Shortcuts List](#shortcuts-list) is double-clicked: edit the selected shortcut, or recall the selected shortcut.
@@ -181,8 +181,12 @@ Path to the network adapters control panel file. This should be able to be left 
 ### Hotkey
 Pressing the key combination set here will show and bring the window to the front. (The default is `Ctrl + Alt + Shift + F11`)
 
+### Start at log on
+When this is checked, a task scheduler event is created to launch the program when you (you, not any other user) logs on to Windows. (Actually there's a 30 second delay because if it's too fast the taskbar icon doesn't get created and I can't be bothered to fix it.) The task is created to run with the highest privileges, so you won't get the UAC dialog if the program starts at log on.
+
 ### Resetting the Settings
 If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the `Shift` key while the program launches to reset all of the settings to their default values.
+
 
 ## Debug Messages Window
 This window shows additional information about the actions the program is performing and the results of those actions. Note: this will delete all of your shortcuts too!

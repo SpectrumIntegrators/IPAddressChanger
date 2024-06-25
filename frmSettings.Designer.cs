@@ -44,6 +44,8 @@
 			this.chkAlt = new CheckBox();
 			this.chkShift = new CheckBox();
 			this.cboHotkey = new ComboBox();
+			this.lblStartAtLogon = new Label();
+			this.chkStartAtLogon = new CheckBox();
 			this.helpProvider1 = new HelpProvider();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -125,11 +127,14 @@
 			this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel4, 1, 3);
 			this.tableLayoutPanel3.Controls.Add(this.label3, 0, 4);
 			this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel5, 1, 4);
+			this.tableLayoutPanel3.Controls.Add(this.lblStartAtLogon, 0, 5);
+			this.tableLayoutPanel3.Controls.Add(this.chkStartAtLogon, 1, 5);
 			this.tableLayoutPanel3.Dock = DockStyle.Fill;
 			this.tableLayoutPanel3.Location = new Point(2, 2);
 			this.tableLayoutPanel3.Margin = new Padding(2);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 6;
+			this.tableLayoutPanel3.RowCount = 7;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
@@ -340,6 +345,29 @@
 			this.cboHotkey.TabIndex = 3;
 			this.cboHotkey.SelectedIndexChanged += this.cboHotkey_SelectedIndexChanged;
 			// 
+			// lblStartAtLogon
+			// 
+			this.lblStartAtLogon.AutoSize = true;
+			this.lblStartAtLogon.Dock = DockStyle.Fill;
+			this.lblStartAtLogon.Location = new Point(3, 160);
+			this.lblStartAtLogon.Name = "lblStartAtLogon";
+			this.lblStartAtLogon.Size = new Size(208, 32);
+			this.lblStartAtLogon.TabIndex = 9;
+			this.lblStartAtLogon.Text = "Start at log on";
+			this.lblStartAtLogon.TextAlign = ContentAlignment.MiddleLeft;
+			this.lblStartAtLogon.Click += this.lblStartAtLogon_Click;
+			// 
+			// chkStartAtLogon
+			// 
+			this.chkStartAtLogon.Anchor = AnchorStyles.Left;
+			this.chkStartAtLogon.AutoSize = true;
+			this.chkStartAtLogon.Location = new Point(217, 169);
+			this.chkStartAtLogon.Name = "chkStartAtLogon";
+			this.chkStartAtLogon.Size = new Size(15, 14);
+			this.chkStartAtLogon.TabIndex = 10;
+			this.chkStartAtLogon.UseVisualStyleBackColor = true;
+			this.chkStartAtLogon.CheckedChanged += this.chkStartAtLogon_CheckedChanged;
+			// 
 			// helpProvider1
 			// 
 			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
@@ -401,5 +429,7 @@
 		private CheckBox chkAlt;
 		private CheckBox chkShift;
 		private ComboBox cboHotkey;
+		private Label lblStartAtLogon;
+		private CheckBox chkStartAtLogon;
 	}
 }
