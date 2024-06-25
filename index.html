@@ -368,7 +368,7 @@ code {
 <h1 id="ip-address-changer">IP Address Changer</h1>
 <h2 id="overview">Overview</h2>
 <p>This application allows changing IP address settings for network adapters from a quick list of user-defined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)</p>
-<p>The application requires elevated privileges and may only be run by a user who has administrator acces to the system.</p>
+<p>The application requires elevated privileges and may only be run by a user who has administrator access to the system.</p>
 <p>The network adapter settings functionality is provided by PowerShell. If PowerShell is restricted or disabled, the application will not function properly.</p>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol>
@@ -407,21 +407,21 @@ code {
 <h4 id="edit-shortcut">Edit Shortcut</h4>
 <p>Edits the currently selected shortcut.</p>
 <h4 id="recall-shortcut">Recall Shortcut</h4>
-<p>Sets the adapter configuration information for the adapter referened in the curently selecte shortcut.</p>
+<p>Sets the adapter configuration information for the adapter referenced in the currently selected shortcut.</p>
 <h4 id="settings">Settings</h4>
 <p>Displays the settings window.</p>
 <h4 id="debug">Debug</h4>
 <p>Displays the debug messages window.</p>
 <h4 id="control-panel">Control Panel</h4>
-<p>Launches the network adatpers control panel.</p>
+<p>Launches the network adapters control panel.</p>
 <h4 id="help">Help</h4>
 <p>Shows the program documentation.</p>
 <h4 id="feedback">Feedback</h4>
 <p>Launches a browser window to submit bug reports and feedback.</p>
 <h3 id="status-bar">Status Bar</h3>
 <h3 id="adapters-list">Adapters List</h3>
-<p>This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down state.</p>
-<p>Selecting an adapter will display additional details in the <a href="#adapter-details">Adapter Details</a> area and associated addresses in the <a href="#adapter-addresses-list">Adapter Addresses List</a>.</p>
+<p>This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down/disabled state. (The icons correspond to up, down, or disabled; they look awful right now, someday they'll look better.)</p>
+<p>Selecting an adapter will display additional details in the <a href="#adapter-details">Adapter Details</a> area and associated addresses in the <a href="#adapter-addresses-list">Adapter Addresses List</a>. Selecting a disabled adapter will only show &quot;Adapter disabled&quot; in the addresses list.</p>
 <p>Double-clicking an adapter will create a new shortcut for that adapter.</p>
 <h3 id="shortcuts-list">Shortcuts List</h3>
 <p>This list shows all of the stored configuration preset shortcuts.</p>
@@ -484,13 +484,15 @@ code {
 <h3 id="hide-when-minimized">Hide when minimized</h3>
 <p>Hides the window from the task bar when it is minimized (it can be shown again from the <a href="#notificaion-area-icon-menu">Notification Area Icon Menu</a>).</p>
 <h3 id="start-minimized">Start minimized</h3>
-<p>Automatically minimizes the application as soon as it launches. (If Hide when minimized is checked, it will also be hidden at launch.) The <a href="#notification-area-icon">Notification Area Icon</a> is still available for shortcuts and to show the application.</p>
+<p>Automatically minimizes the application as soon as it launches. (If Hide when minimized is checked, it will also be hidden at launch.) The <a href="#notification-area-icon">Notification Area Icon</a> is still available for shortcuts and to show the application. (The window may still appear briefly before minimizing; this is annoying but I haven't gotten around to fixing it yet.)</p>
 <h3 id="double-clicking-a-shortcut-will">Double clicking a shortcut will</h3>
 <p>Chooses what action to perform when a shortcut from the <a href="#shortcuts-list">Shortcuts List</a> is double-clicked: edit the selected shortcut, or recall the selected shortcut.</p>
 <h3 id="control-panel-file">Control Panel file</h3>
 <p>Path to the network adapters control panel file. This should be able to be left to the default value (<code>ncpa.cpl</code>), but if for some reason that file is moved or not available on your system, any other file may be specified here and it will be launched when the <a href="#control-panel">Control Panel</a> button is clicked.</p>
 <h3 id="hotkey">Hotkey</h3>
 <p>Pressing the key combination set here will show and bring the window to the front. (The default is <code>Ctrl + Alt + Shift + F11</code>)</p>
+<h3 id="start-at-log-on">Start at log on</h3>
+<p>When this is checked, a task scheduler event is created to launch the program when you (you, not any other user) logs on to Windows. (Actually there's a 30 second delay because if it's too fast the taskbar icon doesn't get created and I can't be bothered to fix it.) The task is created to run with the highest privileges, so you won't get the UAC dialog if the program starts at log on.</p>
 <h3 id="resetting-the-settings">Resetting the Settings</h3>
 <p>If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the <code>Shift</code> key while the program launches to reset all of the settings to their default values.</p>
 <h2 id="debug-messages-window">Debug Messages Window</h2>
