@@ -83,6 +83,7 @@ namespace IPAddressChanger {
 
 		public frmMain() {
 			InitializeComponent();
+			debugForm.AddMessage($"Starting {Application.ProductName} version {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
 			if (Control.ModifierKeys == Keys.Shift) {
 				Settings.Default.Reset();
 				Settings.Default.Save();
