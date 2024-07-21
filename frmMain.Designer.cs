@@ -36,11 +36,13 @@
 			this.chAdapterName = new ColumnHeader();
 			this.netAdapterIcons = new ImageList(this.components);
 			this.tsAdapters = new ToolStrip();
+			this.tslAdapters = new ToolStripSpringLabel();
 			this.tsbRefresh = new ToolStripButton();
 			this.tsbOnlineOnly = new ToolStripButton();
 			this.tableLayoutPanel2 = new TableLayoutPanel();
 			this.lsbShortcuts = new ListBox();
 			this.tsShortcuts = new ToolStrip();
+			this.tslShortcuts = new ToolStripSpringLabel();
 			this.tsbNewShortcut = new ToolStripButton();
 			this.tsbDeleteShortcut = new ToolStripButton();
 			this.tsbEditShortcut = new ToolStripButton();
@@ -220,7 +222,7 @@
 			// tsAdapters
 			// 
 			this.tsAdapters.GripStyle = ToolStripGripStyle.Hidden;
-			this.tsAdapters.Items.AddRange(new ToolStripItem[] { this.tsbRefresh, this.tsbOnlineOnly });
+			this.tsAdapters.Items.AddRange(new ToolStripItem[] { this.tslAdapters, this.tsbRefresh, this.tsbOnlineOnly });
 			this.tsAdapters.Location = new Point(0, 0);
 			this.tsAdapters.Name = "tsAdapters";
 			this.tsAdapters.RenderMode = ToolStripRenderMode.System;
@@ -228,6 +230,14 @@
 			this.tsAdapters.Size = new Size(467, 24);
 			this.tsAdapters.TabIndex = 5;
 			this.tsAdapters.Text = "toolStrip2";
+			// 
+			// tslAdapters
+			// 
+			this.tslAdapters.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+			this.tslAdapters.Name = "tslAdapters";
+			this.tslAdapters.Size = new Size(389, 21);
+			this.tslAdapters.Text = "Adapters";
+			this.tslAdapters.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// tsbRefresh
 			// 
@@ -290,7 +300,7 @@
 			// tsShortcuts
 			// 
 			this.tsShortcuts.GripStyle = ToolStripGripStyle.Hidden;
-			this.tsShortcuts.Items.AddRange(new ToolStripItem[] { this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.tsbMoveShortcutUp, this.tsbMoveShortcutDown });
+			this.tsShortcuts.Items.AddRange(new ToolStripItem[] { this.tslShortcuts, this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.tsbMoveShortcutUp, this.tsbMoveShortcutDown });
 			this.tsShortcuts.Location = new Point(0, 0);
 			this.tsShortcuts.Name = "tsShortcuts";
 			this.tsShortcuts.RenderMode = ToolStripRenderMode.System;
@@ -298,6 +308,14 @@
 			this.tsShortcuts.Size = new Size(467, 24);
 			this.tsShortcuts.TabIndex = 1;
 			this.tsShortcuts.Text = "toolStrip1";
+			// 
+			// tslShortcuts
+			// 
+			this.tslShortcuts.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+			this.tslShortcuts.Name = "tslShortcuts";
+			this.tslShortcuts.Size = new Size(297, 21);
+			this.tslShortcuts.Text = "Shortcuts";
+			this.tslShortcuts.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// tsbNewShortcut
 			// 
@@ -786,14 +804,14 @@
 		private ToolStrip tsAdapters;
 		private ToolStripButton tsbRefresh;
 		private ToolStripButton tsbOnlineOnly;
-		private ToolStripSpringLabel tslAdapters;
 		private ToolStrip tsShortcuts;
-		private ToolStripSpringLabel tslShortcuts;
 		private ToolStripButton tsbNewShortcut;
 		private ToolStripButton tsbDeleteShortcut;
 		private ToolStripButton tsbEditShortcut;
 		private ToolStripButton tsbRecallShortcut;
 		private ToolStripButton tsbMoveShortcutUp;
 		private ToolStripButton tsbMoveShortcutDown;
+		private ToolStripSpringLabel tslShortcuts;
+		private ToolStripSpringLabel tslAdapters;
 	}
 }
