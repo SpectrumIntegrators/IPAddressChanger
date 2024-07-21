@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using System.Xml.Linq;
 using System;
+using System.Configuration;
 
 namespace IPAddressChanger {
 
@@ -254,6 +255,7 @@ namespace IPAddressChanger {
 		}
 
 		internal void LoadSettings() {
+			debugForm.AddMessage($"Current settings file location: {ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath}");
 			try {
 				this.Width = Settings.Default.WindowWidth;
 				this.Height = Settings.Default.WindowHeight;
@@ -695,9 +697,12 @@ namespace IPAddressChanger {
 		}
 
 		private void lsbShortcuts_SelectedIndexChanged(object sender, EventArgs e) {
-			tsbDeleteShortcut.Enabled = (lsbShortcuts.SelectedIndex >= 0);
-			tsbEditShortcut.Enabled = (lsbShortcuts.SelectedIndex >= 0);
-			tsbRecallShortcut.Enabled = (lsbShortcuts.SelectedIndex >= 0);
+			bool buttonsenabled = (lsbShortcuts.SelectedIndex >= 0);
+			tsbDeleteShortcut.Enabled = buttonsenabled;
+			tsbEditShortcut.Enabled = buttonsenabled;
+			tsbRecallShortcut.Enabled = buttonsenabled;
+			tsbMoveShortcutDown.Enabled = buttonsenabled;
+			tsbMoveShortcutUp.Enabled = buttonsenabled;
 		}
 
 		private void lsbAdapters_DoubleClick(object sender, EventArgs e) {
@@ -783,6 +788,36 @@ namespace IPAddressChanger {
 
 		private void lsvAdapters_DoubleClick(object sender, EventArgs e) {
 			tsbNewShortcut.PerformClick();
+		}
+
+		private void tsbMoveShortcutUp_Click(object sender, EventArgs e) {
+			int curSelectedIndex = lsbShortcuts.SelectedIndex;
+			if (curSelectedIndex == 0) {
+				// first item, can't move up
+				return;
+			}
+			// swap this item with the one above it
+			IPAddressShortcut tempshortcut = ipAddressShortcuts[curSelectedIndex - 1];
+			ipAddressShortcuts[curSelectedIndex - 1] = ipAddressShortcuts[curSelectedIndex];
+			ipAddressShortcuts[curSelectedIndex] = tempshortcut;
+			BuildShortcutsList();
+			// select this same item again
+			lsbShortcuts.SelectedIndex = curSelectedIndex - 1;
+		}
+
+		private void tsbMoveShortcutDown_Click(object sender, EventArgs e) {
+			int curSelectedIndex = lsbShortcuts.SelectedIndex;
+			if (curSelectedIndex == lsbShortcuts.Items.Count - 1) {
+				// last item, can't move down
+				return;
+			}
+			// swap this item with the one above it
+			IPAddressShortcut tempshortcut = ipAddressShortcuts[curSelectedIndex + 1];
+			ipAddressShortcuts[curSelectedIndex + 1] = ipAddressShortcuts[curSelectedIndex];
+			ipAddressShortcuts[curSelectedIndex] = tempshortcut;
+			BuildShortcutsList();
+			// select this same item again
+			lsbShortcuts.SelectedIndex = curSelectedIndex + 1;
 		}
 	}
 

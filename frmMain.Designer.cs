@@ -23,709 +23,719 @@
 		///  the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			components = new System.ComponentModel.Container();
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-			ssStatus = new StatusStrip();
-			tsslStatus = new ToolStripStatusLabel();
-			tsslVersion = new ToolStripStatusLabel();
-			splitContainer1 = new SplitContainer();
-			splitContainer3 = new SplitContainer();
-			tableLayoutPanel3 = new TableLayoutPanel();
-			label6 = new Label();
-			lsvAdapters = new ListView();
-			chAdapterStatus = new ColumnHeader();
-			chAdapterName = new ColumnHeader();
-			netAdapterIcons = new ImageList(components);
-			tableLayoutPanel2 = new TableLayoutPanel();
-			lsbShortcuts = new ListBox();
-			label5 = new Label();
-			tsMain = new ToolStrip();
-			tsbRefresh = new ToolStripButton();
-			tsbOnlineOnly = new ToolStripButton();
-			toolStripSeparator3 = new ToolStripSeparator();
-			tsbNewShortcut = new ToolStripButton();
-			tsbDeleteShortcut = new ToolStripButton();
-			tsbEditShortcut = new ToolStripButton();
-			tsbRecallShortcut = new ToolStripButton();
-			toolStripSeparator4 = new ToolStripSeparator();
-			tsbSettings = new ToolStripButton();
-			tsbDebug = new ToolStripButton();
-			tsbControlPanel = new ToolStripButton();
-			tsbHelp = new ToolStripButton();
-			tsbBugReport = new ToolStripButton();
-			splitContainer2 = new SplitContainer();
-			tableLayoutPanel1 = new TableLayoutPanel();
-			label4 = new Label();
-			txtDeviceID = new TextBox();
-			txtDriver = new TextBox();
-			label1 = new Label();
-			label2 = new Label();
-			txtHardwareAddress = new TextBox();
-			txtSpeed = new TextBox();
-			label3 = new Label();
-			lsvAddresses = new ListView();
-			chAddress = new ColumnHeader();
-			chPrefixLength = new ColumnHeader();
-			chAddressFamily = new ColumnHeader();
-			chPrefixOrigin = new ColumnHeader();
-			chSuffixOrigin = new ColumnHeader();
-			notifyIcon1 = new NotifyIcon(components);
-			cmsNotifyIconMenu = new ContextMenuStrip(components);
-			tsmiShow = new ToolStripMenuItem();
-			tsmiHide = new ToolStripMenuItem();
-			tsmiExit = new ToolStripMenuItem();
-			toolStripSeparator1 = new ToolStripSeparator();
-			tsmiControlPanel = new ToolStripMenuItem();
-			toolStripSeparator2 = new ToolStripSeparator();
-			tsmiShortcuts = new ToolStripMenuItem();
-			helpProvider1 = new HelpProvider();
-			ssStatus.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
-			splitContainer1.Panel1.SuspendLayout();
-			splitContainer1.Panel2.SuspendLayout();
-			splitContainer1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
-			splitContainer3.Panel1.SuspendLayout();
-			splitContainer3.Panel2.SuspendLayout();
-			splitContainer3.SuspendLayout();
-			tableLayoutPanel3.SuspendLayout();
-			tableLayoutPanel2.SuspendLayout();
-			tsMain.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
-			splitContainer2.Panel1.SuspendLayout();
-			splitContainer2.Panel2.SuspendLayout();
-			splitContainer2.SuspendLayout();
-			tableLayoutPanel1.SuspendLayout();
-			cmsNotifyIconMenu.SuspendLayout();
-			SuspendLayout();
+			this.ssStatus = new StatusStrip();
+			this.tsslStatus = new ToolStripStatusLabel();
+			this.tsslVersion = new ToolStripStatusLabel();
+			this.splitContainer1 = new SplitContainer();
+			this.splitContainer3 = new SplitContainer();
+			this.tableLayoutPanel3 = new TableLayoutPanel();
+			this.lsvAdapters = new ListView();
+			this.chAdapterStatus = new ColumnHeader();
+			this.chAdapterName = new ColumnHeader();
+			this.netAdapterIcons = new ImageList(this.components);
+			this.tsAdapters = new ToolStrip();
+			this.tsbRefresh = new ToolStripButton();
+			this.tsbOnlineOnly = new ToolStripButton();
+			this.tableLayoutPanel2 = new TableLayoutPanel();
+			this.lsbShortcuts = new ListBox();
+			this.tsShortcuts = new ToolStrip();
+			this.tsbNewShortcut = new ToolStripButton();
+			this.tsbDeleteShortcut = new ToolStripButton();
+			this.tsbEditShortcut = new ToolStripButton();
+			this.tsbRecallShortcut = new ToolStripButton();
+			this.tsbMoveShortcutUp = new ToolStripButton();
+			this.tsbMoveShortcutDown = new ToolStripButton();
+			this.splitContainer2 = new SplitContainer();
+			this.tableLayoutPanel1 = new TableLayoutPanel();
+			this.label4 = new Label();
+			this.txtDeviceID = new TextBox();
+			this.txtDriver = new TextBox();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.txtHardwareAddress = new TextBox();
+			this.txtSpeed = new TextBox();
+			this.label3 = new Label();
+			this.lsvAddresses = new ListView();
+			this.chAddress = new ColumnHeader();
+			this.chPrefixLength = new ColumnHeader();
+			this.chAddressFamily = new ColumnHeader();
+			this.chPrefixOrigin = new ColumnHeader();
+			this.chSuffixOrigin = new ColumnHeader();
+			this.tsMain = new ToolStrip();
+			this.tsbSettings = new ToolStripButton();
+			this.tsbDebug = new ToolStripButton();
+			this.tsbControlPanel = new ToolStripButton();
+			this.tsbHelp = new ToolStripButton();
+			this.tsbBugReport = new ToolStripButton();
+			this.notifyIcon1 = new NotifyIcon(this.components);
+			this.cmsNotifyIconMenu = new ContextMenuStrip(this.components);
+			this.tsmiShow = new ToolStripMenuItem();
+			this.tsmiHide = new ToolStripMenuItem();
+			this.tsmiExit = new ToolStripMenuItem();
+			this.toolStripSeparator1 = new ToolStripSeparator();
+			this.tsmiControlPanel = new ToolStripMenuItem();
+			this.toolStripSeparator2 = new ToolStripSeparator();
+			this.tsmiShortcuts = new ToolStripMenuItem();
+			this.helpProvider1 = new HelpProvider();
+			this.ssStatus.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)this.splitContainer3).BeginInit();
+			this.splitContainer3.Panel1.SuspendLayout();
+			this.splitContainer3.Panel2.SuspendLayout();
+			this.splitContainer3.SuspendLayout();
+			this.tableLayoutPanel3.SuspendLayout();
+			this.tsAdapters.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
+			this.tsShortcuts.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)this.splitContainer2).BeginInit();
+			this.splitContainer2.Panel1.SuspendLayout();
+			this.splitContainer2.Panel2.SuspendLayout();
+			this.splitContainer2.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
+			this.tsMain.SuspendLayout();
+			this.cmsNotifyIconMenu.SuspendLayout();
+			this.SuspendLayout();
 			// 
 			// ssStatus
 			// 
-			ssStatus.ImageScalingSize = new Size(24, 24);
-			ssStatus.Items.AddRange(new ToolStripItem[] { tsslStatus, tsslVersion });
-			ssStatus.Location = new Point(0, 721);
-			ssStatus.Name = "ssStatus";
-			ssStatus.Padding = new Padding(1, 0, 20, 0);
-			ssStatus.Size = new Size(1524, 32);
-			ssStatus.TabIndex = 3;
-			ssStatus.Text = "statusStrip1";
+			this.ssStatus.ImageScalingSize = new Size(24, 24);
+			this.ssStatus.Items.AddRange(new ToolStripItem[] { this.tsslStatus, this.tsslVersion });
+			this.ssStatus.Location = new Point(0, 430);
+			this.ssStatus.Name = "ssStatus";
+			this.ssStatus.Size = new Size(1067, 22);
+			this.ssStatus.TabIndex = 3;
+			this.ssStatus.Text = "statusStrip1";
 			// 
 			// tsslStatus
 			// 
-			tsslStatus.Name = "tsslStatus";
-			tsslStatus.Size = new Size(1433, 25);
-			tsslStatus.Spring = true;
-			tsslStatus.Text = "Status";
-			tsslStatus.TextAlign = ContentAlignment.MiddleLeft;
+			this.tsslStatus.Name = "tsslStatus";
+			this.tsslStatus.Size = new Size(1007, 17);
+			this.tsslStatus.Spring = true;
+			this.tsslStatus.Text = "Status";
+			this.tsslStatus.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// tsslVersion
 			// 
-			tsslVersion.Name = "tsslVersion";
-			tsslVersion.Size = new Size(70, 25);
-			tsslVersion.Text = "Version";
+			this.tsslVersion.Name = "tsslVersion";
+			this.tsslVersion.Size = new Size(45, 17);
+			this.tsslVersion.Text = "Version";
 			// 
 			// splitContainer1
 			// 
-			splitContainer1.Dock = DockStyle.Fill;
-			splitContainer1.Location = new Point(0, 0);
-			splitContainer1.Margin = new Padding(4, 5, 4, 5);
-			splitContainer1.Name = "splitContainer1";
+			this.splitContainer1.Dock = DockStyle.Fill;
+			this.splitContainer1.Location = new Point(0, 31);
+			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
 			// 
-			splitContainer1.Panel1.Controls.Add(splitContainer3);
-			splitContainer1.Panel1.Controls.Add(tsMain);
+			this.splitContainer1.Panel1.Controls.Add(this.splitContainer3);
 			// 
 			// splitContainer1.Panel2
 			// 
-			splitContainer1.Panel2.Controls.Add(splitContainer2);
-			splitContainer1.Size = new Size(1524, 721);
-			splitContainer1.SplitterDistance = 668;
-			splitContainer1.SplitterWidth = 6;
-			splitContainer1.TabIndex = 4;
+			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+			this.splitContainer1.Size = new Size(1067, 399);
+			this.splitContainer1.SplitterDistance = 467;
+			this.splitContainer1.TabIndex = 4;
 			// 
 			// splitContainer3
 			// 
-			splitContainer3.Dock = DockStyle.Fill;
-			splitContainer3.Location = new Point(0, 33);
-			splitContainer3.Name = "splitContainer3";
-			splitContainer3.Orientation = Orientation.Horizontal;
+			this.splitContainer3.Dock = DockStyle.Fill;
+			this.splitContainer3.Location = new Point(0, 0);
+			this.splitContainer3.Margin = new Padding(2);
+			this.splitContainer3.Name = "splitContainer3";
+			this.splitContainer3.Orientation = Orientation.Horizontal;
 			// 
 			// splitContainer3.Panel1
 			// 
-			splitContainer3.Panel1.Controls.Add(tableLayoutPanel3);
+			this.splitContainer3.Panel1.Controls.Add(this.tableLayoutPanel3);
 			// 
 			// splitContainer3.Panel2
 			// 
-			splitContainer3.Panel2.Controls.Add(tableLayoutPanel2);
-			splitContainer3.Size = new Size(668, 688);
-			splitContainer3.SplitterDistance = 342;
-			splitContainer3.SplitterWidth = 3;
-			splitContainer3.TabIndex = 3;
+			this.splitContainer3.Panel2.Controls.Add(this.tableLayoutPanel2);
+			this.splitContainer3.Size = new Size(467, 399);
+			this.splitContainer3.SplitterDistance = 198;
+			this.splitContainer3.SplitterWidth = 2;
+			this.splitContainer3.TabIndex = 3;
 			// 
 			// tableLayoutPanel3
 			// 
-			tableLayoutPanel3.ColumnCount = 1;
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			tableLayoutPanel3.Controls.Add(label6, 0, 0);
-			tableLayoutPanel3.Controls.Add(lsvAdapters, 0, 1);
-			tableLayoutPanel3.Dock = DockStyle.Fill;
-			tableLayoutPanel3.Location = new Point(0, 0);
-			tableLayoutPanel3.Name = "tableLayoutPanel3";
-			tableLayoutPanel3.RowCount = 2;
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel3.Size = new Size(668, 342);
-			tableLayoutPanel3.TabIndex = 3;
-			// 
-			// label6
-			// 
-			label6.AutoSize = true;
-			label6.Dock = DockStyle.Bottom;
-			label6.Location = new Point(3, 15);
-			label6.Name = "label6";
-			label6.Size = new Size(662, 25);
-			label6.TabIndex = 3;
-			label6.Text = "Adapters";
-			label6.TextAlign = ContentAlignment.MiddleCenter;
+			this.tableLayoutPanel3.ColumnCount = 1;
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel3.Controls.Add(this.lsvAdapters, 0, 1);
+			this.tableLayoutPanel3.Controls.Add(this.tsAdapters, 0, 0);
+			this.tableLayoutPanel3.Dock = DockStyle.Fill;
+			this.tableLayoutPanel3.Location = new Point(0, 0);
+			this.tableLayoutPanel3.Margin = new Padding(2);
+			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+			this.tableLayoutPanel3.RowCount = 2;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel3.Size = new Size(467, 198);
+			this.tableLayoutPanel3.TabIndex = 3;
 			// 
 			// lsvAdapters
 			// 
-			lsvAdapters.Columns.AddRange(new ColumnHeader[] { chAdapterStatus, chAdapterName });
-			lsvAdapters.Dock = DockStyle.Fill;
-			lsvAdapters.FullRowSelect = true;
-			lsvAdapters.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-			helpProvider1.SetHelpKeyword(lsvAdapters, "adapters-list");
-			helpProvider1.SetHelpNavigator(lsvAdapters, HelpNavigator.TopicId);
-			lsvAdapters.Location = new Point(3, 43);
-			lsvAdapters.MultiSelect = false;
-			lsvAdapters.Name = "lsvAdapters";
-			helpProvider1.SetShowHelp(lsvAdapters, true);
-			lsvAdapters.Size = new Size(662, 296);
-			lsvAdapters.SmallImageList = netAdapterIcons;
-			lsvAdapters.TabIndex = 4;
-			lsvAdapters.UseCompatibleStateImageBehavior = false;
-			lsvAdapters.View = View.Details;
-			lsvAdapters.SelectedIndexChanged += lsvAdapters_SelectedIndexChanged;
-			lsvAdapters.DoubleClick += lsvAdapters_DoubleClick;
+			this.lsvAdapters.Columns.AddRange(new ColumnHeader[] { this.chAdapterStatus, this.chAdapterName });
+			this.lsvAdapters.Dock = DockStyle.Fill;
+			this.lsvAdapters.FullRowSelect = true;
+			this.lsvAdapters.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+			this.helpProvider1.SetHelpKeyword(this.lsvAdapters, "adapters-list");
+			this.helpProvider1.SetHelpNavigator(this.lsvAdapters, HelpNavigator.TopicId);
+			this.lsvAdapters.Location = new Point(2, 26);
+			this.lsvAdapters.Margin = new Padding(2);
+			this.lsvAdapters.MultiSelect = false;
+			this.lsvAdapters.Name = "lsvAdapters";
+			this.helpProvider1.SetShowHelp(this.lsvAdapters, true);
+			this.lsvAdapters.Size = new Size(463, 170);
+			this.lsvAdapters.SmallImageList = this.netAdapterIcons;
+			this.lsvAdapters.TabIndex = 4;
+			this.lsvAdapters.UseCompatibleStateImageBehavior = false;
+			this.lsvAdapters.View = View.Details;
+			this.lsvAdapters.SelectedIndexChanged += this.lsvAdapters_SelectedIndexChanged;
+			this.lsvAdapters.DoubleClick += this.lsvAdapters_DoubleClick;
 			// 
 			// chAdapterStatus
 			// 
-			chAdapterStatus.Text = "";
+			this.chAdapterStatus.Text = "";
 			// 
 			// chAdapterName
 			// 
-			chAdapterName.Text = "";
-			chAdapterName.Width = 400;
+			this.chAdapterName.Text = "";
+			this.chAdapterName.Width = 400;
 			// 
 			// netAdapterIcons
 			// 
-			netAdapterIcons.ColorDepth = ColorDepth.Depth32Bit;
-			netAdapterIcons.ImageStream = (ImageListStreamer)resources.GetObject("netAdapterIcons.ImageStream");
-			netAdapterIcons.TransparentColor = Color.Transparent;
-			netAdapterIcons.Images.SetKeyName(0, "disabled");
-			netAdapterIcons.Images.SetKeyName(1, "up");
-			netAdapterIcons.Images.SetKeyName(2, "down");
+			this.netAdapterIcons.ColorDepth = ColorDepth.Depth32Bit;
+			this.netAdapterIcons.ImageStream = (ImageListStreamer)resources.GetObject("netAdapterIcons.ImageStream");
+			this.netAdapterIcons.TransparentColor = Color.Transparent;
+			this.netAdapterIcons.Images.SetKeyName(0, "disabled");
+			this.netAdapterIcons.Images.SetKeyName(1, "up");
+			this.netAdapterIcons.Images.SetKeyName(2, "down");
 			// 
-			// tableLayoutPanel2
+			// tsAdapters
 			// 
-			tableLayoutPanel2.ColumnCount = 1;
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			tableLayoutPanel2.Controls.Add(lsbShortcuts, 0, 1);
-			tableLayoutPanel2.Controls.Add(label5, 0, 0);
-			tableLayoutPanel2.Dock = DockStyle.Fill;
-			tableLayoutPanel2.Location = new Point(0, 0);
-			tableLayoutPanel2.Name = "tableLayoutPanel2";
-			tableLayoutPanel2.RowCount = 2;
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel2.Size = new Size(668, 343);
-			tableLayoutPanel2.TabIndex = 1;
-			// 
-			// lsbShortcuts
-			// 
-			lsbShortcuts.Dock = DockStyle.Fill;
-			lsbShortcuts.FormattingEnabled = true;
-			helpProvider1.SetHelpKeyword(lsbShortcuts, "shortcuts-list");
-			helpProvider1.SetHelpNavigator(lsbShortcuts, HelpNavigator.Topic);
-			lsbShortcuts.IntegralHeight = false;
-			lsbShortcuts.ItemHeight = 25;
-			lsbShortcuts.Location = new Point(3, 43);
-			lsbShortcuts.Name = "lsbShortcuts";
-			helpProvider1.SetShowHelp(lsbShortcuts, true);
-			lsbShortcuts.Size = new Size(662, 297);
-			lsbShortcuts.TabIndex = 0;
-			lsbShortcuts.SelectedIndexChanged += lsbShortcuts_SelectedIndexChanged;
-			lsbShortcuts.DoubleClick += lsbShortcuts_DoubleClick;
-			// 
-			// label5
-			// 
-			label5.AutoSize = true;
-			label5.Dock = DockStyle.Bottom;
-			label5.Location = new Point(3, 15);
-			label5.Name = "label5";
-			label5.Size = new Size(662, 25);
-			label5.TabIndex = 1;
-			label5.Text = "Shortcuts";
-			label5.TextAlign = ContentAlignment.MiddleCenter;
-			// 
-			// tsMain
-			// 
-			helpProvider1.SetHelpKeyword(tsMain, "tool-bar");
-			helpProvider1.SetHelpNavigator(tsMain, HelpNavigator.Topic);
-			tsMain.ImageScalingSize = new Size(24, 24);
-			tsMain.Items.AddRange(new ToolStripItem[] { tsbRefresh, tsbOnlineOnly, toolStripSeparator3, tsbNewShortcut, tsbDeleteShortcut, tsbEditShortcut, tsbRecallShortcut, toolStripSeparator4, tsbSettings, tsbDebug, tsbControlPanel, tsbHelp, tsbBugReport });
-			tsMain.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			tsMain.Location = new Point(0, 0);
-			tsMain.Name = "tsMain";
-			tsMain.Padding = new Padding(0, 0, 3, 0);
-			helpProvider1.SetShowHelp(tsMain, true);
-			tsMain.Size = new Size(668, 33);
-			tsMain.TabIndex = 0;
-			tsMain.Text = "toolStrip1";
+			this.tsAdapters.GripStyle = ToolStripGripStyle.Hidden;
+			this.tsAdapters.Items.AddRange(new ToolStripItem[] { this.tsbRefresh, this.tsbOnlineOnly });
+			this.tsAdapters.Location = new Point(0, 0);
+			this.tsAdapters.Name = "tsAdapters";
+			this.tsAdapters.RenderMode = ToolStripRenderMode.System;
+			this.helpProvider1.SetShowHelp(this.tsAdapters, true);
+			this.tsAdapters.Size = new Size(467, 24);
+			this.tsAdapters.TabIndex = 5;
+			this.tsAdapters.Text = "toolStrip2";
 			// 
 			// tsbRefresh
 			// 
-			tsbRefresh.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbRefresh.Image = (Image)resources.GetObject("tsbRefresh.Image");
-			tsbRefresh.ImageTransparentColor = Color.Magenta;
-			tsbRefresh.Name = "tsbRefresh";
-			tsbRefresh.Size = new Size(34, 28);
-			tsbRefresh.Text = "Refresh";
-			tsbRefresh.ToolTipText = "Refresh the list of adapters";
-			tsbRefresh.Click += tsbRefresh_Click;
+			this.tsbRefresh.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbRefresh.Image = (Image)resources.GetObject("tsbRefresh.Image");
+			this.tsbRefresh.ImageTransparentColor = Color.Magenta;
+			this.tsbRefresh.Name = "tsbRefresh";
+			this.tsbRefresh.Size = new Size(23, 21);
+			this.tsbRefresh.Text = "Refresh";
+			this.tsbRefresh.ToolTipText = "Refresh the list of adapters";
+			this.tsbRefresh.Click += this.tsbRefresh_Click;
 			// 
 			// tsbOnlineOnly
 			// 
-			tsbOnlineOnly.Checked = true;
-			tsbOnlineOnly.CheckOnClick = true;
-			tsbOnlineOnly.CheckState = CheckState.Checked;
-			tsbOnlineOnly.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbOnlineOnly.Image = (Image)resources.GetObject("tsbOnlineOnly.Image");
-			tsbOnlineOnly.ImageTransparentColor = Color.Magenta;
-			tsbOnlineOnly.Name = "tsbOnlineOnly";
-			tsbOnlineOnly.Size = new Size(34, 28);
-			tsbOnlineOnly.Text = "Hide Offline";
-			tsbOnlineOnly.ToolTipText = "Hide offline adapters";
-			tsbOnlineOnly.Click += tsbOnlineOnly_Click;
+			this.tsbOnlineOnly.Checked = true;
+			this.tsbOnlineOnly.CheckOnClick = true;
+			this.tsbOnlineOnly.CheckState = CheckState.Checked;
+			this.tsbOnlineOnly.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbOnlineOnly.Image = (Image)resources.GetObject("tsbOnlineOnly.Image");
+			this.tsbOnlineOnly.ImageTransparentColor = Color.Magenta;
+			this.tsbOnlineOnly.Name = "tsbOnlineOnly";
+			this.tsbOnlineOnly.Size = new Size(23, 21);
+			this.tsbOnlineOnly.Text = "Hide Offline";
+			this.tsbOnlineOnly.ToolTipText = "Hide offline adapters";
+			this.tsbOnlineOnly.Click += this.tsbOnlineOnly_Click;
 			// 
-			// toolStripSeparator3
+			// tableLayoutPanel2
 			// 
-			toolStripSeparator3.Name = "toolStripSeparator3";
-			toolStripSeparator3.Size = new Size(6, 33);
+			this.tableLayoutPanel2.ColumnCount = 1;
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel2.Controls.Add(this.lsbShortcuts, 0, 1);
+			this.tableLayoutPanel2.Controls.Add(this.tsShortcuts, 0, 0);
+			this.tableLayoutPanel2.Dock = DockStyle.Fill;
+			this.tableLayoutPanel2.Location = new Point(0, 0);
+			this.tableLayoutPanel2.Margin = new Padding(2);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 2;
+			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutPanel2.Size = new Size(467, 199);
+			this.tableLayoutPanel2.TabIndex = 1;
+			// 
+			// lsbShortcuts
+			// 
+			this.lsbShortcuts.Dock = DockStyle.Fill;
+			this.lsbShortcuts.FormattingEnabled = true;
+			this.helpProvider1.SetHelpKeyword(this.lsbShortcuts, "shortcuts-list");
+			this.helpProvider1.SetHelpNavigator(this.lsbShortcuts, HelpNavigator.Topic);
+			this.lsbShortcuts.IntegralHeight = false;
+			this.lsbShortcuts.ItemHeight = 15;
+			this.lsbShortcuts.Location = new Point(2, 26);
+			this.lsbShortcuts.Margin = new Padding(2);
+			this.lsbShortcuts.Name = "lsbShortcuts";
+			this.helpProvider1.SetShowHelp(this.lsbShortcuts, true);
+			this.lsbShortcuts.Size = new Size(463, 171);
+			this.lsbShortcuts.TabIndex = 0;
+			this.lsbShortcuts.SelectedIndexChanged += this.lsbShortcuts_SelectedIndexChanged;
+			this.lsbShortcuts.DoubleClick += this.lsbShortcuts_DoubleClick;
+			// 
+			// tsShortcuts
+			// 
+			this.tsShortcuts.GripStyle = ToolStripGripStyle.Hidden;
+			this.tsShortcuts.Items.AddRange(new ToolStripItem[] { this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.tsbMoveShortcutUp, this.tsbMoveShortcutDown });
+			this.tsShortcuts.Location = new Point(0, 0);
+			this.tsShortcuts.Name = "tsShortcuts";
+			this.tsShortcuts.RenderMode = ToolStripRenderMode.System;
+			this.helpProvider1.SetShowHelp(this.tsShortcuts, true);
+			this.tsShortcuts.Size = new Size(467, 24);
+			this.tsShortcuts.TabIndex = 1;
+			this.tsShortcuts.Text = "toolStrip1";
 			// 
 			// tsbNewShortcut
 			// 
-			tsbNewShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbNewShortcut.Enabled = false;
-			tsbNewShortcut.Image = (Image)resources.GetObject("tsbNewShortcut.Image");
-			tsbNewShortcut.ImageTransparentColor = Color.Magenta;
-			tsbNewShortcut.Name = "tsbNewShortcut";
-			tsbNewShortcut.Size = new Size(34, 28);
-			tsbNewShortcut.Text = "New Shortcut";
-			tsbNewShortcut.ToolTipText = "Create a new configuration shortcut for this adapter";
-			tsbNewShortcut.Click += tsbNewShortcut_Click;
+			this.tsbNewShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbNewShortcut.Enabled = false;
+			this.tsbNewShortcut.Image = (Image)resources.GetObject("tsbNewShortcut.Image");
+			this.tsbNewShortcut.ImageTransparentColor = Color.Magenta;
+			this.tsbNewShortcut.Name = "tsbNewShortcut";
+			this.tsbNewShortcut.Size = new Size(23, 21);
+			this.tsbNewShortcut.Text = "New Shortcut";
+			this.tsbNewShortcut.ToolTipText = "Create a new configuration shortcut for this adapter";
+			this.tsbNewShortcut.Click += this.tsbNewShortcut_Click;
 			// 
 			// tsbDeleteShortcut
 			// 
-			tsbDeleteShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbDeleteShortcut.Enabled = false;
-			tsbDeleteShortcut.Image = (Image)resources.GetObject("tsbDeleteShortcut.Image");
-			tsbDeleteShortcut.ImageTransparentColor = Color.Magenta;
-			tsbDeleteShortcut.Name = "tsbDeleteShortcut";
-			tsbDeleteShortcut.Size = new Size(34, 28);
-			tsbDeleteShortcut.Text = "Delete Shortcut";
-			tsbDeleteShortcut.ToolTipText = "Delete the selected shortcut";
-			tsbDeleteShortcut.Click += tsbDeleteShortcut_Click;
+			this.tsbDeleteShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbDeleteShortcut.Enabled = false;
+			this.tsbDeleteShortcut.Image = (Image)resources.GetObject("tsbDeleteShortcut.Image");
+			this.tsbDeleteShortcut.ImageTransparentColor = Color.Magenta;
+			this.tsbDeleteShortcut.Name = "tsbDeleteShortcut";
+			this.tsbDeleteShortcut.Size = new Size(23, 21);
+			this.tsbDeleteShortcut.Text = "Delete Shortcut";
+			this.tsbDeleteShortcut.ToolTipText = "Delete the selected shortcut";
+			this.tsbDeleteShortcut.Click += this.tsbDeleteShortcut_Click;
 			// 
 			// tsbEditShortcut
 			// 
-			tsbEditShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbEditShortcut.Enabled = false;
-			tsbEditShortcut.Image = (Image)resources.GetObject("tsbEditShortcut.Image");
-			tsbEditShortcut.ImageTransparentColor = Color.Magenta;
-			tsbEditShortcut.Name = "tsbEditShortcut";
-			tsbEditShortcut.Size = new Size(34, 28);
-			tsbEditShortcut.Text = "Edit Shortcut";
-			tsbEditShortcut.ToolTipText = "Edit selected shortcut";
-			tsbEditShortcut.Click += tsbEditShortcut_Click;
+			this.tsbEditShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbEditShortcut.Enabled = false;
+			this.tsbEditShortcut.Image = (Image)resources.GetObject("tsbEditShortcut.Image");
+			this.tsbEditShortcut.ImageTransparentColor = Color.Magenta;
+			this.tsbEditShortcut.Name = "tsbEditShortcut";
+			this.tsbEditShortcut.Size = new Size(23, 21);
+			this.tsbEditShortcut.Text = "Edit Shortcut";
+			this.tsbEditShortcut.ToolTipText = "Edit selected shortcut";
+			this.tsbEditShortcut.Click += this.tsbEditShortcut_Click;
 			// 
 			// tsbRecallShortcut
 			// 
-			tsbRecallShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbRecallShortcut.Enabled = false;
-			tsbRecallShortcut.Image = (Image)resources.GetObject("tsbRecallShortcut.Image");
-			tsbRecallShortcut.ImageTransparentColor = Color.Magenta;
-			tsbRecallShortcut.Name = "tsbRecallShortcut";
-			tsbRecallShortcut.Size = new Size(34, 28);
-			tsbRecallShortcut.Text = "Recall Shortcut";
-			tsbRecallShortcut.ToolTipText = "Recalls the selected shortcut";
-			tsbRecallShortcut.Click += tsbRecallShortcut_Click;
+			this.tsbRecallShortcut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbRecallShortcut.Enabled = false;
+			this.tsbRecallShortcut.Image = (Image)resources.GetObject("tsbRecallShortcut.Image");
+			this.tsbRecallShortcut.ImageTransparentColor = Color.Magenta;
+			this.tsbRecallShortcut.Name = "tsbRecallShortcut";
+			this.tsbRecallShortcut.Size = new Size(23, 21);
+			this.tsbRecallShortcut.Text = "Recall Shortcut";
+			this.tsbRecallShortcut.ToolTipText = "Recalls the selected shortcut";
+			this.tsbRecallShortcut.Click += this.tsbRecallShortcut_Click;
 			// 
-			// toolStripSeparator4
+			// tsbMoveShortcutUp
 			// 
-			toolStripSeparator4.Name = "toolStripSeparator4";
-			toolStripSeparator4.Size = new Size(6, 33);
+			this.tsbMoveShortcutUp.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbMoveShortcutUp.Enabled = false;
+			this.tsbMoveShortcutUp.Image = (Image)resources.GetObject("tsbMoveShortcutUp.Image");
+			this.tsbMoveShortcutUp.ImageTransparentColor = Color.Magenta;
+			this.tsbMoveShortcutUp.Name = "tsbMoveShortcutUp";
+			this.tsbMoveShortcutUp.Size = new Size(23, 21);
+			this.tsbMoveShortcutUp.Text = "toolStripButton1";
+			this.tsbMoveShortcutUp.Click += this.tsbMoveShortcutUp_Click;
 			// 
-			// tsbSettings
+			// tsbMoveShortcutDown
 			// 
-			tsbSettings.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbSettings.Image = (Image)resources.GetObject("tsbSettings.Image");
-			tsbSettings.ImageTransparentColor = Color.Magenta;
-			tsbSettings.Name = "tsbSettings";
-			tsbSettings.Size = new Size(34, 28);
-			tsbSettings.Text = "Settings";
-			tsbSettings.ToolTipText = "Open the application settings dialog";
-			tsbSettings.Click += tsbSettings_Click;
-			// 
-			// tsbDebug
-			// 
-			tsbDebug.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbDebug.Image = (Image)resources.GetObject("tsbDebug.Image");
-			tsbDebug.ImageTransparentColor = Color.Magenta;
-			tsbDebug.Name = "tsbDebug";
-			tsbDebug.Size = new Size(34, 28);
-			tsbDebug.Text = "Debug";
-			tsbDebug.ToolTipText = "Show the debug window";
-			tsbDebug.Click += tsbDebug_Click;
-			// 
-			// tsbControlPanel
-			// 
-			tsbControlPanel.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbControlPanel.Image = (Image)resources.GetObject("tsbControlPanel.Image");
-			tsbControlPanel.ImageTransparentColor = Color.Magenta;
-			tsbControlPanel.Name = "tsbControlPanel";
-			tsbControlPanel.Size = new Size(34, 28);
-			tsbControlPanel.Text = "Control Panel";
-			tsbControlPanel.ToolTipText = "Launch network adapters control panel";
-			tsbControlPanel.Click += tsbControlPanel_Click;
-			// 
-			// tsbHelp
-			// 
-			tsbHelp.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbHelp.Image = (Image)resources.GetObject("tsbHelp.Image");
-			tsbHelp.ImageTransparentColor = Color.Magenta;
-			tsbHelp.Name = "tsbHelp";
-			tsbHelp.Size = new Size(34, 28);
-			tsbHelp.Text = "Help";
-			tsbHelp.ToolTipText = "Show the help document";
-			tsbHelp.Click += tsbHelp_Click;
-			// 
-			// tsbBugReport
-			// 
-			tsbBugReport.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbBugReport.Image = (Image)resources.GetObject("tsbBugReport.Image");
-			tsbBugReport.ImageTransparentColor = Color.Magenta;
-			tsbBugReport.Name = "tsbBugReport";
-			tsbBugReport.Size = new Size(34, 28);
-			tsbBugReport.Text = "Bug Report";
-			tsbBugReport.ToolTipText = "Submit bug reports or other feedback";
-			tsbBugReport.Click += tsbBugReport_Click;
+			this.tsbMoveShortcutDown.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbMoveShortcutDown.Enabled = false;
+			this.tsbMoveShortcutDown.Image = (Image)resources.GetObject("tsbMoveShortcutDown.Image");
+			this.tsbMoveShortcutDown.ImageTransparentColor = Color.Magenta;
+			this.tsbMoveShortcutDown.Name = "tsbMoveShortcutDown";
+			this.tsbMoveShortcutDown.Size = new Size(23, 21);
+			this.tsbMoveShortcutDown.Text = "toolStripButton2";
+			this.tsbMoveShortcutDown.Click += this.tsbMoveShortcutDown_Click;
 			// 
 			// splitContainer2
 			// 
-			splitContainer2.Dock = DockStyle.Fill;
-			splitContainer2.Location = new Point(0, 0);
-			splitContainer2.Margin = new Padding(4, 5, 4, 5);
-			splitContainer2.Name = "splitContainer2";
-			splitContainer2.Orientation = Orientation.Horizontal;
+			this.splitContainer2.Dock = DockStyle.Fill;
+			this.splitContainer2.Location = new Point(0, 0);
+			this.splitContainer2.Name = "splitContainer2";
+			this.splitContainer2.Orientation = Orientation.Horizontal;
 			// 
 			// splitContainer2.Panel1
 			// 
-			splitContainer2.Panel1.Controls.Add(tableLayoutPanel1);
+			this.splitContainer2.Panel1.Controls.Add(this.tableLayoutPanel1);
 			// 
 			// splitContainer2.Panel2
 			// 
-			splitContainer2.Panel2.Controls.Add(lsvAddresses);
-			splitContainer2.Size = new Size(850, 721);
-			splitContainer2.SplitterDistance = 200;
-			splitContainer2.SplitterWidth = 7;
-			splitContainer2.TabIndex = 1;
+			this.splitContainer2.Panel2.Controls.Add(this.lsvAddresses);
+			this.splitContainer2.Size = new Size(596, 399);
+			this.splitContainer2.SplitterDistance = 110;
+			this.splitContainer2.TabIndex = 1;
 			// 
 			// tableLayoutPanel1
 			// 
-			tableLayoutPanel1.ColumnCount = 2;
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25.05176F));
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 74.94824F));
-			tableLayoutPanel1.Controls.Add(label4, 0, 3);
-			tableLayoutPanel1.Controls.Add(txtDeviceID, 1, 3);
-			tableLayoutPanel1.Controls.Add(txtDriver, 1, 2);
-			tableLayoutPanel1.Controls.Add(label1, 0, 0);
-			tableLayoutPanel1.Controls.Add(label2, 0, 1);
-			tableLayoutPanel1.Controls.Add(txtHardwareAddress, 1, 0);
-			tableLayoutPanel1.Controls.Add(txtSpeed, 1, 1);
-			tableLayoutPanel1.Controls.Add(label3, 0, 2);
-			tableLayoutPanel1.Dock = DockStyle.Fill;
-			tableLayoutPanel1.Location = new Point(0, 0);
-			tableLayoutPanel1.Margin = new Padding(4, 5, 4, 5);
-			tableLayoutPanel1.Name = "tableLayoutPanel1";
-			tableLayoutPanel1.RowCount = 4;
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			tableLayoutPanel1.Size = new Size(850, 200);
-			tableLayoutPanel1.TabIndex = 0;
+			this.tableLayoutPanel1.ColumnCount = 2;
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25.05176F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 74.94824F));
+			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(this.txtDeviceID, 1, 3);
+			this.tableLayoutPanel1.Controls.Add(this.txtDriver, 1, 2);
+			this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.txtHardwareAddress, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.txtSpeed, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+			this.tableLayoutPanel1.Dock = DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new Point(0, 0);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 4;
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+			this.tableLayoutPanel1.Size = new Size(596, 110);
+			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// label4
 			// 
-			label4.Anchor = AnchorStyles.Left;
-			label4.AutoSize = true;
-			label4.Location = new Point(4, 162);
-			label4.Margin = new Padding(4, 0, 4, 0);
-			label4.Name = "label4";
-			label4.Size = new Size(87, 25);
-			label4.TabIndex = 8;
-			label4.Text = "Device ID";
+			this.label4.Anchor = AnchorStyles.Left;
+			this.label4.AutoSize = true;
+			this.label4.Location = new Point(3, 88);
+			this.label4.Name = "label4";
+			this.label4.Size = new Size(56, 15);
+			this.label4.TabIndex = 8;
+			this.label4.Text = "Device ID";
 			// 
 			// txtDeviceID
 			// 
-			txtDeviceID.Anchor = AnchorStyles.Left;
-			txtDeviceID.Font = new Font("Consolas", 9F);
-			helpProvider1.SetHelpKeyword(txtDeviceID, "adapter-details");
-			helpProvider1.SetHelpNavigator(txtDeviceID, HelpNavigator.Topic);
-			txtDeviceID.Location = new Point(216, 160);
-			txtDeviceID.Margin = new Padding(4, 5, 4, 5);
-			txtDeviceID.Name = "txtDeviceID";
-			txtDeviceID.PlaceholderText = "Select an Adapter";
-			txtDeviceID.ReadOnly = true;
-			helpProvider1.SetShowHelp(txtDeviceID, true);
-			txtDeviceID.Size = new Size(465, 29);
-			txtDeviceID.TabIndex = 7;
+			this.txtDeviceID.Anchor = AnchorStyles.Left;
+			this.txtDeviceID.Font = new Font("Consolas", 9F);
+			this.helpProvider1.SetHelpKeyword(this.txtDeviceID, "adapter-details");
+			this.helpProvider1.SetHelpNavigator(this.txtDeviceID, HelpNavigator.Topic);
+			this.txtDeviceID.Location = new Point(152, 84);
+			this.txtDeviceID.Name = "txtDeviceID";
+			this.txtDeviceID.PlaceholderText = "Select an Adapter";
+			this.txtDeviceID.ReadOnly = true;
+			this.helpProvider1.SetShowHelp(this.txtDeviceID, true);
+			this.txtDeviceID.Size = new Size(327, 22);
+			this.txtDeviceID.TabIndex = 7;
 			// 
 			// txtDriver
 			// 
-			txtDriver.Anchor = AnchorStyles.Left;
-			txtDriver.Font = new Font("Consolas", 9F);
-			helpProvider1.SetHelpKeyword(txtDriver, "adapter-details");
-			helpProvider1.SetHelpNavigator(txtDriver, HelpNavigator.Topic);
-			txtDriver.Location = new Point(216, 110);
-			txtDriver.Margin = new Padding(4, 5, 4, 5);
-			txtDriver.Name = "txtDriver";
-			txtDriver.PlaceholderText = "Select an Adapter";
-			txtDriver.ReadOnly = true;
-			helpProvider1.SetShowHelp(txtDriver, true);
-			txtDriver.Size = new Size(465, 29);
-			txtDriver.TabIndex = 5;
+			this.txtDriver.Anchor = AnchorStyles.Left;
+			this.txtDriver.Font = new Font("Consolas", 9F);
+			this.helpProvider1.SetHelpKeyword(this.txtDriver, "adapter-details");
+			this.helpProvider1.SetHelpNavigator(this.txtDriver, HelpNavigator.Topic);
+			this.txtDriver.Location = new Point(152, 57);
+			this.txtDriver.Name = "txtDriver";
+			this.txtDriver.PlaceholderText = "Select an Adapter";
+			this.txtDriver.ReadOnly = true;
+			this.helpProvider1.SetShowHelp(this.txtDriver, true);
+			this.txtDriver.Size = new Size(327, 22);
+			this.txtDriver.TabIndex = 5;
 			// 
 			// label1
 			// 
-			label1.Anchor = AnchorStyles.Left;
-			label1.AutoSize = true;
-			label1.Location = new Point(4, 12);
-			label1.Margin = new Padding(4, 0, 4, 0);
-			label1.Name = "label1";
-			label1.Size = new Size(158, 25);
-			label1.TabIndex = 0;
-			label1.Text = "Hardware Address";
+			this.label1.Anchor = AnchorStyles.Left;
+			this.label1.AutoSize = true;
+			this.label1.Location = new Point(3, 6);
+			this.label1.Name = "label1";
+			this.label1.Size = new Size(103, 15);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Hardware Address";
 			// 
 			// label2
 			// 
-			label2.Anchor = AnchorStyles.Left;
-			label2.AutoSize = true;
-			label2.Location = new Point(4, 62);
-			label2.Margin = new Padding(4, 0, 4, 0);
-			label2.Name = "label2";
-			label2.Size = new Size(62, 25);
-			label2.TabIndex = 1;
-			label2.Text = "Speed";
+			this.label2.Anchor = AnchorStyles.Left;
+			this.label2.AutoSize = true;
+			this.label2.Location = new Point(3, 33);
+			this.label2.Name = "label2";
+			this.label2.Size = new Size(39, 15);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "Speed";
 			// 
 			// txtHardwareAddress
 			// 
-			txtHardwareAddress.Anchor = AnchorStyles.Left;
-			txtHardwareAddress.Font = new Font("Consolas", 9F);
-			helpProvider1.SetHelpKeyword(txtHardwareAddress, "adapter-details");
-			helpProvider1.SetHelpNavigator(txtHardwareAddress, HelpNavigator.Topic);
-			txtHardwareAddress.Location = new Point(216, 10);
-			txtHardwareAddress.Margin = new Padding(4, 5, 4, 5);
-			txtHardwareAddress.Name = "txtHardwareAddress";
-			txtHardwareAddress.PlaceholderText = "Select an Adapter";
-			txtHardwareAddress.ReadOnly = true;
-			helpProvider1.SetShowHelp(txtHardwareAddress, true);
-			txtHardwareAddress.Size = new Size(465, 29);
-			txtHardwareAddress.TabIndex = 2;
+			this.txtHardwareAddress.Anchor = AnchorStyles.Left;
+			this.txtHardwareAddress.Font = new Font("Consolas", 9F);
+			this.helpProvider1.SetHelpKeyword(this.txtHardwareAddress, "adapter-details");
+			this.helpProvider1.SetHelpNavigator(this.txtHardwareAddress, HelpNavigator.Topic);
+			this.txtHardwareAddress.Location = new Point(152, 3);
+			this.txtHardwareAddress.Name = "txtHardwareAddress";
+			this.txtHardwareAddress.PlaceholderText = "Select an Adapter";
+			this.txtHardwareAddress.ReadOnly = true;
+			this.helpProvider1.SetShowHelp(this.txtHardwareAddress, true);
+			this.txtHardwareAddress.Size = new Size(327, 22);
+			this.txtHardwareAddress.TabIndex = 2;
 			// 
 			// txtSpeed
 			// 
-			txtSpeed.Anchor = AnchorStyles.Left;
-			txtSpeed.Font = new Font("Consolas", 9F);
-			helpProvider1.SetHelpKeyword(txtSpeed, "adapter-details");
-			helpProvider1.SetHelpNavigator(txtSpeed, HelpNavigator.Topic);
-			txtSpeed.Location = new Point(216, 60);
-			txtSpeed.Margin = new Padding(4, 5, 4, 5);
-			txtSpeed.Name = "txtSpeed";
-			txtSpeed.PlaceholderText = "Select an Adapter";
-			txtSpeed.ReadOnly = true;
-			helpProvider1.SetShowHelp(txtSpeed, true);
-			txtSpeed.Size = new Size(465, 29);
-			txtSpeed.TabIndex = 3;
+			this.txtSpeed.Anchor = AnchorStyles.Left;
+			this.txtSpeed.Font = new Font("Consolas", 9F);
+			this.helpProvider1.SetHelpKeyword(this.txtSpeed, "adapter-details");
+			this.helpProvider1.SetHelpNavigator(this.txtSpeed, HelpNavigator.Topic);
+			this.txtSpeed.Location = new Point(152, 30);
+			this.txtSpeed.Name = "txtSpeed";
+			this.txtSpeed.PlaceholderText = "Select an Adapter";
+			this.txtSpeed.ReadOnly = true;
+			this.helpProvider1.SetShowHelp(this.txtSpeed, true);
+			this.txtSpeed.Size = new Size(327, 22);
+			this.txtSpeed.TabIndex = 3;
 			// 
 			// label3
 			// 
-			label3.Anchor = AnchorStyles.Left;
-			label3.AutoSize = true;
-			label3.Location = new Point(4, 112);
-			label3.Margin = new Padding(4, 0, 4, 0);
-			label3.Name = "label3";
-			label3.Size = new Size(154, 25);
-			label3.TabIndex = 4;
-			label3.Text = "Driver Description";
+			this.label3.Anchor = AnchorStyles.Left;
+			this.label3.AutoSize = true;
+			this.label3.Location = new Point(3, 60);
+			this.label3.Name = "label3";
+			this.label3.Size = new Size(101, 15);
+			this.label3.TabIndex = 4;
+			this.label3.Text = "Driver Description";
 			// 
 			// lsvAddresses
 			// 
-			lsvAddresses.AllowColumnReorder = true;
-			lsvAddresses.Columns.AddRange(new ColumnHeader[] { chAddress, chPrefixLength, chAddressFamily, chPrefixOrigin, chSuffixOrigin });
-			lsvAddresses.Dock = DockStyle.Fill;
-			lsvAddresses.FullRowSelect = true;
-			lsvAddresses.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-			helpProvider1.SetHelpKeyword(lsvAddresses, "adapter-addresses-list");
-			helpProvider1.SetHelpNavigator(lsvAddresses, HelpNavigator.Topic);
-			lsvAddresses.Location = new Point(0, 0);
-			lsvAddresses.Margin = new Padding(4, 5, 4, 5);
-			lsvAddresses.Name = "lsvAddresses";
-			helpProvider1.SetShowHelp(lsvAddresses, true);
-			lsvAddresses.Size = new Size(850, 514);
-			lsvAddresses.TabIndex = 0;
-			lsvAddresses.UseCompatibleStateImageBehavior = false;
-			lsvAddresses.View = View.Details;
-			lsvAddresses.DoubleClick += lsvAddresses_DoubleClick;
+			this.lsvAddresses.AllowColumnReorder = true;
+			this.lsvAddresses.Columns.AddRange(new ColumnHeader[] { this.chAddress, this.chPrefixLength, this.chAddressFamily, this.chPrefixOrigin, this.chSuffixOrigin });
+			this.lsvAddresses.Dock = DockStyle.Fill;
+			this.lsvAddresses.FullRowSelect = true;
+			this.lsvAddresses.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+			this.helpProvider1.SetHelpKeyword(this.lsvAddresses, "adapter-addresses-list");
+			this.helpProvider1.SetHelpNavigator(this.lsvAddresses, HelpNavigator.Topic);
+			this.lsvAddresses.Location = new Point(0, 0);
+			this.lsvAddresses.Name = "lsvAddresses";
+			this.helpProvider1.SetShowHelp(this.lsvAddresses, true);
+			this.lsvAddresses.Size = new Size(596, 285);
+			this.lsvAddresses.TabIndex = 0;
+			this.lsvAddresses.UseCompatibleStateImageBehavior = false;
+			this.lsvAddresses.View = View.Details;
+			this.lsvAddresses.DoubleClick += this.lsvAddresses_DoubleClick;
 			// 
 			// chAddress
 			// 
-			chAddress.Text = "Address";
-			chAddress.Width = 120;
+			this.chAddress.Text = "Address";
+			this.chAddress.Width = 120;
 			// 
 			// chPrefixLength
 			// 
-			chPrefixLength.Text = "Prefix Length";
+			this.chPrefixLength.Text = "Prefix Length";
 			// 
 			// chAddressFamily
 			// 
-			chAddressFamily.Text = "Family";
+			this.chAddressFamily.Text = "Family";
 			// 
 			// chPrefixOrigin
 			// 
-			chPrefixOrigin.Text = "Prefix Origin";
-			chPrefixOrigin.Width = 100;
+			this.chPrefixOrigin.Text = "Prefix Origin";
+			this.chPrefixOrigin.Width = 100;
 			// 
 			// chSuffixOrigin
 			// 
-			chSuffixOrigin.Text = "Suffix Origin";
-			chSuffixOrigin.Width = 100;
+			this.chSuffixOrigin.Text = "Suffix Origin";
+			this.chSuffixOrigin.Width = 100;
+			// 
+			// tsMain
+			// 
+			this.tsMain.GripStyle = ToolStripGripStyle.Hidden;
+			this.helpProvider1.SetHelpKeyword(this.tsMain, "tool-bar");
+			this.helpProvider1.SetHelpNavigator(this.tsMain, HelpNavigator.Topic);
+			this.tsMain.ImageScalingSize = new Size(24, 24);
+			this.tsMain.Items.AddRange(new ToolStripItem[] { this.tsbSettings, this.tsbDebug, this.tsbControlPanel, this.tsbHelp, this.tsbBugReport });
+			this.tsMain.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
+			this.tsMain.Location = new Point(0, 0);
+			this.tsMain.Name = "tsMain";
+			this.tsMain.Padding = new Padding(0, 0, 2, 0);
+			this.tsMain.RenderMode = ToolStripRenderMode.System;
+			this.helpProvider1.SetShowHelp(this.tsMain, true);
+			this.tsMain.Size = new Size(1067, 31);
+			this.tsMain.TabIndex = 0;
+			this.tsMain.Text = "toolStrip1";
+			// 
+			// tsbSettings
+			// 
+			this.tsbSettings.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbSettings.Image = (Image)resources.GetObject("tsbSettings.Image");
+			this.tsbSettings.ImageTransparentColor = Color.Magenta;
+			this.tsbSettings.Name = "tsbSettings";
+			this.tsbSettings.Size = new Size(28, 28);
+			this.tsbSettings.Text = "Settings";
+			this.tsbSettings.ToolTipText = "Open the application settings dialog";
+			this.tsbSettings.Click += this.tsbSettings_Click;
+			// 
+			// tsbDebug
+			// 
+			this.tsbDebug.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbDebug.Image = (Image)resources.GetObject("tsbDebug.Image");
+			this.tsbDebug.ImageTransparentColor = Color.Magenta;
+			this.tsbDebug.Name = "tsbDebug";
+			this.tsbDebug.Size = new Size(28, 28);
+			this.tsbDebug.Text = "Debug";
+			this.tsbDebug.ToolTipText = "Show the debug window";
+			this.tsbDebug.Click += this.tsbDebug_Click;
+			// 
+			// tsbControlPanel
+			// 
+			this.tsbControlPanel.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbControlPanel.Image = (Image)resources.GetObject("tsbControlPanel.Image");
+			this.tsbControlPanel.ImageTransparentColor = Color.Magenta;
+			this.tsbControlPanel.Name = "tsbControlPanel";
+			this.tsbControlPanel.Size = new Size(28, 28);
+			this.tsbControlPanel.Text = "Control Panel";
+			this.tsbControlPanel.ToolTipText = "Launch network adapters control panel";
+			this.tsbControlPanel.Click += this.tsbControlPanel_Click;
+			// 
+			// tsbHelp
+			// 
+			this.tsbHelp.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbHelp.Image = (Image)resources.GetObject("tsbHelp.Image");
+			this.tsbHelp.ImageTransparentColor = Color.Magenta;
+			this.tsbHelp.Name = "tsbHelp";
+			this.tsbHelp.Size = new Size(28, 28);
+			this.tsbHelp.Text = "Help";
+			this.tsbHelp.ToolTipText = "Show the help document";
+			this.tsbHelp.Click += this.tsbHelp_Click;
+			// 
+			// tsbBugReport
+			// 
+			this.tsbBugReport.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbBugReport.Image = (Image)resources.GetObject("tsbBugReport.Image");
+			this.tsbBugReport.ImageTransparentColor = Color.Magenta;
+			this.tsbBugReport.Name = "tsbBugReport";
+			this.tsbBugReport.Size = new Size(28, 28);
+			this.tsbBugReport.Text = "Bug Report";
+			this.tsbBugReport.ToolTipText = "Submit bug reports or other feedback";
+			this.tsbBugReport.Click += this.tsbBugReport_Click;
 			// 
 			// notifyIcon1
 			// 
-			notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
-			notifyIcon1.ContextMenuStrip = cmsNotifyIconMenu;
-			notifyIcon1.Icon = (Icon)resources.GetObject("notifyIcon1.Icon");
-			notifyIcon1.Text = "IP Address Changer";
-			notifyIcon1.Visible = true;
-			notifyIcon1.MouseDoubleClick += notifyIcon1_MouseDoubleClick;
+			this.notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
+			this.notifyIcon1.ContextMenuStrip = this.cmsNotifyIconMenu;
+			this.notifyIcon1.Icon = (Icon)resources.GetObject("notifyIcon1.Icon");
+			this.notifyIcon1.Text = "IP Address Changer";
+			this.notifyIcon1.Visible = true;
+			this.notifyIcon1.MouseDoubleClick += this.notifyIcon1_MouseDoubleClick;
 			// 
 			// cmsNotifyIconMenu
 			// 
-			cmsNotifyIconMenu.ImageScalingSize = new Size(24, 24);
-			cmsNotifyIconMenu.Items.AddRange(new ToolStripItem[] { tsmiShow, tsmiHide, tsmiExit, toolStripSeparator1, tsmiControlPanel, toolStripSeparator2, tsmiShortcuts });
-			cmsNotifyIconMenu.Name = "contextMenuStrip1";
-			cmsNotifyIconMenu.Size = new Size(190, 176);
+			this.cmsNotifyIconMenu.ImageScalingSize = new Size(24, 24);
+			this.cmsNotifyIconMenu.Items.AddRange(new ToolStripItem[] { this.tsmiShow, this.tsmiHide, this.tsmiExit, this.toolStripSeparator1, this.tsmiControlPanel, this.toolStripSeparator2, this.tsmiShortcuts });
+			this.cmsNotifyIconMenu.Name = "contextMenuStrip1";
+			this.cmsNotifyIconMenu.Size = new Size(147, 126);
 			// 
 			// tsmiShow
 			// 
-			tsmiShow.Name = "tsmiShow";
-			tsmiShow.Size = new Size(189, 32);
-			tsmiShow.Text = "&Show";
-			tsmiShow.ToolTipText = "Show the application";
-			tsmiShow.Click += tsmiShow_Click;
+			this.tsmiShow.Name = "tsmiShow";
+			this.tsmiShow.Size = new Size(146, 22);
+			this.tsmiShow.Text = "&Show";
+			this.tsmiShow.ToolTipText = "Show the application";
+			this.tsmiShow.Click += this.tsmiShow_Click;
 			// 
 			// tsmiHide
 			// 
-			tsmiHide.Name = "tsmiHide";
-			tsmiHide.Size = new Size(189, 32);
-			tsmiHide.Text = "&Hide";
-			tsmiHide.ToolTipText = "Hide the application";
-			tsmiHide.Click += tsmiHide_Click;
+			this.tsmiHide.Name = "tsmiHide";
+			this.tsmiHide.Size = new Size(146, 22);
+			this.tsmiHide.Text = "&Hide";
+			this.tsmiHide.ToolTipText = "Hide the application";
+			this.tsmiHide.Click += this.tsmiHide_Click;
 			// 
 			// tsmiExit
 			// 
-			tsmiExit.Name = "tsmiExit";
-			tsmiExit.Size = new Size(189, 32);
-			tsmiExit.Text = "E&xit";
-			tsmiExit.ToolTipText = "Exit the application";
-			tsmiExit.Click += tsmiExit_Click;
+			this.tsmiExit.Name = "tsmiExit";
+			this.tsmiExit.Size = new Size(146, 22);
+			this.tsmiExit.Text = "E&xit";
+			this.tsmiExit.ToolTipText = "Exit the application";
+			this.tsmiExit.Click += this.tsmiExit_Click;
 			// 
 			// toolStripSeparator1
 			// 
-			toolStripSeparator1.Name = "toolStripSeparator1";
-			toolStripSeparator1.Size = new Size(186, 6);
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new Size(143, 6);
 			// 
 			// tsmiControlPanel
 			// 
-			tsmiControlPanel.Name = "tsmiControlPanel";
-			tsmiControlPanel.Size = new Size(189, 32);
-			tsmiControlPanel.Text = "&Control Panel";
-			tsmiControlPanel.ToolTipText = "Launch the network adapters control panel";
-			tsmiControlPanel.Click += tsmiControlPanel_Click;
+			this.tsmiControlPanel.Name = "tsmiControlPanel";
+			this.tsmiControlPanel.Size = new Size(146, 22);
+			this.tsmiControlPanel.Text = "&Control Panel";
+			this.tsmiControlPanel.ToolTipText = "Launch the network adapters control panel";
+			this.tsmiControlPanel.Click += this.tsmiControlPanel_Click;
 			// 
 			// toolStripSeparator2
 			// 
-			toolStripSeparator2.Name = "toolStripSeparator2";
-			toolStripSeparator2.Size = new Size(186, 6);
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new Size(143, 6);
 			// 
 			// tsmiShortcuts
 			// 
-			tsmiShortcuts.DoubleClickEnabled = true;
-			tsmiShortcuts.Name = "tsmiShortcuts";
-			tsmiShortcuts.Size = new Size(189, 32);
-			tsmiShortcuts.Text = "Shortcuts";
-			tsmiShortcuts.ToolTipText = "IP Address Shortcuts List";
+			this.tsmiShortcuts.DoubleClickEnabled = true;
+			this.tsmiShortcuts.Name = "tsmiShortcuts";
+			this.tsmiShortcuts.Size = new Size(146, 22);
+			this.tsmiShortcuts.Text = "Shortcuts";
+			this.tsmiShortcuts.ToolTipText = "IP Address Shortcuts List";
 			// 
 			// helpProvider1
 			// 
-			helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
+			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
 			// 
 			// frmMain
 			// 
-			AutoScaleDimensions = new SizeF(10F, 25F);
-			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(1524, 753);
-			Controls.Add(splitContainer1);
-			Controls.Add(ssStatus);
-			helpProvider1.SetHelpKeyword(this, "main-window");
-			helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
-			Icon = (Icon)resources.GetObject("$this.Icon");
-			Margin = new Padding(4, 5, 4, 5);
-			Name = "frmMain";
-			helpProvider1.SetShowHelp(this, true);
-			Text = "IP Address Changer";
-			FormClosing += frmMain_FormClosing;
-			Load += frmMain_Load;
-			SizeChanged += frmMain_SizeChanged;
-			ssStatus.ResumeLayout(false);
-			ssStatus.PerformLayout();
-			splitContainer1.Panel1.ResumeLayout(false);
-			splitContainer1.Panel1.PerformLayout();
-			splitContainer1.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
-			splitContainer1.ResumeLayout(false);
-			splitContainer3.Panel1.ResumeLayout(false);
-			splitContainer3.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
-			splitContainer3.ResumeLayout(false);
-			tableLayoutPanel3.ResumeLayout(false);
-			tableLayoutPanel3.PerformLayout();
-			tableLayoutPanel2.ResumeLayout(false);
-			tableLayoutPanel2.PerformLayout();
-			tsMain.ResumeLayout(false);
-			tsMain.PerformLayout();
-			splitContainer2.Panel1.ResumeLayout(false);
-			splitContainer2.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
-			splitContainer2.ResumeLayout(false);
-			tableLayoutPanel1.ResumeLayout(false);
-			tableLayoutPanel1.PerformLayout();
-			cmsNotifyIconMenu.ResumeLayout(false);
-			ResumeLayout(false);
-			PerformLayout();
+			this.AutoScaleDimensions = new SizeF(7F, 15F);
+			this.AutoScaleMode = AutoScaleMode.Font;
+			this.ClientSize = new Size(1067, 452);
+			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.tsMain);
+			this.Controls.Add(this.ssStatus);
+			this.helpProvider1.SetHelpKeyword(this, "main-window");
+			this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
+			this.Icon = (Icon)resources.GetObject("$this.Icon");
+			this.Name = "frmMain";
+			this.helpProvider1.SetShowHelp(this, true);
+			this.Text = "IP Address Changer";
+			this.FormClosing += this.frmMain_FormClosing;
+			this.Load += this.frmMain_Load;
+			this.SizeChanged += this.frmMain_SizeChanged;
+			this.ssStatus.ResumeLayout(false);
+			this.ssStatus.PerformLayout();
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
+			this.splitContainer1.ResumeLayout(false);
+			this.splitContainer3.Panel1.ResumeLayout(false);
+			this.splitContainer3.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)this.splitContainer3).EndInit();
+			this.splitContainer3.ResumeLayout(false);
+			this.tableLayoutPanel3.ResumeLayout(false);
+			this.tableLayoutPanel3.PerformLayout();
+			this.tsAdapters.ResumeLayout(false);
+			this.tsAdapters.PerformLayout();
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel2.PerformLayout();
+			this.tsShortcuts.ResumeLayout(false);
+			this.tsShortcuts.PerformLayout();
+			this.splitContainer2.Panel1.ResumeLayout(false);
+			this.splitContainer2.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)this.splitContainer2).EndInit();
+			this.splitContainer2.ResumeLayout(false);
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
+			this.tsMain.ResumeLayout(false);
+			this.tsMain.PerformLayout();
+			this.cmsNotifyIconMenu.ResumeLayout(false);
+			this.ResumeLayout(false);
+			this.PerformLayout();
 		}
 
 		#endregion
@@ -733,8 +743,6 @@
 		private ToolStripStatusLabel tsslStatus;
 		private SplitContainer splitContainer1;
 		private ToolStrip tsMain;
-		private ToolStripButton tsbRefresh;
-		private ToolStripButton tsbOnlineOnly;
 		private NotifyIcon notifyIcon1;
 		private ContextMenuStrip cmsNotifyIconMenu;
 		private ToolStripMenuItem tsmiShow;
@@ -759,18 +767,10 @@
 		private Label label3;
 		private Label label4;
 		private TextBox txtDeviceID;
-		private ToolStripButton tsbNewShortcut;
 		private SplitContainer splitContainer3;
 		private ListBox lsbShortcuts;
-		private ToolStripButton tsbDeleteShortcut;
-		private ToolStripButton tsbEditShortcut;
 		private TableLayoutPanel tableLayoutPanel3;
-		private Label label6;
 		private TableLayoutPanel tableLayoutPanel2;
-		private Label label5;
-		private ToolStripButton tsbRecallShortcut;
-		private ToolStripSeparator toolStripSeparator3;
-		private ToolStripSeparator toolStripSeparator4;
 		private ToolStripButton tsbSettings;
 		private ToolStripButton tsbDebug;
 		private ToolStripButton tsbControlPanel;
@@ -783,5 +783,17 @@
 		private ColumnHeader chAdapterStatus;
 		private ColumnHeader chAdapterName;
 		private ImageList netAdapterIcons;
+		private ToolStrip tsAdapters;
+		private ToolStripButton tsbRefresh;
+		private ToolStripButton tsbOnlineOnly;
+		private ToolStripSpringLabel tslAdapters;
+		private ToolStrip tsShortcuts;
+		private ToolStripSpringLabel tslShortcuts;
+		private ToolStripButton tsbNewShortcut;
+		private ToolStripButton tsbDeleteShortcut;
+		private ToolStripButton tsbEditShortcut;
+		private ToolStripButton tsbRecallShortcut;
+		private ToolStripButton tsbMoveShortcutUp;
+		private ToolStripButton tsbMoveShortcutDown;
 	}
 }
