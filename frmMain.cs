@@ -158,16 +158,18 @@ namespace IPAddressChanger {
 							if (ci is null || ci.CimInstanceProperties is null) {
 								continue;
 							}
-							if ((UInt32)ci.CimInstanceProperties["InterfaceOperationalStatus"].Value == 1 || !tsbOnlineOnly.Checked) {
+							UInt32 operationalStatus = (ci.CimInstanceProperties["InterfaceOperationalStatus"]?.Value as UInt32?) ?? 0;
+							UInt32 adminStatus = (ci.CimInstanceProperties["InterfaceAdminStatus"]?.Value as UInt32?) ?? 0;
+							if (operationalStatus == 1 || !tsbOnlineOnly.Checked) {
 								AdapterInfo adapterInfo = new AdapterInfo(
-										(UInt32)ci.CimInstanceProperties["InterfaceIndex"].Value,
-										ci.CimInstanceProperties["Name"].Value.ToString() ?? "<unknown>",
-										ci.CimInstanceProperties["DriverDescription"].Value.ToString() ?? "<unknown>",
-										(UInt32)ci.CimInstanceProperties["InterfaceOperationalStatus"].Value == 1,
-										(UInt32)ci.CimInstanceProperties["InterfaceAdminStatus"].Value == 1,
-										ci.CimInstanceProperties["Speed"].Value is not null ? (UInt64)ci.CimInstanceProperties["Speed"].Value : 0,
-										ci.CimInstanceProperties["PermanentAddress"].Value.ToString() ?? "<unknown>",
-										ci.CimInstanceProperties["DeviceID"].Value.ToString() ?? "<unknown>"
+										(ci.CimInstanceProperties["InterfaceIndex"]?.Value as UInt32?) ?? 0,
+										ci.CimInstanceProperties["Name"]?.Value?.ToString() ?? "<unknown>",
+										ci.CimInstanceProperties["DriverDescription"]?.Value?.ToString() ?? "<unknown>",
+										operationalStatus == 1,
+										adminStatus == 1,
+										(ci.CimInstanceProperties["Speed"]?.Value as UInt64?) ?? 0,
+										ci.CimInstanceProperties["PermanentAddress"]?.Value?.ToString() ?? "<unknown>",
+										ci.CimInstanceProperties["DeviceID"]?.Value?.ToString() ?? "<unknown>"
 								);
 								ListViewItem li = new() {
 									ImageKey = adapterInfo.Status.ToString().ToLower(),
