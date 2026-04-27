@@ -1,16 +1,10 @@
 using IPAddressChanger.Properties;
 using Microsoft.Management.Infrastructure;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Management.Automation;
 using System.Net.Sockets;
-using Newtonsoft.Json;
-using System.Text;
+using System.Text.Json;
 using System.Reflection;
 using System.Net.NetworkInformation;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
-using System.Xml.Linq;
-using System;
 using System.Configuration;
 
 namespace IPAddressChanger {
@@ -74,15 +68,20 @@ namespace IPAddressChanger {
 		};
 
 		private List<IPAddressShortcut> ipAddressShortcuts = []; // list of all of the stored network adapter settings shortcuts
-		private readonly PowerShell powerShell = PowerShell.Create(); // Use this PowerShell instance for all commands
 		internal frmSettings? settingsForm = null; // Don't load the settings form now, but keep a reference when we do load it
 		internal frmDebug debugForm = new(); // Create and reference a debug form to send it debug log messages
 		internal KeyboardHook? hook = null;// Global hotkey object
-		private bool isClosing = false; // true if the application is closing and no more PowerShell commands should be executed
+		private bool isClosing = false; // true if the application is closing and no more network operations should run
+		private bool isBusy = false; // serialize adapter queries and changes so concurrent calls don't fight over the UI
 		private FormWindowState lastWindowState = FormWindowState.Normal; // Remember the last window state before minimizing or maximizing
 
 		public frmMain() {
 			InitializeComponent();
+			// ImageList contents loaded programmatically rather than persisted by the designer,
+			// because the designer serializes ImageList.ImageStream via BinaryFormatter, which is removed in .NET 9+.
+			netAdapterIcons.Images.Add("disabled", Resources.disabled);
+			netAdapterIcons.Images.Add("up", Resources.up);
+			netAdapterIcons.Images.Add("down", Resources.down);
 			debugForm.AddMessage($"Starting {Application.ProductName} version {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
 			if (Control.ModifierKeys == Keys.Shift) {
 				Settings.Default.Reset();
@@ -118,15 +117,6 @@ namespace IPAddressChanger {
 			}
 		}
 
-		private string PSObjectToString(PSObject property) {
-			List<string> propvalues = [];
-			foreach (var p in property.Properties) {
-				propvalues.Add($"[{p.TypeNameOfValue}] {p.Name} = {p.Value ?? "null"}");
-			}
-			return string.Join("; ", propvalues);
-
-		}
-
 		private void ClearEverything() {
 			lsvAdapters.Items.Clear();
 			lsvAddresses.Items.Clear();
@@ -137,57 +127,33 @@ namespace IPAddressChanger {
 		}
 
 		private async void GetAdapters() {
-			SetStatus("Getting adapters...", true);
-			debugForm.AddMessage("Getting adapters");
-			if (powerShell.InvocationStateInfo.State == PSInvocationState.Running) {
-				debugForm.AddMessage("PowerShell is still busy");
+			if (isBusy) {
+				debugForm.AddMessage("Skipping GetAdapters: another network operation is in progress");
 				return;
 			}
+			isBusy = true;
+			SetStatus("Getting adapters...", true);
+			debugForm.AddMessage("Getting adapters");
 
 			ClearEverything();
 			bool thereWereErrors = false;
-			powerShell.Commands.Clear();
-			powerShell.AddCommand("Get-NetAdapter");
-			PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
-			if (isClosing) return;
-			if (!powerShell.HadErrors) {
-				foreach (PSObject result in results) {
-					debugForm.AddMessage("Adapter details: " + PSObjectToString(result));
-					if (result.BaseObject is CimInstance ci) {
-						try {
-							if (ci is null || ci.CimInstanceProperties is null) {
-								continue;
-							}
-							UInt32 operationalStatus = (ci.CimInstanceProperties["InterfaceOperationalStatus"]?.Value as UInt32?) ?? 0;
-							UInt32 adminStatus = (ci.CimInstanceProperties["InterfaceAdminStatus"]?.Value as UInt32?) ?? 0;
-							if (operationalStatus == 1 || !tsbOnlineOnly.Checked) {
-								AdapterInfo adapterInfo = new AdapterInfo(
-										(ci.CimInstanceProperties["InterfaceIndex"]?.Value as UInt32?) ?? 0,
-										ci.CimInstanceProperties["Name"]?.Value?.ToString() ?? "<unknown>",
-										ci.CimInstanceProperties["DriverDescription"]?.Value?.ToString() ?? "<unknown>",
-										operationalStatus == 1,
-										adminStatus == 1,
-										(ci.CimInstanceProperties["Speed"]?.Value as UInt64?) ?? 0,
-										ci.CimInstanceProperties["PermanentAddress"]?.Value?.ToString() ?? "<unknown>",
-										ci.CimInstanceProperties["DeviceID"]?.Value?.ToString() ?? "<unknown>"
-								);
-								ListViewItem li = new() {
-									ImageKey = adapterInfo.Status.ToString().ToLower(),
-									Tag = adapterInfo,
-								};
-								li.SubItems.Add(adapterInfo.ToString());
-								lsvAdapters.Items.Add(li);
-							}
-						} catch (Exception ex) {
-							ShowAndLogError($"Error getting adapter data:\r\n{ex.Message}", "Error Getting Adapter Data");
-							thereWereErrors = true;
-							continue;
-						}
+			try {
+				List<AdapterInfo> adapters = await NetworkManager.GetAdaptersAsync();
+				if (isClosing) return;
+				foreach (AdapterInfo adapterInfo in adapters) {
+					debugForm.AddMessage($"Adapter: {adapterInfo}");
+					if (adapterInfo.IsConnected || !tsbOnlineOnly.Checked) {
+						ListViewItem li = new() {
+							ImageKey = adapterInfo.Status.ToString().ToLower(),
+							Tag = adapterInfo,
+						};
+						li.SubItems.Add(adapterInfo.ToString());
+						lsvAdapters.Items.Add(li);
 					}
 				}
 				tsbRefresh.Image = Resources.Refresh_16x;
-			} else {
-				ShowAndLogError($"Error getting adapters:\r\n{GetPowerShellErrors()}", "Error Getting Adapters");
+			} catch (Exception ex) {
+				ShowAndLogError($"Error getting adapters:\r\n{ex.Message}", "Error Getting Adapters");
 				thereWereErrors = true;
 			}
 
@@ -201,16 +167,12 @@ namespace IPAddressChanger {
 				debugForm.AddMessage("Done getting adapters, but there were errors");
 				SetStatus("Done but there were errors", false);
 			}
+			isBusy = false;
 		}
 
 		private async void ShowAdapterInfo(AdapterInfo adapter) {
-			UInt32 adapterIndex = adapter.Index;
 			if (isClosing) return;
 			debugForm.AddMessage("Getting adapter details");
-			if (powerShell.InvocationStateInfo.State == PSInvocationState.Running) {
-				debugForm.AddMessage("PowerShell is still busy");
-				return;
-			}
 			SetStatus("Getting adapter details...", true);
 			lsvAddresses.Items.Clear();
 			txtHardwareAddress.Text = adapter.HardwareAddress;
@@ -218,32 +180,27 @@ namespace IPAddressChanger {
 			txtDriver.Text = adapter.Driver;
 			txtDeviceID.Text = adapter.DeviceID;
 			if (adapter.IsEnabled) {
-				powerShell.Commands.Clear();
-				powerShell.AddCommand("Get-NetIPAddress");
-				powerShell.AddParameter("-InterfaceIndex", adapterIndex);
-				if (isClosing) return;
-				PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
-				if (!powerShell.HadErrors) {
-					foreach (PSObject result in results) {
-						debugForm.AddMessage("Adapter Details: " + PSObjectToString(result));
-						if (result.BaseObject is CimInstance ci) {
-							ListViewItem item = new();
-							if ((UInt16)ci.CimInstanceProperties["AddressFamily"].Value == (UInt16)AddressFamily.InterNetwork) {
-								item.Text = ci.CimInstanceProperties["IPv4Address"].Value.ToString();
-							} else if ((UInt16)ci.CimInstanceProperties["AddressFamily"].Value == (UInt16)AddressFamily.InterNetworkV6) {
-								item.Text = ci.CimInstanceProperties["IPv6Address"].Value.ToString();
-							} else {
-								item.Text = ci.CimInstanceProperties["Address"].Value.ToString();
-							}
-							item.SubItems.Add(ci.CimInstanceProperties["PrefixLength"].Value.ToString());
-							item.SubItems.Add(ADDRESS_FAMILIES[(UInt16)ci.CimInstanceProperties["AddressFamily"].Value]);
-							item.SubItems.Add(PREFIX_ORIGINS[(UInt16)ci.CimInstanceProperties["PrefixOrigin"].Value]);
-							item.SubItems.Add(SUFFIX_ORIGINS[(UInt16)ci.CimInstanceProperties["SuffixOrigin"].Value]);
-							lsvAddresses.Items.Add(item);
+				try {
+					List<IPAddressInfo> addresses = await NetworkManager.GetIPAddressesAsync(adapter.Index);
+					if (isClosing) return;
+					foreach (IPAddressInfo addr in addresses) {
+						debugForm.AddMessage($"Address: {addr.IPAddress} ({ADDRESS_FAMILIES.GetValueOrDefault(addr.AddressFamily, "Unknown")})");
+						ListViewItem item = new();
+						if (addr.AddressFamily == (UInt16)AddressFamily.InterNetwork) {
+							item.Text = addr.IPv4Address;
+						} else if (addr.AddressFamily == (UInt16)AddressFamily.InterNetworkV6) {
+							item.Text = addr.IPv6Address;
+						} else {
+							item.Text = addr.IPAddress;
 						}
+						item.SubItems.Add(addr.PrefixLength.ToString());
+						item.SubItems.Add(ADDRESS_FAMILIES.GetValueOrDefault(addr.AddressFamily, "Unknown"));
+						item.SubItems.Add(PREFIX_ORIGINS.GetValueOrDefault(addr.PrefixOrigin, "Unknown"));
+						item.SubItems.Add(SUFFIX_ORIGINS.GetValueOrDefault(addr.SuffixOrigin, "Unknown"));
+						lsvAddresses.Items.Add(item);
 					}
-				} else {
-					ShowAndLogError($"Error getting address info for {adapter.Name}: {GetPowerShellErrors()}", "Error Getting Addresses");
+				} catch (Exception ex) {
+					ShowAndLogError($"Error getting address info for {adapter.Name}: {ex.Message}", "Error Getting Addresses");
 				}
 			} else {
 				lsvAddresses.Items.Add("Adapter disabled");
@@ -339,7 +296,7 @@ namespace IPAddressChanger {
 		private void SaveShortcuts() {
 			debugForm.AddMessage("Saving shortcuts");
 			try {
-				Settings.Default.Shortcuts = JsonConvert.SerializeObject(ipAddressShortcuts);
+				Settings.Default.Shortcuts = JsonSerializer.Serialize(ipAddressShortcuts);
 				Settings.Default.Save();
 			} catch (Exception ex) {
 				debugForm.AddMessage($"Error saving shortcuts: {ex.Message}");
@@ -350,7 +307,10 @@ namespace IPAddressChanger {
 			debugForm.AddMessage("Loading shortcuts");
 			SetStatus("Loading shortcuts");
 			try {
-				List<IPAddressShortcut> newShortcuts = JsonConvert.DeserializeObject<List<IPAddressShortcut>>(Settings.Default.Shortcuts) ?? [];
+				string raw = Settings.Default.Shortcuts;
+				List<IPAddressShortcut> newShortcuts = string.IsNullOrWhiteSpace(raw)
+					? []
+					: JsonSerializer.Deserialize<List<IPAddressShortcut>>(raw) ?? [];
 				ipAddressShortcuts = newShortcuts;
 			} catch (Exception ex) {
 				ShowAndLogError($"Error loading shortcuts: {ex.Message}", "Error Loading Shortcuts");
@@ -396,21 +356,12 @@ namespace IPAddressChanger {
 			return null;
 		}
 
-		private string GetPowerShellErrors() {
-			StringBuilder ret = new();
-			Collection<ErrorRecord> errors = powerShell.Streams.Error.ReadAll();
-			foreach (ErrorRecord error in errors) {
-				ret.AppendLine(error.ToString());
-			}
-			return ret.ToString();
-		}
-
 		private async void RunShortcut(IPAddressShortcut shortcut) {
 			debugForm.AddMessage($"Running shortcut {shortcut.Name}");
 			AdapterInfo? ai = GetAdapterInfoFromDeviceID(shortcut.DeviceID);
 
-			if (powerShell.InvocationStateInfo.State == PSInvocationState.Running) {
-				debugForm.AddMessage("PowerShell is still busy");
+			if (isBusy) {
+				debugForm.AddMessage("Skipping RunShortcut: another network operation is in progress");
 				return;
 			}
 
@@ -419,59 +370,47 @@ namespace IPAddressChanger {
 				return;
 			}
 
-			if (!shortcut.UseDHCP) {
-				SetStatus($"Disabling DHCP on {ai.Name}");
-				debugForm.AddMessage($"Disabling DHCP on {ai.Name}");
-				powerShell.Commands.Clear();
-				powerShell.AddCommand("Set-NetIPInterface");
-				powerShell.AddParameter("-InterfaceIndex", ai.Index);
-				powerShell.AddParameter("-Dhcp", "Disabled");
-				powerShell.AddParameter("-Confirm", false);
-				PSDataCollection<PSObject> dhcpResults = await powerShell.InvokeAsync();
-				if (powerShell.HadErrors) {
-					ShowAndLogError($"Error disabling DHCP on {ai.Name}:\r\n{GetPowerShellErrors()}", "Error Disabling DHCP");
-					return;
-				}
+			isBusy = true;
+			try {
+				if (!shortcut.UseDHCP) {
+					SetStatus($"Disabling DHCP on {ai.Name}");
+					debugForm.AddMessage($"Disabling DHCP on {ai.Name}");
+					try {
+						await NetworkManager.SetDhcpAsync(ai.Index, false);
+					} catch (Exception ex) {
+						ShowAndLogError($"Error disabling DHCP on {ai.Name}:\r\n{ex.Message}", "Error Disabling DHCP");
+						return;
+					}
 
-				SetStatus($"Removing addresses from {ai.Name}");
-				debugForm.AddMessage($"Removing addresses from {ai.Name}");
-				powerShell.Commands.Clear();
-				powerShell.AddCommand("Remove-NetIPAddress");
-				powerShell.AddParameter("-InterfaceIndex", ai.Index);
-				powerShell.AddParameter("-Confirm", false);
-				PSDataCollection<PSObject> removeResults = await powerShell.InvokeAsync();
-				if (powerShell.HadErrors) {
-					ShowAndLogError($"Error removing address from {ai.Name}:\r\n {GetPowerShellErrors()}", "Error Removing Address");
-					return;
-				}
+					SetStatus($"Removing addresses from {ai.Name}");
+					debugForm.AddMessage($"Removing addresses from {ai.Name}");
+					try {
+						await NetworkManager.RemoveAllIPAddressesAsync(ai.Index);
+					} catch (Exception ex) {
+						ShowAndLogError($"Error removing address from {ai.Name}:\r\n {ex.Message}", "Error Removing Address");
+						return;
+					}
 
-				debugForm.AddMessage($"Setting new IP address for {ai.Name} to {shortcut.IPAddress}/{shortcut.PrefixLength}");
-				SetStatus($"Setting new IP address for {ai.Name}");
-				powerShell.Commands.Clear();
-				powerShell.AddCommand("New-NetIPAddress");
-				powerShell.AddParameter("-InterfaceIndex", ai.Index);
-				powerShell.AddParameter("-IPAddress", shortcut.IPAddress);
-				powerShell.AddParameter("-PrefixLength", shortcut.PrefixLength);
-				powerShell.AddParameter("-Confirm", false);
-				PSDataCollection<PSObject> newResults = await powerShell.InvokeAsync();
-				if (powerShell.HadErrors) {
-					ShowAndLogError($"Error adding IP address on {ai.Name}:\r\n{GetPowerShellErrors()}", "Error Adding Address");
-					return;
+					debugForm.AddMessage($"Setting new IP address for {ai.Name} to {shortcut.IPAddress}/{shortcut.PrefixLength}");
+					SetStatus($"Setting new IP address for {ai.Name}");
+					try {
+						await NetworkManager.NewIPAddressAsync(ai.Index, shortcut.IPAddress, (byte)shortcut.PrefixLength);
+					} catch (Exception ex) {
+						ShowAndLogError($"Error adding IP address on {ai.Name}:\r\n{ex.Message}", "Error Adding Address");
+						return;
+					}
+				} else {
+					debugForm.AddMessage($"Enabling DHCP on {ai.Name}");
+					SetStatus($"Enabling DHCP on {ai.Name}");
+					try {
+						await NetworkManager.SetDhcpAsync(ai.Index, true);
+					} catch (Exception ex) {
+						ShowAndLogError($"Error enabling DHCP on {ai.Name}:\r\n{ex.Message}", "Error Enabling DHCP");
+						return;
+					}
 				}
-			} else {
-				debugForm.AddMessage($"Enabling DHCP on {ai.Name}");
-				SetStatus($"Enabling DHCP on {ai.Name}");
-				powerShell.Commands.Clear();
-				powerShell.AddCommand("Set-NetIPInterface");
-				powerShell.AddParameter("-InterfaceIndex", ai.Index);
-				powerShell.AddParameter("-Dhcp", "Enabled");
-				powerShell.AddParameter("-Confirm", false);
-				PSDataCollection<PSObject> dhcpResults = await powerShell.InvokeAsync();
-				if (powerShell.HadErrors) {
-					ShowAndLogError($"Error enabling DHCP on {ai.Name}:\r\n{GetPowerShellErrors()}", "Error Enabling DHCP");
-					return;
-				}
-
+			} finally {
+				isBusy = false;
 			}
 			GetAdapters();
 		}
@@ -544,48 +483,10 @@ namespace IPAddressChanger {
 			RunShortcut(ipAddressShortcuts[(int)tsmi.Tag]);
 		}
 
-		private async void frmMain_Load(object sender, EventArgs e) {
+		private void frmMain_Load(object sender, EventArgs e) {
 
 			debugForm.AddMessage("Main form loading");
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
-
-			if (isClosing) return;
-			debugForm.AddMessage("Enabling PowerShell scripts");
-			powerShell.Commands.Clear();
-			powerShell.AddCommand("Set-ExecutionPolicy");
-			powerShell.AddParameter("-Scope", "Process");
-			powerShell.AddParameter("-ExecutionPolicy", "Bypass");
-			try {
-				PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
-			} catch (Exception ex) {
-				ShowAndLogError($"Error setting execution policy:\r\n{ex.Message}\r\nThe application can not continue.", "Error Setting Policy", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
-				return;
-			}
-			if (powerShell.HadErrors) {
-				ShowAndLogError($"Error setting execution policy:\r\n{GetPowerShellErrors()}\r\nThe application can not continue.", "Error Setting Policy", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
-				return;
-			}
-
-
-			if (isClosing) return;
-			debugForm.AddMessage("Importing NetTCPIP PowerShell module");
-			powerShell.Commands.Clear();
-			powerShell.AddCommand("Import-Module");
-			powerShell.AddArgument("NetTCPIP");
-			try {
-				PSDataCollection<PSObject> results = await powerShell.InvokeAsync();
-			} catch (Exception ex) {
-				ShowAndLogError($"Error importing NetTCPIP:\r\n{ex.Message}\r\nThe application can not continue.", "Error Importing Module", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
-				return;
-			}
-			if (powerShell.HadErrors) {
-				ShowAndLogError($"Error importing NetTCPIP:\r\n{GetPowerShellErrors()}\r\nThe application can not continue.", "Error Importing Module", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
-				return;
-			}
 
 			if (isClosing) return;
 			NetworkChange.NetworkAddressChanged += new
@@ -659,8 +560,6 @@ namespace IPAddressChanger {
 
 		private void frmMain_FormClosing(object sender, FormClosingEventArgs e) {
 			isClosing = true;
-			powerShell.Stop();
-			powerShell.Dispose();
 			SaveSettings();
 			SaveShortcuts();
 		}

@@ -211,11 +211,8 @@
 			// netAdapterIcons
 			// 
 			this.netAdapterIcons.ColorDepth = ColorDepth.Depth32Bit;
-			this.netAdapterIcons.ImageStream = (ImageListStreamer)resources.GetObject("netAdapterIcons.ImageStream");
+			this.netAdapterIcons.ImageSize = new Size(16, 16);
 			this.netAdapterIcons.TransparentColor = Color.Transparent;
-			this.netAdapterIcons.Images.SetKeyName(0, "disabled");
-			this.netAdapterIcons.Images.SetKeyName(1, "up");
-			this.netAdapterIcons.Images.SetKeyName(2, "down");
 			// 
 			// tsAdapters
 			// 
