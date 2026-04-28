@@ -324,9 +324,11 @@
 			// 
 			// tsmiNewShortcut
 			// 
+			this.tsmiNewShortcut.Enabled = false;
 			this.tsmiNewShortcut.Name = "tsmiNewShortcut";
 			this.tsmiNewShortcut.Size = new Size(107, 22);
 			this.tsmiNewShortcut.Text = "New";
+			this.tsmiNewShortcut.Click += this.tsmiNewShortcut_Click;
 			// 
 			// toolStripMenuItem1
 			// 
@@ -339,6 +341,7 @@
 			this.tsmiDeleteShortcut.Name = "tsmiDeleteShortcut";
 			this.tsmiDeleteShortcut.Size = new Size(107, 22);
 			this.tsmiDeleteShortcut.Text = "Delete";
+			this.tsmiDeleteShortcut.Click += this.tsmiDeleteShortcut_Click;
 			// 
 			// tsmiEditShortcut
 			// 
@@ -346,6 +349,7 @@
 			this.tsmiEditShortcut.Name = "tsmiEditShortcut";
 			this.tsmiEditShortcut.Size = new Size(107, 22);
 			this.tsmiEditShortcut.Text = "Edit";
+			this.tsmiEditShortcut.Click += this.tsmiEditShortcut_Click;
 			// 
 			// tsmiRecallShortcut
 			// 
@@ -353,6 +357,7 @@
 			this.tsmiRecallShortcut.Name = "tsmiRecallShortcut";
 			this.tsmiRecallShortcut.Size = new Size(107, 22);
 			this.tsmiRecallShortcut.Text = "Recall";
+			this.tsmiRecallShortcut.Click += this.tsmiRecallShortcut_Click;
 			// 
 			// tsShortcuts
 			// 

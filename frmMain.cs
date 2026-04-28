@@ -748,6 +748,7 @@ namespace IPAddressChanger {
 		private void lsvAdapters_SelectedIndexChanged(object sender, EventArgs e) {
 			if (lsvAdapters.SelectedItems.Count > 0) {
 				tsbNewShortcut.Enabled = true;
+				tsmiNewShortcut.Enabled = true;
 				ShowAdapterInfo((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
 			} else {
 				txtSpeed.Text = "";
@@ -756,6 +757,7 @@ namespace IPAddressChanger {
 				txtDeviceID.Text = "";
 				lsvAddresses.Items.Clear();
 				tsbNewShortcut.Enabled = false;
+				tsmiNewShortcut.Enabled = false;
 			}
 		}
 
@@ -815,6 +817,13 @@ namespace IPAddressChanger {
 			tsmiDeleteShortcut.Enabled = menuItemsEnabled;
 			tsmiRecallShortcut.Enabled = menuItemsEnabled;
 			tsmiEditShortcut.Enabled = menuItemsEnabled;
+		}
+
+		private void tsmiNewShortcut_Click(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) {
+				return;
+			}
+			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
 		}
 	}
 
