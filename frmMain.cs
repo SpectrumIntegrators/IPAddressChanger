@@ -75,7 +75,7 @@ namespace IPAddressChanger {
 		private bool isBusy = false; // serialize adapter queries and changes so concurrent calls don't fight over the UI
 		private FormWindowState lastWindowState = FormWindowState.Normal; // Remember the last window state before minimizing or maximizing
 		private Dictionary<string, AdapterSnapshot> adapterSnapshots = new(); // last-known adapter state, keyed by NetworkInterface.Id, used to suppress no-op change notifications
-		private Dictionary<AdapterInfo, frmAdapterBusy?> busyAdapterDialogs = new();
+		private Dictionary<AdapterInfo, frmAdapterBusy?> busyAdapterDialogs = new(); // Tracks per-adapter in-flight operations. Key presence = adapter busy. Value = open dialog or null if user dismissed it.
 
 		private class AdapterSnapshot {
 			public string Name { get; set; } = "";
@@ -437,20 +437,25 @@ namespace IPAddressChanger {
 			debugForm.AddMessage($"Running shortcut {shortcut.Name}");
 			AdapterInfo? ai = GetAdapterInfoFromDeviceID(shortcut.DeviceID);
 
-			if (isBusy) {
-				debugForm.AddMessage("Skipping RunShortcut: another network operation is in progress");
-				return;
-			}
-
 			if (ai == null) {
 				ShowAndLogError($"Adapter with device ID {shortcut.DeviceID} not found!", "Adapter Not Found");
 				return;
 			}
 
-			isBusy = true;
+			if (busyAdapterDialogs.ContainsKey(ai)) {
+				debugForm.AddMessage($"Skipping shortcut: {ai.Name} is busy with another operation");
+				if (busyAdapterDialogs[ai] == null) {
+					// the user had closed the dialog, so re-show it
+					ShowAdapterBusyDialog($"{ai.Name} is busy with another operation", ai);
+				}
+				return;
+			}
+
+			SetStatus($"Running shortcut '{shortcut.Name}' on {ai.Name}", false);
+			ShowAdapterBusyDialog($"Running shortcut '{shortcut.Name}' on {ai.Name}", ai);
 			try {
 				if (!shortcut.UseDHCP) {
-					SetStatus($"Disabling DHCP on {ai.Name}");
+					ShowAdapterBusyDialog($"Disabling DHCP on {ai.Name}", ai);
 					debugForm.AddMessage($"Disabling DHCP on {ai.Name}");
 					try {
 						await NetworkManager.SetDhcpAsync(ai.Index, false);
@@ -459,7 +464,7 @@ namespace IPAddressChanger {
 						return;
 					}
 
-					SetStatus($"Removing addresses from {ai.Name}");
+					ShowAdapterBusyDialog($"Removing addresses from {ai.Name}", ai);
 					debugForm.AddMessage($"Removing addresses from {ai.Name}");
 					try {
 						await NetworkManager.RemoveAllIPAddressesAsync(ai.Index);
@@ -469,7 +474,7 @@ namespace IPAddressChanger {
 					}
 
 					debugForm.AddMessage($"Setting new IP address for {ai.Name} to {shortcut.IPAddress}/{shortcut.PrefixLength}");
-					SetStatus($"Setting new IP address for {ai.Name}");
+					ShowAdapterBusyDialog($"Setting new IP address for {ai.Name}", ai);
 					try {
 						await NetworkManager.NewIPAddressAsync(ai.Index, shortcut.IPAddress, (byte)shortcut.PrefixLength);
 					} catch (Exception ex) {
@@ -478,7 +483,7 @@ namespace IPAddressChanger {
 					}
 				} else {
 					debugForm.AddMessage($"Enabling DHCP on {ai.Name}");
-					SetStatus($"Enabling DHCP on {ai.Name}");
+					ShowAdapterBusyDialog($"Enabling DHCP on {ai.Name}", ai);
 					try {
 						await NetworkManager.SetDhcpAsync(ai.Index, true);
 					} catch (Exception ex) {
@@ -486,8 +491,9 @@ namespace IPAddressChanger {
 						return;
 					}
 				}
+				SetStatus($"Shortcut '{shortcut.Name}' applied to {ai.Name}", false);
 			} finally {
-				isBusy = false;
+				RemoveAdapterBusyDialog(ai);
 			}
 			GetAdapters();
 		}
@@ -1003,6 +1009,15 @@ namespace IPAddressChanger {
 		}
 		public override string ToString() {
 			return $"{Index}: {Name} [{Status}]";
+		}
+
+		// Equality is by DeviceID so that Dictionary<AdapterInfo, ...> lookups stay valid
+		// across a refresh that produces new AdapterInfo references for the same physical adapter.
+		public override bool Equals(object? obj) {
+			return obj is AdapterInfo other && other.DeviceID == DeviceID;
+		}
+		public override int GetHashCode() {
+			return DeviceID?.GetHashCode() ?? 0;
 		}
 	}
 
