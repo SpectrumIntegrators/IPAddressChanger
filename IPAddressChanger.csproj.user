@@ -7,6 +7,9 @@
     <Compile Update="frmDebug.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="frmAdapterBusy.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="frmEditShortcut.cs">
       <SubType>Form</SubType>
     </Compile>

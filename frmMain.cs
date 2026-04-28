@@ -75,6 +75,7 @@ namespace IPAddressChanger {
 		private bool isBusy = false; // serialize adapter queries and changes so concurrent calls don't fight over the UI
 		private FormWindowState lastWindowState = FormWindowState.Normal; // Remember the last window state before minimizing or maximizing
 		private Dictionary<string, AdapterSnapshot> adapterSnapshots = new(); // last-known adapter state, keyed by NetworkInterface.Id, used to suppress no-op change notifications
+		private Dictionary<AdapterInfo, frmAdapterBusy?> busyAdapterDialogs = new();
 
 		private class AdapterSnapshot {
 			public string Name { get; set; } = "";
@@ -241,6 +242,8 @@ namespace IPAddressChanger {
 			txtSpeed.Text = GetHRBitrate(adapter.Speed);
 			txtDriver.Text = adapter.Driver;
 			txtDeviceID.Text = adapter.DeviceID;
+			cmdRenewDHCPLease.Enabled = false;
+			tsmiRenewDHCPForAdapter.Enabled = false;
 			if (adapter.IsEnabled) {
 				try {
 					List<IPAddressInfo> addresses = await NetworkManager.GetIPAddressesAsync(adapter.Index);
@@ -263,6 +266,18 @@ namespace IPAddressChanger {
 					}
 				} catch (Exception ex) {
 					ShowAndLogError($"Error getting address info for {adapter.Name}: {ex.Message}", "Error Getting Addresses");
+				}
+				try {
+					bool dhcpEnabled = await NetworkManager.GetIPv4DhcpEnabledAsync(adapter.Index);
+					if (isClosing) return;
+					// only apply if the user hasn't navigated to a different adapter while we were awaiting
+					if (lsvAdapters.SelectedItems.Count > 0 &&
+						((AdapterInfo)lsvAdapters.SelectedItems[0].Tag).DeviceID == adapter.DeviceID) {
+						cmdRenewDHCPLease.Enabled = dhcpEnabled;
+						tsmiRenewDHCPForAdapter.Enabled = dhcpEnabled;
+					}
+				} catch (Exception ex) {
+					debugForm.AddMessage($"Could not determine DHCP state for {adapter.Name}: {ex.Message}");
 				}
 			} else {
 				lsvAddresses.Items.Add("Adapter disabled");
@@ -582,6 +597,8 @@ namespace IPAddressChanger {
 				txtDeviceID.Text = "";
 				lsvAddresses.Items.Clear();
 				tsbNewShortcut.Enabled = false;
+				cmdRenewDHCPLease.Enabled = false;
+				tsmiRenewDHCPForAdapter.Enabled = false;
 			}
 		}
 
@@ -758,6 +775,8 @@ namespace IPAddressChanger {
 				lsvAddresses.Items.Clear();
 				tsbNewShortcut.Enabled = false;
 				tsmiNewShortcut.Enabled = false;
+				cmdRenewDHCPLease.Enabled = false;
+				tsmiRenewDHCPForAdapter.Enabled = false;
 			}
 		}
 
@@ -846,9 +865,104 @@ namespace IPAddressChanger {
 				return;
 			}
 		}
-	
-		private void RenewAdapterDHCPLease(AdapterInfo adapter) {
 
+		public void AdapterDialogClosing(AdapterInfo adapter) {
+			if (!busyAdapterDialogs.ContainsKey(adapter)) {
+				return;
+			}
+			if (busyAdapterDialogs[adapter] != null) {
+				debugForm.AddMessage($"Busy dialog for {adapter.Name} is closing");
+				busyAdapterDialogs[adapter] = null;
+			}			
+		}
+
+		private void ShowAdapterBusyDialog(string message, AdapterInfo adapter) {
+			if (!busyAdapterDialogs.ContainsKey(adapter)) {
+				// new adapter
+				busyAdapterDialogs.Add(adapter, null);
+				debugForm.AddMessage($"Adding busy dialog for {adapter.Name}");
+			}
+			
+			// new or existing adapter
+			if (busyAdapterDialogs[adapter] == null) {
+				// form doesn't exist for this adapter, add one
+				frmAdapterBusy newAdapterBusyDialog = new frmAdapterBusy(message, adapter, this);
+				busyAdapterDialogs[adapter] = newAdapterBusyDialog;
+				newAdapterBusyDialog.Show(this);
+				debugForm.AddMessage($"Showing busy dialog for {adapter.Name}");
+			} else {
+				// form already exists, update its message
+				busyAdapterDialogs[adapter].lblBusyReason.Text = message;
+				debugForm.AddMessage($"Updating busy dialog for {adapter.Name}");
+			}
+		}
+
+		private void CloseAdapterBusyDialog(AdapterInfo adapter) {
+			if (!busyAdapterDialogs.ContainsKey(adapter)) {
+				return;
+			}
+			if (busyAdapterDialogs[adapter] != null) {
+				debugForm.AddMessage($"Closing busy dialog for {adapter.Name}");
+				busyAdapterDialogs[adapter].Close();
+				busyAdapterDialogs[adapter] = null;
+			}
+		}
+
+		private void RemoveAdapterBusyDialog(AdapterInfo adapter) {
+			if (!busyAdapterDialogs.ContainsKey(adapter)) {
+				return;
+			}
+			CloseAdapterBusyDialog(adapter);
+			debugForm.AddMessage($"Removing busy dialog for {adapter.Name}");
+			busyAdapterDialogs.Remove(adapter);
+		}
+
+
+		private async void RenewAdapterDHCPLease(AdapterInfo adapter) {
+			if (busyAdapterDialogs.ContainsKey(adapter)) {
+				debugForm.AddMessage("Skipping DHCP renew: another network operation is in progress");
+				if (busyAdapterDialogs[adapter] == null) {
+					// the user had closed the dialog, so re-show it
+					ShowAdapterBusyDialog($"Renewing DHCP lease for {adapter.Name}", adapter);
+				}
+				return;
+			}
+			SetStatus($"Renewing DHCP lease on {adapter.Name}...", false);
+			debugForm.AddMessage($"Renewing DHCP lease on {adapter.Name}");
+			ShowAdapterBusyDialog($"Renewing DHCP lease for {adapter.Name}", adapter);
+			try {
+				uint code = await NetworkManager.RenewDhcpAsync(adapter.Index);
+				if (code == 0) {
+					SetStatus($"DHCP lease renewed on {adapter.Name} — refresh to see new address", false);
+					debugForm.AddMessage($"DHCP lease renewed on {adapter.Name}");
+				} else {
+					string reason = code switch {
+						82 => "could not renew lease (no DHCP server responded or network unreachable)",
+						84 => "IP is not enabled on this adapter",
+						91 => "access denied",
+						100 => "DHCP is not enabled on this adapter",
+						_ => $"DHCP renew failed (code {code})"
+					};
+					ShowAndLogError($"Error renewing DHCP address for {adapter.Name}: {reason}", "Error Renewing DHCP");
+					SetStatus($"DHCP renewal for {adapter.Name} done, but there were errors (see log)", false);
+				}
+			} catch (Exception ex) {
+				ShowAndLogError($"Error renewing DHCP address for {adapter.Name}: {ex.Message}", "Error Renewing DHCP");
+				SetStatus($"DHCP renewal for {adapter.Name} done, but there were errors (see log)", false);
+			} finally {
+				RemoveAdapterBusyDialog(adapter);
+				// If they've navigated away, ShowAdapterInfo for the new selection has already set the correct state.
+				if (lsvAdapters.SelectedItems.Count > 0 &&
+					((AdapterInfo)lsvAdapters.SelectedItems[0].Tag).DeviceID == adapter.DeviceID) {
+				}
+			}
+		}
+
+		private void cmdRenewDHCPLease_Click(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) {
+				return;
+			}
+			RenewAdapterDHCPLease((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
 		}
 	}
 

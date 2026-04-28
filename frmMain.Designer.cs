@@ -225,13 +225,13 @@
 			// 
 			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiRenewDHCPForAdapter });
 			this.cmsAdaptersListMenu.Name = "cmsAdaptersListMenu";
-			this.cmsAdaptersListMenu.Size = new Size(181, 70);
+			this.cmsAdaptersListMenu.Size = new Size(177, 48);
 			this.cmsAdaptersListMenu.Opening += this.cmsAdaptersListMenu_Opening;
 			// 
 			// tsmiNewShortcutForAdapter
 			// 
 			this.tsmiNewShortcutForAdapter.Name = "tsmiNewShortcutForAdapter";
-			this.tsmiNewShortcutForAdapter.Size = new Size(180, 22);
+			this.tsmiNewShortcutForAdapter.Size = new Size(176, 22);
 			this.tsmiNewShortcutForAdapter.Text = "New Shortcut";
 			this.tsmiNewShortcutForAdapter.Click += this.tsmiNewShortcutForAdapter_Click;
 			// 
@@ -239,7 +239,7 @@
 			// 
 			this.tsmiRenewDHCPForAdapter.Enabled = false;
 			this.tsmiRenewDHCPForAdapter.Name = "tsmiRenewDHCPForAdapter";
-			this.tsmiRenewDHCPForAdapter.Size = new Size(180, 22);
+			this.tsmiRenewDHCPForAdapter.Size = new Size(176, 22);
 			this.tsmiRenewDHCPForAdapter.Text = "Renew DHCP Lease";
 			this.tsmiRenewDHCPForAdapter.Click += this.tsmiRenewDHCPForAdapter_Click;
 			// 
@@ -596,6 +596,7 @@
 			this.cmdRenewDHCPLease.TabIndex = 9;
 			this.cmdRenewDHCPLease.Text = "Renew DHCP Lease";
 			this.cmdRenewDHCPLease.UseVisualStyleBackColor = true;
+			this.cmdRenewDHCPLease.Click += this.cmdRenewDHCPLease_Click;
 			// 
 			// lsvAddresses
 			// 

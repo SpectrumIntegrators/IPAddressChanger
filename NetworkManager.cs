@@ -120,6 +120,40 @@ namespace IPAddressChanger {
 			}
 		}
 
+		public static Task<bool> GetIPv4DhcpEnabledAsync(uint interfaceIndex) =>
+			Task.Run(() => GetIPv4DhcpEnabled(interfaceIndex));
+
+		private static bool GetIPv4DhcpEnabled(uint interfaceIndex) {
+			using CimSession session = CimSession.Create(null);
+			string query = $"SELECT * FROM MSFT_NetIPInterface WHERE InterfaceIndex={interfaceIndex} AND AddressFamily=2";
+			foreach (CimInstance iface in session.QueryInstances(Namespace, "WQL", query)) {
+				using (iface) {
+					byte dhcp = (iface.CimInstanceProperties["Dhcp"]?.Value as byte?) ?? 0;
+					return dhcp == 1;
+				}
+			}
+			return false;
+		}
+
+		public static Task<uint> RenewDhcpAsync(uint interfaceIndex) =>
+			Task.Run(() => RenewDhcp(interfaceIndex));
+
+		private static uint RenewDhcp(uint interfaceIndex) {
+			// RenewDHCPLease lives on the older Win32_NetworkAdapterConfiguration class in root\cimv2;
+			// MSFT_NetIPInterface in StandardCimv2 has no equivalent method.
+			const string LegacyNamespace = @"root\cimv2";
+			using CimSession session = CimSession.Create(null);
+			string query = $"SELECT * FROM Win32_NetworkAdapterConfiguration WHERE InterfaceIndex={interfaceIndex}";
+			foreach (CimInstance config in session.QueryInstances(LegacyNamespace, "WQL", query)) {
+				using (config) {
+					using var inputs = new CimMethodParametersCollection();
+					using CimMethodResult result = session.InvokeMethod(LegacyNamespace, config, "RenewDHCPLease", inputs);
+					return (result.ReturnValue?.Value as UInt32?) ?? 0xFFFFFFFF;
+				}
+			}
+			throw new CimException($"Win32_NetworkAdapterConfiguration with InterfaceIndex={interfaceIndex} not found");
+		}
+
 		public static string DescribeProperties(IEnumerable<CimProperty> properties) {
 			List<string> values = new();
 			foreach (CimProperty p in properties) {
