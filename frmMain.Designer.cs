@@ -66,6 +66,7 @@
 			this.txtHardwareAddress = new TextBox();
 			this.txtSpeed = new TextBox();
 			this.label3 = new Label();
+			this.cmdRenewDHCPLease = new Button();
 			this.lsvAddresses = new ListView();
 			this.chAddress = new ColumnHeader();
 			this.chPrefixLength = new ColumnHeader();
@@ -224,19 +225,23 @@
 			// 
 			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiRenewDHCPForAdapter });
 			this.cmsAdaptersListMenu.Name = "cmsAdaptersListMenu";
-			this.cmsAdaptersListMenu.Size = new Size(147, 48);
+			this.cmsAdaptersListMenu.Size = new Size(181, 70);
+			this.cmsAdaptersListMenu.Opening += this.cmsAdaptersListMenu_Opening;
 			// 
 			// tsmiNewShortcutForAdapter
 			// 
 			this.tsmiNewShortcutForAdapter.Name = "tsmiNewShortcutForAdapter";
-			this.tsmiNewShortcutForAdapter.Size = new Size(146, 22);
+			this.tsmiNewShortcutForAdapter.Size = new Size(180, 22);
 			this.tsmiNewShortcutForAdapter.Text = "New Shortcut";
+			this.tsmiNewShortcutForAdapter.Click += this.tsmiNewShortcutForAdapter_Click;
 			// 
 			// tsmiRenewDHCPForAdapter
 			// 
+			this.tsmiRenewDHCPForAdapter.Enabled = false;
 			this.tsmiRenewDHCPForAdapter.Name = "tsmiRenewDHCPForAdapter";
-			this.tsmiRenewDHCPForAdapter.Size = new Size(146, 22);
-			this.tsmiRenewDHCPForAdapter.Text = "Renew DHCP";
+			this.tsmiRenewDHCPForAdapter.Size = new Size(180, 22);
+			this.tsmiRenewDHCPForAdapter.Text = "Renew DHCP Lease";
+			this.tsmiRenewDHCPForAdapter.Click += this.tsmiRenewDHCPForAdapter_Click;
 			// 
 			// netAdapterIcons
 			// 
@@ -456,7 +461,7 @@
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.lsvAddresses);
 			this.splitContainer2.Size = new Size(596, 399);
-			this.splitContainer2.SplitterDistance = 110;
+			this.splitContainer2.SplitterDistance = 176;
 			this.splitContainer2.TabIndex = 1;
 			// 
 			// tableLayoutPanel1
@@ -472,22 +477,24 @@
 			this.tableLayoutPanel1.Controls.Add(this.txtHardwareAddress, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.txtSpeed, 1, 1);
 			this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.cmdRenewDHCPLease, 1, 4);
 			this.tableLayoutPanel1.Dock = DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 4;
-			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-			this.tableLayoutPanel1.Size = new Size(596, 110);
+			this.tableLayoutPanel1.RowCount = 5;
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+			this.tableLayoutPanel1.Size = new Size(596, 176);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// label4
 			// 
 			this.label4.Anchor = AnchorStyles.Left;
 			this.label4.AutoSize = true;
-			this.label4.Location = new Point(3, 88);
+			this.label4.Location = new Point(3, 115);
 			this.label4.Name = "label4";
 			this.label4.Size = new Size(56, 15);
 			this.label4.TabIndex = 8;
@@ -499,7 +506,7 @@
 			this.txtDeviceID.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtDeviceID, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtDeviceID, HelpNavigator.Topic);
-			this.txtDeviceID.Location = new Point(152, 84);
+			this.txtDeviceID.Location = new Point(152, 111);
 			this.txtDeviceID.Name = "txtDeviceID";
 			this.txtDeviceID.PlaceholderText = "Select an Adapter";
 			this.txtDeviceID.ReadOnly = true;
@@ -513,7 +520,7 @@
 			this.txtDriver.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtDriver, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtDriver, HelpNavigator.Topic);
-			this.txtDriver.Location = new Point(152, 57);
+			this.txtDriver.Location = new Point(152, 76);
 			this.txtDriver.Name = "txtDriver";
 			this.txtDriver.PlaceholderText = "Select an Adapter";
 			this.txtDriver.ReadOnly = true;
@@ -525,7 +532,7 @@
 			// 
 			this.label1.Anchor = AnchorStyles.Left;
 			this.label1.AutoSize = true;
-			this.label1.Location = new Point(3, 6);
+			this.label1.Location = new Point(3, 10);
 			this.label1.Name = "label1";
 			this.label1.Size = new Size(103, 15);
 			this.label1.TabIndex = 0;
@@ -535,7 +542,7 @@
 			// 
 			this.label2.Anchor = AnchorStyles.Left;
 			this.label2.AutoSize = true;
-			this.label2.Location = new Point(3, 33);
+			this.label2.Location = new Point(3, 45);
 			this.label2.Name = "label2";
 			this.label2.Size = new Size(39, 15);
 			this.label2.TabIndex = 1;
@@ -547,7 +554,7 @@
 			this.txtHardwareAddress.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtHardwareAddress, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtHardwareAddress, HelpNavigator.Topic);
-			this.txtHardwareAddress.Location = new Point(152, 3);
+			this.txtHardwareAddress.Location = new Point(152, 6);
 			this.txtHardwareAddress.Name = "txtHardwareAddress";
 			this.txtHardwareAddress.PlaceholderText = "Select an Adapter";
 			this.txtHardwareAddress.ReadOnly = true;
@@ -561,7 +568,7 @@
 			this.txtSpeed.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtSpeed, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtSpeed, HelpNavigator.Topic);
-			this.txtSpeed.Location = new Point(152, 30);
+			this.txtSpeed.Location = new Point(152, 41);
 			this.txtSpeed.Name = "txtSpeed";
 			this.txtSpeed.PlaceholderText = "Select an Adapter";
 			this.txtSpeed.ReadOnly = true;
@@ -573,11 +580,22 @@
 			// 
 			this.label3.Anchor = AnchorStyles.Left;
 			this.label3.AutoSize = true;
-			this.label3.Location = new Point(3, 60);
+			this.label3.Location = new Point(3, 80);
 			this.label3.Name = "label3";
 			this.label3.Size = new Size(101, 15);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Driver Description";
+			// 
+			// cmdRenewDHCPLease
+			// 
+			this.cmdRenewDHCPLease.Anchor = AnchorStyles.Left;
+			this.cmdRenewDHCPLease.Enabled = false;
+			this.cmdRenewDHCPLease.Location = new Point(152, 146);
+			this.cmdRenewDHCPLease.Name = "cmdRenewDHCPLease";
+			this.cmdRenewDHCPLease.Size = new Size(130, 23);
+			this.cmdRenewDHCPLease.TabIndex = 9;
+			this.cmdRenewDHCPLease.Text = "Renew DHCP Lease";
+			this.cmdRenewDHCPLease.UseVisualStyleBackColor = true;
 			// 
 			// lsvAddresses
 			// 
@@ -591,7 +609,7 @@
 			this.lsvAddresses.Location = new Point(0, 0);
 			this.lsvAddresses.Name = "lsvAddresses";
 			this.helpProvider1.SetShowHelp(this.lsvAddresses, true);
-			this.lsvAddresses.Size = new Size(596, 285);
+			this.lsvAddresses.Size = new Size(596, 219);
 			this.lsvAddresses.TabIndex = 0;
 			this.lsvAddresses.UseCompatibleStateImageBehavior = false;
 			this.lsvAddresses.View = View.Details;
@@ -878,5 +896,6 @@
 		private ToolStripMenuItem tsmiDeleteShortcut;
 		private ToolStripMenuItem tsmiEditShortcut;
 		private ToolStripMenuItem tsmiRecallShortcut;
+		private Button cmdRenewDHCPLease;
 	}
 }

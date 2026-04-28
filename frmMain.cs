@@ -825,6 +825,31 @@ namespace IPAddressChanger {
 			}
 			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
 		}
+
+		private void tsmiNewShortcutForAdapter_Click(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) {
+				return;
+			}
+			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+		}
+
+		private void tsmiRenewDHCPForAdapter_Click(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) {
+				return;
+			}
+			RenewAdapterDHCPLease((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+		}
+
+		private void cmsAdaptersListMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) {
+				e.Cancel = true;
+				return;
+			}
+		}
+	
+		private void RenewAdapterDHCPLease(AdapterInfo adapter) {
+
+		}
 	}
 
 	public class AdapterInfo {
