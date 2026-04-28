@@ -989,9 +989,31 @@ namespace IPAddressChanger {
 				tsmiPasteAddressForAdapter.Text = "Paste";
 				tsmiPasteAddressForAdapter.Tag = null;
 			}
-			// this next line needs to end up getting the actual IP address and prefix to put on the menu item text
-			tsmiNewShortcutForAdapterWithAddress.Text = $"New Shortcut with {((AdapterInfo)lsvAdapters.SelectedItems[0].Tag)}";
-
+			// "New Shortcut with X" — prefer DHCP if that's the configured method,
+			// otherwise use the first IPv4 address currently shown for this adapter.
+			// Both signals come from data already fetched by ShowAdapterInfo, so no extra CIM query.
+			if (cmdRenewDHCPLease.Enabled) {
+				tsmiNewShortcutForAdapterWithAddress.Enabled = true;
+				tsmiNewShortcutForAdapterWithAddress.Text = "New Shortcut with DHCP";
+				tsmiNewShortcutForAdapterWithAddress.Tag = "DHCP";
+			} else {
+				string? cidr = null;
+				foreach (ListViewItem addrItem in lsvAddresses.Items) {
+					if (addrItem.SubItems.Count >= 3 && addrItem.SubItems[2].Text == "IPv4") {
+						cidr = $"{addrItem.Text}/{addrItem.SubItems[1].Text}";
+						break;
+					}
+				}
+				if (cidr != null) {
+					tsmiNewShortcutForAdapterWithAddress.Enabled = true;
+					tsmiNewShortcutForAdapterWithAddress.Text = $"New Shortcut with {cidr}";
+					tsmiNewShortcutForAdapterWithAddress.Tag = cidr;
+				} else {
+					tsmiNewShortcutForAdapterWithAddress.Enabled = false;
+					tsmiNewShortcutForAdapterWithAddress.Text = "New Shortcut with...";
+					tsmiNewShortcutForAdapterWithAddress.Tag = null;
+				}
+			}
 		}
 
 		public void AdapterDialogClosing(AdapterInfo adapter) {
@@ -1124,7 +1146,20 @@ namespace IPAddressChanger {
 		}
 
 		private void tsmiNewShortcutWithForAdapter_Click(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) return;
+			if (tsmiNewShortcutForAdapterWithAddress.Tag is not string addressData) return;
 
+			AdapterInfo ai = (AdapterInfo)lsvAdapters.SelectedItems[0].Tag;
+
+			IPAddressShortcut prototype = new();
+			if (addressData == "DHCP") {
+				prototype.UseDHCP = true;
+			} else {
+				string[] parts = addressData.Split('/');
+				prototype.IPAddress = parts[0];
+				prototype.PrefixLength = int.Parse(parts[1]);
+			}
+			EditShortcut(null, ai, prototype);
 		}
 	}
 
