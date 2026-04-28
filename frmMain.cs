@@ -74,6 +74,14 @@ namespace IPAddressChanger {
 		private bool isClosing = false; // true if the application is closing and no more network operations should run
 		private bool isBusy = false; // serialize adapter queries and changes so concurrent calls don't fight over the UI
 		private FormWindowState lastWindowState = FormWindowState.Normal; // Remember the last window state before minimizing or maximizing
+		private Dictionary<string, AdapterSnapshot> adapterSnapshots = new(); // last-known adapter state, keyed by NetworkInterface.Id, used to suppress no-op change notifications
+
+		private class AdapterSnapshot {
+			public string Name { get; set; } = "";
+			public OperationalStatus Status { get; set; }
+			public long Speed { get; set; }
+			public HashSet<string> IPs { get; set; } = new();
+		}
 
 		public frmMain() {
 			InitializeComponent();
@@ -90,11 +98,65 @@ namespace IPAddressChanger {
 			LoadSettings();
 		}
 
-		public void AddressChangedCallback(object? sender, EventArgs e) {
+		private static Dictionary<string, AdapterSnapshot> BuildAdapterSnapshot() {
+			Dictionary<string, AdapterSnapshot> snapshot = new();
+			foreach (NetworkInterface n in NetworkInterface.GetAllNetworkInterfaces()) {
+				HashSet<string> ips = new();
+				try {
+					foreach (UnicastIPAddressInformation ua in n.GetIPProperties().UnicastAddresses) {
+						ips.Add(ua.Address.ToString());
+					}
+				} catch (NetworkInformationException) {
+					// some adapters refuse GetIPProperties; treat as no addresses
+				}
+				long speed = 0;
+				try { speed = n.Speed; } catch (NetworkInformationException) { }
+				snapshot[n.Id] = new AdapterSnapshot {
+					Name = n.Name,
+					Status = n.OperationalStatus,
+					Speed = speed,
+					IPs = ips,
+				};
+			}
+			return snapshot;
+		}
 
-			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
-			foreach (NetworkInterface n in adapters) {
-				debugForm.AddMessage("NetworkAdapterChanged: {0} is {1}", n.Name, n.OperationalStatus);
+		public void AddressChangedCallback(object? sender, EventArgs e) {
+			Dictionary<string, AdapterSnapshot> current = BuildAdapterSnapshot();
+			List<string> changes = new();
+
+			foreach (var kv in current) {
+				if (!adapterSnapshots.TryGetValue(kv.Key, out AdapterSnapshot? prev)) {
+					changes.Add($"Adapter added: {kv.Value.Name} ({kv.Value.Status})");
+					continue;
+				}
+				if (prev.Status != kv.Value.Status) {
+					changes.Add($"{kv.Value.Name}: status {prev.Status} -> {kv.Value.Status}");
+				}
+				if (prev.Speed != kv.Value.Speed) {
+					changes.Add($"{kv.Value.Name}: speed {prev.Speed} -> {kv.Value.Speed}");
+				}
+				foreach (string ip in kv.Value.IPs.Except(prev.IPs)) {
+					changes.Add($"{kv.Value.Name}: +{ip}");
+				}
+				foreach (string ip in prev.IPs.Except(kv.Value.IPs)) {
+					changes.Add($"{kv.Value.Name}: -{ip}");
+				}
+			}
+			foreach (var kv in adapterSnapshots) {
+				if (!current.ContainsKey(kv.Key)) {
+					changes.Add($"Adapter removed: {kv.Value.Name}");
+				}
+			}
+
+			adapterSnapshots = current;
+
+			if (changes.Count == 0) {
+				debugForm.AddMessage("Got change notification but no detectable change");
+				return;
+			}
+			foreach (string c in changes) {
+				debugForm.AddMessage(c);
 			}
 			tsbRefresh.Image = Resources.refreshwarning;
 		}
@@ -489,6 +551,7 @@ namespace IPAddressChanger {
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
 
 			if (isClosing) return;
+			adapterSnapshots = BuildAdapterSnapshot();
 			NetworkChange.NetworkAddressChanged += new
 			NetworkAddressChangedEventHandler(AddressChangedCallback);
 			LoadShortcuts();
