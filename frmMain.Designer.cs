@@ -34,12 +34,21 @@
 			this.lsvAdapters = new ListView();
 			this.chAdapterStatus = new ColumnHeader();
 			this.chAdapterName = new ColumnHeader();
+			this.cmsAdaptersListMenu = new ContextMenuStrip(this.components);
+			this.tsmiNewShortcutForAdapter = new ToolStripMenuItem();
+			this.tsmiRenewDHCPForAdapter = new ToolStripMenuItem();
 			this.netAdapterIcons = new ImageList(this.components);
 			this.tsAdapters = new ToolStrip();
 			this.tsbRefresh = new ToolStripButton();
 			this.tsbOnlineOnly = new ToolStripButton();
 			this.tableLayoutPanel2 = new TableLayoutPanel();
 			this.lsbShortcuts = new ListBox();
+			this.cmsShortcutsListMenu = new ContextMenuStrip(this.components);
+			this.tsmiNewShortcut = new ToolStripMenuItem();
+			this.toolStripMenuItem1 = new ToolStripSeparator();
+			this.tsmiDeleteShortcut = new ToolStripMenuItem();
+			this.tsmiEditShortcut = new ToolStripMenuItem();
+			this.tsmiRecallShortcut = new ToolStripMenuItem();
 			this.tsShortcuts = new ToolStrip();
 			this.tsbNewShortcut = new ToolStripButton();
 			this.tsbDeleteShortcut = new ToolStripButton();
@@ -89,8 +98,10 @@
 			this.splitContainer3.Panel2.SuspendLayout();
 			this.splitContainer3.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
+			this.cmsAdaptersListMenu.SuspendLayout();
 			this.tsAdapters.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
+			this.cmsShortcutsListMenu.SuspendLayout();
 			this.tsShortcuts.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)this.splitContainer2).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
@@ -181,6 +192,7 @@
 			// lsvAdapters
 			// 
 			this.lsvAdapters.Columns.AddRange(new ColumnHeader[] { this.chAdapterStatus, this.chAdapterName });
+			this.lsvAdapters.ContextMenuStrip = this.cmsAdaptersListMenu;
 			this.lsvAdapters.Dock = DockStyle.Fill;
 			this.lsvAdapters.FullRowSelect = true;
 			this.lsvAdapters.HeaderStyle = ColumnHeaderStyle.Nonclickable;
@@ -207,6 +219,24 @@
 			// 
 			this.chAdapterName.Text = "";
 			this.chAdapterName.Width = 400;
+			// 
+			// cmsAdaptersListMenu
+			// 
+			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiRenewDHCPForAdapter });
+			this.cmsAdaptersListMenu.Name = "cmsAdaptersListMenu";
+			this.cmsAdaptersListMenu.Size = new Size(147, 48);
+			// 
+			// tsmiNewShortcutForAdapter
+			// 
+			this.tsmiNewShortcutForAdapter.Name = "tsmiNewShortcutForAdapter";
+			this.tsmiNewShortcutForAdapter.Size = new Size(146, 22);
+			this.tsmiNewShortcutForAdapter.Text = "New Shortcut";
+			// 
+			// tsmiRenewDHCPForAdapter
+			// 
+			this.tsmiRenewDHCPForAdapter.Name = "tsmiRenewDHCPForAdapter";
+			this.tsmiRenewDHCPForAdapter.Size = new Size(146, 22);
+			this.tsmiRenewDHCPForAdapter.Text = "Renew DHCP";
 			// 
 			// netAdapterIcons
 			// 
@@ -269,6 +299,7 @@
 			// 
 			// lsbShortcuts
 			// 
+			this.lsbShortcuts.ContextMenuStrip = this.cmsShortcutsListMenu;
 			this.lsbShortcuts.Dock = DockStyle.Fill;
 			this.lsbShortcuts.FormattingEnabled = true;
 			this.helpProvider1.SetHelpKeyword(this.lsbShortcuts, "shortcuts-list");
@@ -283,6 +314,45 @@
 			this.lsbShortcuts.TabIndex = 0;
 			this.lsbShortcuts.SelectedIndexChanged += this.lsbShortcuts_SelectedIndexChanged;
 			this.lsbShortcuts.DoubleClick += this.lsbShortcuts_DoubleClick;
+			// 
+			// cmsShortcutsListMenu
+			// 
+			this.cmsShortcutsListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcut, this.toolStripMenuItem1, this.tsmiDeleteShortcut, this.tsmiEditShortcut, this.tsmiRecallShortcut });
+			this.cmsShortcutsListMenu.Name = "cmsShortcutsListMenu";
+			this.cmsShortcutsListMenu.Size = new Size(108, 98);
+			this.cmsShortcutsListMenu.Opening += this.cmsShortcutsListMenu_Opening;
+			// 
+			// tsmiNewShortcut
+			// 
+			this.tsmiNewShortcut.Name = "tsmiNewShortcut";
+			this.tsmiNewShortcut.Size = new Size(107, 22);
+			this.tsmiNewShortcut.Text = "New";
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new Size(104, 6);
+			// 
+			// tsmiDeleteShortcut
+			// 
+			this.tsmiDeleteShortcut.Enabled = false;
+			this.tsmiDeleteShortcut.Name = "tsmiDeleteShortcut";
+			this.tsmiDeleteShortcut.Size = new Size(107, 22);
+			this.tsmiDeleteShortcut.Text = "Delete";
+			// 
+			// tsmiEditShortcut
+			// 
+			this.tsmiEditShortcut.Enabled = false;
+			this.tsmiEditShortcut.Name = "tsmiEditShortcut";
+			this.tsmiEditShortcut.Size = new Size(107, 22);
+			this.tsmiEditShortcut.Text = "Edit";
+			// 
+			// tsmiRecallShortcut
+			// 
+			this.tsmiRecallShortcut.Enabled = false;
+			this.tsmiRecallShortcut.Name = "tsmiRecallShortcut";
+			this.tsmiRecallShortcut.Size = new Size(107, 22);
+			this.tsmiRecallShortcut.Text = "Recall";
 			// 
 			// tsShortcuts
 			// 
@@ -716,10 +786,12 @@
 			this.splitContainer3.ResumeLayout(false);
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel3.PerformLayout();
+			this.cmsAdaptersListMenu.ResumeLayout(false);
 			this.tsAdapters.ResumeLayout(false);
 			this.tsAdapters.PerformLayout();
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
+			this.cmsShortcutsListMenu.ResumeLayout(false);
 			this.tsShortcuts.ResumeLayout(false);
 			this.tsShortcuts.PerformLayout();
 			this.splitContainer2.Panel1.ResumeLayout(false);
@@ -792,5 +864,14 @@
 		private ToolStripButton tsbMoveShortcutDown;
 		private ToolStripSpringLabel tslShortcuts;
 		private ToolStripSpringLabel tslAdapters;
+		private ContextMenuStrip cmsAdaptersListMenu;
+		private ToolStripMenuItem tsmiNewShortcutForAdapter;
+		private ToolStripMenuItem tsmiRenewDHCPForAdapter;
+		private ContextMenuStrip cmsShortcutsListMenu;
+		private ToolStripMenuItem tsmiNewShortcut;
+		private ToolStripSeparator toolStripMenuItem1;
+		private ToolStripMenuItem tsmiDeleteShortcut;
+		private ToolStripMenuItem tsmiEditShortcut;
+		private ToolStripMenuItem tsmiRecallShortcut;
 	}
 }

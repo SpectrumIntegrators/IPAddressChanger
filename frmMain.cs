@@ -642,23 +642,32 @@ namespace IPAddressChanger {
 			}
 		}
 
-		private void tsbEditShortcut_Click(object sender, EventArgs e) {
-			if (lsbShortcuts.SelectedIndex < 0) return;
+		private int? GetShortcutIndexFromListIndex(int listIndex) {
 			string indexpart = ((lsbShortcuts.Items[lsbShortcuts.SelectedIndex].ToString()) ?? "").Split(":")[0];
 			if (int.TryParse(indexpart, out int idx)) {
-				EditShortcut(idx - 1, null);
+				return idx - 1;
 			}
+			return null;
 		}
 
-		private void tsbDeleteShortcut_Click(object sender, EventArgs e) {
+		private void tsbEditShortcut_Click(object sender, EventArgs e) {
 			if (lsbShortcuts.SelectedIndex < 0) return;
+			EditShortcut(GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex));
+		}
+
+		private void AskDeleteShortcut(int shortcutIndex) {
 			if (MessageBox.Show("Are you sure you want to delete this shortcut?", "Delete Shortcut?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
-				string indexpart = ((lsbShortcuts.Items[lsbShortcuts.SelectedIndex].ToString()) ?? "").Split(":")[0];
+				string indexpart = ((lsbShortcuts.Items[shortcutIndex].ToString()) ?? "").Split(":")[0];
 				if (int.TryParse(indexpart, out int idx)) {
 					ipAddressShortcuts.RemoveAt(idx - 1);
 					BuildShortcutsList();
 				}
 			}
+		}
+
+		private void tsbDeleteShortcut_Click(object sender, EventArgs e) {
+			if (lsbShortcuts.SelectedIndex < 0) return;
+			AskDeleteShortcut(lsbShortcuts.SelectedIndex);
 		}
 
 		private void lsbShortcuts_SelectedIndexChanged(object sender, EventArgs e) {
@@ -676,10 +685,9 @@ namespace IPAddressChanger {
 
 		private void tsbRecallShortcut_Click(object sender, EventArgs e) {
 			if (lsbShortcuts.SelectedIndex < 0) return;
-			string indexpart = ((lsbShortcuts.Items[lsbShortcuts.SelectedIndex].ToString()) ?? "").Split(":")[0];
-			if (int.TryParse(indexpart, out int idx)) {
-				RunShortcut(ipAddressShortcuts[idx - 1]);
-			}
+			int? shortcutIndex = GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex);
+			if (shortcutIndex is null) { return; }
+			RunShortcut(ipAddressShortcuts[(int)shortcutIndex]);
 
 		}
 
@@ -783,6 +791,30 @@ namespace IPAddressChanger {
 			BuildShortcutsList();
 			// select this same item again
 			lsbShortcuts.SelectedIndex = curSelectedIndex + 1;
+		}
+
+		private void tsmiDeleteShortcut_Click(object sender, EventArgs e) {
+			if (lsbShortcuts.SelectedIndex < 0) return;
+			AskDeleteShortcut(lsbShortcuts.SelectedIndex);
+		}
+
+		private void tsmiEditShortcut_Click(object sender, EventArgs e) {
+			if (lsbShortcuts.SelectedIndex < 0) return;
+			EditShortcut(GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex));
+		}
+
+		private void tsmiRecallShortcut_Click(object sender, EventArgs e) {
+			if (lsbShortcuts.SelectedIndex < 0) return;
+			int? shortcutIndex = GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex);
+			if (shortcutIndex is null) { return; }
+			RunShortcut(ipAddressShortcuts[(int)shortcutIndex]);
+		}
+
+		private void cmsShortcutsListMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+			bool menuItemsEnabled = (lsbShortcuts.SelectedIndex >= 0);
+			tsmiDeleteShortcut.Enabled = menuItemsEnabled;
+			tsmiRecallShortcut.Enabled = menuItemsEnabled;
+			tsmiEditShortcut.Enabled = menuItemsEnabled;
 		}
 	}
 
