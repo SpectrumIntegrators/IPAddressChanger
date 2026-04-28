@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Reflection;
 using System.Net.NetworkInformation;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace IPAddressChanger {
 
@@ -76,6 +77,13 @@ namespace IPAddressChanger {
 		private FormWindowState lastWindowState = FormWindowState.Normal; // Remember the last window state before minimizing or maximizing
 		private Dictionary<string, AdapterSnapshot> adapterSnapshots = new(); // last-known adapter state, keyed by NetworkInterface.Id, used to suppress no-op change notifications
 		private Dictionary<AdapterInfo, frmAdapterBusy?> busyAdapterDialogs = new(); // Tracks per-adapter in-flight operations. Key presence = adapter busy. Value = open dialog or null if user dismissed it.
+		private frmAddressConflictWarning? addressConflictWarningDialog;
+		private bool suppressFutureAddressConflictWarnings = false;
+
+		internal static partial class IPValidator {
+			[GeneratedRegex(@"(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)/(?:3[0-2]|[12]?\d)$)|(?:^DHCP$)")]
+			public static partial Regex IpCidrOrDhcp();
+		}
 
 		private class AdapterSnapshot {
 			public string Name { get; set; } = "";
@@ -120,6 +128,63 @@ namespace IPAddressChanger {
 				};
 			}
 			return snapshot;
+		}
+
+		public void AddressConflictWarningDialogClosing(bool suppressFutureMessages = false) {
+			addressConflictWarningDialog = null;
+			suppressFutureAddressConflictWarnings = suppressFutureMessages;
+		}
+
+		private void ShowAddressConflictWarningDialog(IEnumerable<string> adapters) {
+			if (suppressFutureAddressConflictWarnings) {
+				return;
+			}
+			if (addressConflictWarningDialog == null) {
+				addressConflictWarningDialog = new frmAddressConflictWarning(this);
+			}
+			addressConflictWarningDialog.SetAddressConflicts(adapters);
+			addressConflictWarningDialog.Show(this);
+		}
+
+		private async Task DetectAddressConflictsAsync(List<AdapterInfo> adapters) {
+			if (suppressFutureAddressConflictWarnings) return;
+
+			Dictionary<uint, List<IPAddressInfo>> allAddresses;
+			try {
+				allAddresses = await NetworkManager.GetAllIPAddressesAsync();
+			} catch (Exception ex) {
+				debugForm.AddMessage($"Error checking for address conflicts: {ex.Message}");
+				return;
+			}
+			if (isClosing) return;
+
+			// Build a map of IP -> the adapter names that hold it. The IPAddress field from
+			// MSFT_NetIPAddress is the canonical scoped form, so two interfaces with their own
+			// link-local fe80::* addresses won't false-positive (their scope IDs differ).
+			Dictionary<string, List<string>> ipToAdapters = new();
+			foreach (var kv in allAddresses) {
+				AdapterInfo? adapter = adapters.FirstOrDefault(a => a.Index == kv.Key);
+				if (adapter == null) continue;
+				foreach (IPAddressInfo addr in kv.Value) {
+					string ip = addr.IPAddress;
+					if (string.IsNullOrEmpty(ip)) continue;
+					if (!ipToAdapters.ContainsKey(ip)) ipToAdapters[ip] = new List<string>();
+					ipToAdapters[ip].Add(adapter.Name);
+				}
+			}
+
+			List<string> conflicts = new();
+			foreach (var kv in ipToAdapters) {
+				if (kv.Value.Count > 1) {
+					conflicts.Add($"{kv.Key} is assigned to: {string.Join(", ", kv.Value)}");
+				}
+			}
+
+			if (conflicts.Count > 0) {
+				debugForm.AddMessage($"Address conflicts detected: {conflicts.Count}");
+				foreach (string c in conflicts) debugForm.AddMessage(c);
+				ShowAddressConflictWarningDialog(conflicts);
+			}
 		}
 
 		public void AddressChangedCallback(object? sender, EventArgs e) {
@@ -215,6 +280,7 @@ namespace IPAddressChanger {
 					}
 				}
 				tsbRefresh.Image = Resources.Refresh_16x;
+				await DetectAddressConflictsAsync(adapters);
 			} catch (Exception ex) {
 				ShowAndLogError($"Error getting adapters:\r\n{ex.Message}", "Error Getting Adapters");
 				thereWereErrors = true;
@@ -436,14 +502,19 @@ namespace IPAddressChanger {
 		private async void RunShortcut(IPAddressShortcut shortcut) {
 			debugForm.AddMessage($"Running shortcut {shortcut.Name}");
 			AdapterInfo? ai = GetAdapterInfoFromDeviceID(shortcut.DeviceID);
-
 			if (ai == null) {
 				ShowAndLogError($"Adapter with device ID {shortcut.DeviceID} not found!", "Adapter Not Found");
 				return;
 			}
+			await ApplyAddressToAdapter(ai, shortcut.UseDHCP, shortcut.IPAddress, shortcut.PrefixLength, $"shortcut '{shortcut.Name}'");
+		}
 
+		// Applies a static IP+prefix or DHCP to the given adapter, with the per-adapter busy
+		// dialog and progress messages. operationDescription is folded into status/log lines
+		// (e.g. "shortcut 'Office Static'", "address 10.0.0.69/16", "DHCP").
+		private async Task ApplyAddressToAdapter(AdapterInfo ai, bool useDhcp, string ipAddress, int prefixLength, string operationDescription) {
 			if (busyAdapterDialogs.ContainsKey(ai)) {
-				debugForm.AddMessage($"Skipping shortcut: {ai.Name} is busy with another operation");
+				debugForm.AddMessage($"Skipping {operationDescription}: {ai.Name} is busy with another operation");
 				if (busyAdapterDialogs[ai] == null) {
 					// the user had closed the dialog, so re-show it
 					ShowAdapterBusyDialog($"{ai.Name} is busy with another operation", ai);
@@ -451,10 +522,32 @@ namespace IPAddressChanger {
 				return;
 			}
 
-			SetStatus($"Running shortcut '{shortcut.Name}' on {ai.Name}", false);
-			ShowAdapterBusyDialog($"Running shortcut '{shortcut.Name}' on {ai.Name}", ai);
+			// Pre-check: refuse before mutating state if this IP is already on a different adapter.
+			// Without this check, the OS rejects MSFT_NetIPAddress.Create with "already exists" AFTER we've
+			// already disabled DHCP and removed the existing addresses, leaving the adapter with no IP.
+			if (!useDhcp) {
+				try {
+					Dictionary<uint, List<IPAddressInfo>> allAddresses = await NetworkManager.GetAllIPAddressesAsync();
+					foreach (var kv in allAddresses) {
+						if (kv.Key == ai.Index) continue;
+						foreach (IPAddressInfo addr in kv.Value) {
+							if (addr.IPAddress == ipAddress) {
+								string conflictName = GetAdapterNameByIndex(kv.Key) ?? $"interface {kv.Key}";
+								ShowAndLogError($"Cannot apply {ipAddress}/{prefixLength} to {ai.Name}: the address is already in use on {conflictName}.", "Address Already In Use");
+								return;
+							}
+						}
+					}
+				} catch (Exception ex) {
+					debugForm.AddMessage($"Could not pre-check for address conflicts: {ex.Message}");
+					// fall through; the OS will reject the duplicate if the pre-check missed it
+				}
+			}
+
+			SetStatus($"Applying {operationDescription} to {ai.Name}...", false);
+			ShowAdapterBusyDialog($"Applying {operationDescription} to {ai.Name}", ai);
 			try {
-				if (!shortcut.UseDHCP) {
+				if (!useDhcp) {
 					ShowAdapterBusyDialog($"Disabling DHCP on {ai.Name}", ai);
 					debugForm.AddMessage($"Disabling DHCP on {ai.Name}");
 					try {
@@ -473,12 +566,15 @@ namespace IPAddressChanger {
 						return;
 					}
 
-					debugForm.AddMessage($"Setting new IP address for {ai.Name} to {shortcut.IPAddress}/{shortcut.PrefixLength}");
+					debugForm.AddMessage($"Setting new IP address for {ai.Name} to {ipAddress}/{prefixLength}");
 					ShowAdapterBusyDialog($"Setting new IP address for {ai.Name}", ai);
 					try {
-						await NetworkManager.NewIPAddressAsync(ai.Index, shortcut.IPAddress, (byte)shortcut.PrefixLength);
+						await NetworkManager.NewIPAddressAsync(ai.Index, ipAddress, (byte)prefixLength);
 					} catch (Exception ex) {
-						ShowAndLogError($"Error adding IP address on {ai.Name}:\r\n{ex.Message}", "Error Adding Address");
+						string detail = ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase)
+							? "the address is already assigned to another adapter on this system."
+							: ex.Message;
+						ShowAndLogError($"Error adding IP address on {ai.Name}:\r\n{detail}", "Error Adding Address");
 						return;
 					}
 				} else {
@@ -491,11 +587,19 @@ namespace IPAddressChanger {
 						return;
 					}
 				}
-				SetStatus($"Shortcut '{shortcut.Name}' applied to {ai.Name}", false);
+				SetStatus($"Applied {operationDescription} to {ai.Name}", false);
 			} finally {
 				RemoveAdapterBusyDialog(ai);
+				// Always refresh — even on error, since intermediate steps may have already mutated adapter state.
+				GetAdapters();
 			}
-			GetAdapters();
+		}
+
+		private string? GetAdapterNameByIndex(uint index) {
+			foreach (ListViewItem item in lsvAdapters.Items) {
+				if (item.Tag is AdapterInfo ai && ai.Index == index) return ai.Name;
+			}
+			return null;
 		}
 
 		private void EditShortcut(int? shortcutIndex = null, AdapterInfo? device = null, IPAddressShortcut? newShortcut = null) {
@@ -711,7 +815,6 @@ namespace IPAddressChanger {
 			int? shortcutIndex = GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex);
 			if (shortcutIndex is null) { return; }
 			RunShortcut(ipAddressShortcuts[(int)shortcutIndex]);
-
 		}
 
 		private void tsbSettings_Click(object sender, EventArgs e) {
@@ -842,6 +945,12 @@ namespace IPAddressChanger {
 			tsmiDeleteShortcut.Enabled = menuItemsEnabled;
 			tsmiRecallShortcut.Enabled = menuItemsEnabled;
 			tsmiEditShortcut.Enabled = menuItemsEnabled;
+			tsmiCopyShortcut.Enabled = menuItemsEnabled;
+			if (menuItemsEnabled) {
+				tsmiCopyShortcut.Text = $"Copy {GetShortcutItemAddressText(GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex))}";
+			} else {
+				tsmiCopyShortcut.Text = "Copy";
+			}
 		}
 
 		private void tsmiNewShortcut_Click(object sender, EventArgs e) {
@@ -870,6 +979,19 @@ namespace IPAddressChanger {
 				e.Cancel = true;
 				return;
 			}
+			string clipboardText = Clipboard.GetText();
+			if (IPValidator.IpCidrOrDhcp().IsMatch(clipboardText)) {
+				tsmiPasteAddressForAdapter.Enabled = true;
+				tsmiPasteAddressForAdapter.Text = $"Paste {clipboardText}";
+				tsmiPasteAddressForAdapter.Tag = clipboardText;
+			} else {
+				tsmiPasteAddressForAdapter.Enabled = false;
+				tsmiPasteAddressForAdapter.Text = "Paste";
+				tsmiPasteAddressForAdapter.Tag = null;
+			}
+			// this next line needs to end up getting the actual IP address and prefix to put on the menu item text
+			tsmiNewShortcutForAdapterWithAddress.Text = $"New Shortcut with {((AdapterInfo)lsvAdapters.SelectedItems[0].Tag)}";
+
 		}
 
 		public void AdapterDialogClosing(AdapterInfo adapter) {
@@ -879,7 +1001,7 @@ namespace IPAddressChanger {
 			if (busyAdapterDialogs[adapter] != null) {
 				debugForm.AddMessage($"Busy dialog for {adapter.Name} is closing");
 				busyAdapterDialogs[adapter] = null;
-			}			
+			}
 		}
 
 		private void ShowAdapterBusyDialog(string message, AdapterInfo adapter) {
@@ -888,7 +1010,7 @@ namespace IPAddressChanger {
 				busyAdapterDialogs.Add(adapter, null);
 				debugForm.AddMessage($"Adding busy dialog for {adapter.Name}");
 			}
-			
+
 			// new or existing adapter
 			if (busyAdapterDialogs[adapter] == null) {
 				// form doesn't exist for this adapter, add one
@@ -922,7 +1044,6 @@ namespace IPAddressChanger {
 			debugForm.AddMessage($"Removing busy dialog for {adapter.Name}");
 			busyAdapterDialogs.Remove(adapter);
 		}
-
 
 		private async void RenewAdapterDHCPLease(AdapterInfo adapter) {
 			if (busyAdapterDialogs.ContainsKey(adapter)) {
@@ -969,6 +1090,41 @@ namespace IPAddressChanger {
 				return;
 			}
 			RenewAdapterDHCPLease((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+		}
+
+		private string GetShortcutItemAddressText(int? shortcutIndex) {
+			if (shortcutIndex == null) {
+				return "";
+			}
+			IPAddressShortcut selectedShortcut = ipAddressShortcuts[(int)shortcutIndex];
+			if (!selectedShortcut.UseDHCP) {
+				return $"{selectedShortcut.IPAddress}/{selectedShortcut.PrefixLength}";
+			}
+			return "DHCP";
+		}
+		private void tsmiCopyShortcut_Click(object sender, EventArgs e) {
+			if (lsbShortcuts.SelectedIndex < 0) return;
+			int? shortcutIndex = GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex);
+			Clipboard.SetText(GetShortcutItemAddressText(shortcutIndex));
+		}
+
+		private async void tsmiPasteAddressForAdapter_Click(object sender, EventArgs e) {
+			if (lsvAdapters.SelectedItems.Count == 0) return;
+			if (tsmiPasteAddressForAdapter.Tag is not string clipboardText) return;
+			if (!IPValidator.IpCidrOrDhcp().IsMatch(clipboardText)) return;
+
+			AdapterInfo ai = (AdapterInfo)lsvAdapters.SelectedItems[0].Tag;
+
+			if (clipboardText == "DHCP") {
+				await ApplyAddressToAdapter(ai, true, "", 0, "DHCP");
+			} else {
+				string[] parts = clipboardText.Split('/');
+				await ApplyAddressToAdapter(ai, false, parts[0], int.Parse(parts[1]), clipboardText);
+			}
+		}
+
+		private void tsmiNewShortcutWithForAdapter_Click(object sender, EventArgs e) {
+
 		}
 	}
 

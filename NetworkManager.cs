@@ -64,6 +64,32 @@ namespace IPAddressChanger {
 			return list;
 		}
 
+		public static Task<Dictionary<uint, List<IPAddressInfo>>> GetAllIPAddressesAsync() =>
+			Task.Run(GetAllIPAddresses);
+
+		private static Dictionary<uint, List<IPAddressInfo>> GetAllIPAddresses() {
+			Dictionary<uint, List<IPAddressInfo>> map = new();
+			using CimSession session = CimSession.Create(null);
+			foreach (CimInstance ci in session.QueryInstances(Namespace, "WQL", "SELECT * FROM MSFT_NetIPAddress")) {
+				using (ci) {
+					var p = ci.CimInstanceProperties;
+					uint idx = (p["InterfaceIndex"]?.Value as UInt32?) ?? 0;
+					IPAddressInfo info = new IPAddressInfo {
+						AddressFamily = (p["AddressFamily"]?.Value as UInt16?) ?? 0,
+						IPAddress = p["IPAddress"]?.Value?.ToString() ?? "",
+						IPv4Address = p["IPv4Address"]?.Value?.ToString() ?? "",
+						IPv6Address = p["IPv6Address"]?.Value?.ToString() ?? "",
+						PrefixLength = (p["PrefixLength"]?.Value as byte?) ?? 0,
+						PrefixOrigin = (p["PrefixOrigin"]?.Value as UInt16?) ?? 0,
+						SuffixOrigin = (p["SuffixOrigin"]?.Value as UInt16?) ?? 0,
+					};
+					if (!map.ContainsKey(idx)) map[idx] = new List<IPAddressInfo>();
+					map[idx].Add(info);
+				}
+			}
+			return map;
+		}
+
 		public static Task SetDhcpAsync(uint interfaceIndex, bool enabled) =>
 			Task.Run(() => SetDhcp(interfaceIndex, enabled));
 

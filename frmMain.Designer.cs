@@ -36,7 +36,9 @@
 			this.chAdapterName = new ColumnHeader();
 			this.cmsAdaptersListMenu = new ContextMenuStrip(this.components);
 			this.tsmiNewShortcutForAdapter = new ToolStripMenuItem();
+			this.tsmiNewShortcutForAdapterWithAddress = new ToolStripMenuItem();
 			this.tsmiRenewDHCPForAdapter = new ToolStripMenuItem();
+			this.tsmiPasteAddressForAdapter = new ToolStripMenuItem();
 			this.netAdapterIcons = new ImageList(this.components);
 			this.tsAdapters = new ToolStrip();
 			this.tsbRefresh = new ToolStripButton();
@@ -49,6 +51,8 @@
 			this.tsmiDeleteShortcut = new ToolStripMenuItem();
 			this.tsmiEditShortcut = new ToolStripMenuItem();
 			this.tsmiRecallShortcut = new ToolStripMenuItem();
+			this.toolStripMenuItem2 = new ToolStripSeparator();
+			this.tsmiCopyShortcut = new ToolStripMenuItem();
 			this.tsShortcuts = new ToolStrip();
 			this.tsbNewShortcut = new ToolStripButton();
 			this.tsbDeleteShortcut = new ToolStripButton();
@@ -223,25 +227,40 @@
 			// 
 			// cmsAdaptersListMenu
 			// 
-			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiRenewDHCPForAdapter });
+			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiNewShortcutForAdapterWithAddress, this.tsmiRenewDHCPForAdapter, this.tsmiPasteAddressForAdapter });
 			this.cmsAdaptersListMenu.Name = "cmsAdaptersListMenu";
-			this.cmsAdaptersListMenu.Size = new Size(177, 48);
+			this.cmsAdaptersListMenu.Size = new Size(181, 114);
 			this.cmsAdaptersListMenu.Opening += this.cmsAdaptersListMenu_Opening;
 			// 
 			// tsmiNewShortcutForAdapter
 			// 
 			this.tsmiNewShortcutForAdapter.Name = "tsmiNewShortcutForAdapter";
-			this.tsmiNewShortcutForAdapter.Size = new Size(176, 22);
+			this.tsmiNewShortcutForAdapter.Size = new Size(180, 22);
 			this.tsmiNewShortcutForAdapter.Text = "New Shortcut";
 			this.tsmiNewShortcutForAdapter.Click += this.tsmiNewShortcutForAdapter_Click;
+			// 
+			// tsmiNewShortcutForAdapterWithAddress
+			// 
+			this.tsmiNewShortcutForAdapterWithAddress.Name = "tsmiNewShortcutForAdapterWithAddress";
+			this.tsmiNewShortcutForAdapterWithAddress.Size = new Size(180, 22);
+			this.tsmiNewShortcutForAdapterWithAddress.Text = "New Shortcut with";
+			this.tsmiNewShortcutForAdapterWithAddress.Click += this.tsmiNewShortcutWithForAdapter_Click;
 			// 
 			// tsmiRenewDHCPForAdapter
 			// 
 			this.tsmiRenewDHCPForAdapter.Enabled = false;
 			this.tsmiRenewDHCPForAdapter.Name = "tsmiRenewDHCPForAdapter";
-			this.tsmiRenewDHCPForAdapter.Size = new Size(176, 22);
+			this.tsmiRenewDHCPForAdapter.Size = new Size(180, 22);
 			this.tsmiRenewDHCPForAdapter.Text = "Renew DHCP Lease";
 			this.tsmiRenewDHCPForAdapter.Click += this.tsmiRenewDHCPForAdapter_Click;
+			// 
+			// tsmiPasteAddressForAdapter
+			// 
+			this.tsmiPasteAddressForAdapter.Enabled = false;
+			this.tsmiPasteAddressForAdapter.Name = "tsmiPasteAddressForAdapter";
+			this.tsmiPasteAddressForAdapter.Size = new Size(180, 22);
+			this.tsmiPasteAddressForAdapter.Text = "Paste";
+			this.tsmiPasteAddressForAdapter.Click += this.tsmiPasteAddressForAdapter_Click;
 			// 
 			// netAdapterIcons
 			// 
@@ -322,9 +341,9 @@
 			// 
 			// cmsShortcutsListMenu
 			// 
-			this.cmsShortcutsListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcut, this.toolStripMenuItem1, this.tsmiDeleteShortcut, this.tsmiEditShortcut, this.tsmiRecallShortcut });
+			this.cmsShortcutsListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcut, this.toolStripMenuItem1, this.tsmiDeleteShortcut, this.tsmiEditShortcut, this.tsmiRecallShortcut, this.toolStripMenuItem2, this.tsmiCopyShortcut });
 			this.cmsShortcutsListMenu.Name = "cmsShortcutsListMenu";
-			this.cmsShortcutsListMenu.Size = new Size(108, 98);
+			this.cmsShortcutsListMenu.Size = new Size(108, 126);
 			this.cmsShortcutsListMenu.Opening += this.cmsShortcutsListMenu_Opening;
 			// 
 			// tsmiNewShortcut
@@ -363,6 +382,19 @@
 			this.tsmiRecallShortcut.Size = new Size(107, 22);
 			this.tsmiRecallShortcut.Text = "Recall";
 			this.tsmiRecallShortcut.Click += this.tsmiRecallShortcut_Click;
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new Size(104, 6);
+			// 
+			// tsmiCopyShortcut
+			// 
+			this.tsmiCopyShortcut.Enabled = false;
+			this.tsmiCopyShortcut.Name = "tsmiCopyShortcut";
+			this.tsmiCopyShortcut.Size = new Size(107, 22);
+			this.tsmiCopyShortcut.Text = "Copy ";
+			this.tsmiCopyShortcut.Click += this.tsmiCopyShortcut_Click;
 			// 
 			// tsShortcuts
 			// 
@@ -898,5 +930,9 @@
 		private ToolStripMenuItem tsmiEditShortcut;
 		private ToolStripMenuItem tsmiRecallShortcut;
 		private Button cmdRenewDHCPLease;
+		private ToolStripSeparator toolStripMenuItem2;
+		private ToolStripMenuItem tsmiCopyShortcut;
+		private ToolStripMenuItem tsmiPasteAddressForAdapter;
+		private ToolStripMenuItem tsmiNewShortcutForAdapterWithAddress;
 	}
 }

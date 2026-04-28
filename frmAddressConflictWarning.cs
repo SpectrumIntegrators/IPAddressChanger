@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace IPAddressChanger;
+
+public partial class frmAddressConflictWarning : Form {
+	private frmMain _frmMain;
+	public frmAddressConflictWarning(frmMain parent) {
+		InitializeComponent();
+		_frmMain = parent;
+	}
+
+	private void cmdClose_Click(object sender, EventArgs e) {
+		Close();
+	}
+
+	public void SetAddressConflicts(IEnumerable<string> adapters) {
+		List<string> newMessage = new List<string>() {
+			"The following adapters have the same IP address!",
+			""
+		};
+		newMessage.AddRange(adapters);
+		txtConflictWarning.Lines = newMessage.ToArray();
+	}
+
+	private void frmAddressConflictWarning_FormClosing(object sender, FormClosingEventArgs e) {
+		_frmMain.AddressConflictWarningDialogClosing(chkSuppressMessages.Checked);
+	}
+}
