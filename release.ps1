@@ -124,7 +124,14 @@ if (Test-Path $publishDir) {
     Remove-Item -LiteralPath $publishDir -Recurse -Force
 }
 
-& dotnet publish $projectFile -c $Configuration -r $Runtime --self-contained false -p:PublishSingleFile=false
+& dotnet publish $projectFile `
+    -c $Configuration `
+    -r $Runtime `
+    --self-contained false `
+    -p:PublishSingleFile=false `
+    -p:DebugType=none `
+    -p:DebugSymbols=false `
+    -p:SatelliteResourceLanguages=en
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish failed (exit $LASTEXITCODE)."
 }
