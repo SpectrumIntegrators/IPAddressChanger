@@ -5,7 +5,24 @@ This application allows changing IP address settings for network adapters from a
 
 The application requires [elevated privileges](#privilege-elevation--uac-prompt) and may only be run by a user who has administrator access to the system.
 
+## Installation, Uninstallation, and Dependencies
+This application is distributed as a ZIP archive, there is no installer. To install:
+
+1. Download the latest `IPAddressChanger-<version>.zip` from the [Releases](https://github.com/SpectrumIntegrators/IPAddressChanger/releases) page.
+2. Extract it anywhere you like. Common choices:
+    * `C:\Program Files\IP Address Changer` (requires admin to write to)
+    * `C:\Tools\IP Address Changer`
+    * Your desktop
+    * Right in the downloads folder
+3. Run `IPAddressChanger.exe`. You'll be prompted by UAC because the application needs administrator rights to change network settings.
+4. (Optional) Right-click `IPAddressChanger.exe` and choose *Pin to Start* or *Create shortcut* if you want quick access.
+
+To **uninstall**, simply delete the folder. If you previously enabled the [Start at log on](#start-at-log-on) setting, disable it inside the application before deleting so the Task Scheduler entry is removed cleanly. User settings (saved shortcuts, window size, hotkey, etc.) live under `%LOCALAPPDATA%\IPAddressChanger` and can be deleted separately if you want to wipe state too. (Also see [Resetting the Settings](#resetting-the-settings).)
+
+The ZIP contains a framework-dependent build, so the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) must be installed on the target system. If it isn't, Windows will prompt you to download it the first time you launch the application.
+
 ## Table of Contents
+1. [Installation, Uninstallation, and Dependencies](#installation-uninstallation-and-dependencies)
 1. [Shortcuts](#shortcuts)
 1. [Main Window](#main-window)
     1. [Main Tool Bar](#main-tool-bar)
@@ -38,7 +55,7 @@ The functionality of the program revolves around Shortcuts, which are configurat
 ![Main Window](./images/main.png)
 
 ### Layout
-The main window is divided into and four areas: [Adapters List](#adapters-list), [Shortcuts List](#shortcuts-list), [Adapter Details](#adapter-details), and [Adapters Address List](#adapter-addresses-list). The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).
+The main window is divided into four areas: [Adapters List](#adapters-list), [Shortcuts List](#shortcuts-list), [Adapter Details](#adapter-details), and [Adapters Addresses List](#adapter-addresses-list). The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).
 
 ### Main Tool Bar
 
@@ -137,7 +154,7 @@ This list shows all of the stored configuration preset shortcuts.
 
 Double-clicking a shortcut will either edit the shortcut or recall the shortcut, depending on the value of the [Start minimized](#start-minimized) setting.
 
-These shortcuts are also available in the Shortcuts menu of the [Notification Area Icon Menu](#notificaion-area-icon-menu).
+These shortcuts are also available in the Shortcuts menu of the [Notification Area Icon Menu](#notification-area-icon-menu).
 
 #### Shortcut Context Menu
 ![Shortcut Context Menu](./images/shortcutcontextmenu.png)
@@ -243,7 +260,7 @@ This menu contains all of the configured network adapter shortcuts. It is the sa
 ![Shortcut Window](./images/shortcut.png)
 
 ### Shortcut Name
-This is the name you will see in the [Shortcuts List](#shortcuts-list) and in the [Notification Area Icon Menu](#notificaion-area-icon-menu).
+This is the name you will see in the [Shortcuts List](#shortcuts-list) and in the [Notification Area Icon Menu](#notification-area-icon-menu).
 
 When creating a new shortcut, this name will be automatically generated until you manually edit the name, but after you edit it manually it will retain whatever value you provide.
 
@@ -304,6 +321,7 @@ When this is checked, a task scheduler event is created to launch the program wh
 ### Resetting the Settings
 If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the `Shift` key while the program launches to reset all of the settings to their default values.
 
+The files from `%LOCALAPPDATA%\IPAddressChanger` could also be deleted to eliminate the per-user settings and start fresh on the next launch.
 
 ## Debug Messages Window
 This window shows additional information about the actions the program is performing and the results of those actions. Note: this will delete all of your shortcuts too!
