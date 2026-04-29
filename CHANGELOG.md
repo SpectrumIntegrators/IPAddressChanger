@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file. The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to a four-segment `Major.Minor.Patch.Build` version scheme.
 
+  ## [Unreleased]
+
+  ### Changed
+  - Restored compact section headings ("Adapters" / "Shortcuts") to the left of their respective toolbars.
+
 ## [1.1.0.0] - 2026-04-29
 
 A substantial overhaul of the underlying networking layer and the per-operation UX. The application no longer depends on PowerShell or any third-party JSON library, and operations on different adapters can now run concurrently without freezing the UI.

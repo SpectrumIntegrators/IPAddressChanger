@@ -25,6 +25,12 @@
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+			Label label4;
+			Label label1;
+			Label label2;
+			Label label3;
+			ToolStripSpringLabel toolStripSpringLabel1;
+			ToolStripSpringLabel toolStripSpringLabel2;
 			this.ssStatus = new StatusStrip();
 			this.tsslStatus = new ToolStripStatusLabel();
 			this.tsslVersion = new ToolStripStatusLabel();
@@ -62,14 +68,10 @@
 			this.tsbMoveShortcutDown = new ToolStripButton();
 			this.splitContainer2 = new SplitContainer();
 			this.tableLayoutPanel1 = new TableLayoutPanel();
-			this.label4 = new Label();
 			this.txtDeviceID = new TextBox();
 			this.txtDriver = new TextBox();
-			this.label1 = new Label();
-			this.label2 = new Label();
 			this.txtHardwareAddress = new TextBox();
 			this.txtSpeed = new TextBox();
-			this.label3 = new Label();
 			this.cmdRenewDHCPLease = new Button();
 			this.lsvAddresses = new ListView();
 			this.chAddress = new ColumnHeader();
@@ -96,6 +98,12 @@
 			this.toolStripSeparator2 = new ToolStripSeparator();
 			this.tsmiShortcuts = new ToolStripMenuItem();
 			this.helpProvider1 = new HelpProvider();
+			label4 = new Label();
+			label1 = new Label();
+			label2 = new Label();
+			label3 = new Label();
+			toolStripSpringLabel1 = new ToolStripSpringLabel();
+			toolStripSpringLabel2 = new ToolStripSpringLabel();
 			this.ssStatus.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -275,7 +283,7 @@
 			// tsAdapters
 			// 
 			this.tsAdapters.GripStyle = ToolStripGripStyle.Hidden;
-			this.tsAdapters.Items.AddRange(new ToolStripItem[] { this.tsbRefresh, this.tsbOnlineOnly });
+			this.tsAdapters.Items.AddRange(new ToolStripItem[] { toolStripSpringLabel2, this.tsbRefresh, this.tsbOnlineOnly });
 			this.tsAdapters.Location = new Point(0, 0);
 			this.tsAdapters.Name = "tsAdapters";
 			this.tsAdapters.RenderMode = ToolStripRenderMode.System;
@@ -403,7 +411,7 @@
 			// tsShortcuts
 			// 
 			this.tsShortcuts.GripStyle = ToolStripGripStyle.Hidden;
-			this.tsShortcuts.Items.AddRange(new ToolStripItem[] { this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.tsbMoveShortcutUp, this.tsbMoveShortcutDown });
+			this.tsShortcuts.Items.AddRange(new ToolStripItem[] { toolStripSpringLabel1, this.tsbNewShortcut, this.tsbDeleteShortcut, this.tsbEditShortcut, this.tsbRecallShortcut, this.tsbMoveShortcutUp, this.tsbMoveShortcutDown });
 			this.tsShortcuts.Location = new Point(0, 0);
 			this.tsShortcuts.Name = "tsShortcuts";
 			this.tsShortcuts.RenderMode = ToolStripRenderMode.System;
@@ -507,14 +515,14 @@
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(label4, 0, 3);
 			this.tableLayoutPanel1.Controls.Add(this.txtDeviceID, 1, 3);
 			this.tableLayoutPanel1.Controls.Add(this.txtDriver, 1, 2);
-			this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(label1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(label2, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.txtHardwareAddress, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.txtSpeed, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(label3, 0, 2);
 			this.tableLayoutPanel1.Controls.Add(this.cmdRenewDHCPLease, 1, 4);
 			this.tableLayoutPanel1.Dock = DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new Point(0, 0);
@@ -530,13 +538,13 @@
 			// 
 			// label4
 			// 
-			this.label4.Anchor = AnchorStyles.Left;
-			this.label4.AutoSize = true;
-			this.label4.Location = new Point(3, 115);
-			this.label4.Name = "label4";
-			this.label4.Size = new Size(56, 15);
-			this.label4.TabIndex = 8;
-			this.label4.Text = "Device ID";
+			label4.Anchor = AnchorStyles.Left;
+			label4.AutoSize = true;
+			label4.Location = new Point(3, 115);
+			label4.Name = "label4";
+			label4.Size = new Size(56, 15);
+			label4.TabIndex = 8;
+			label4.Text = "Device ID";
 			// 
 			// txtDeviceID
 			// 
@@ -568,23 +576,23 @@
 			// 
 			// label1
 			// 
-			this.label1.Anchor = AnchorStyles.Left;
-			this.label1.AutoSize = true;
-			this.label1.Location = new Point(3, 10);
-			this.label1.Name = "label1";
-			this.label1.Size = new Size(103, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Hardware Address";
+			label1.Anchor = AnchorStyles.Left;
+			label1.AutoSize = true;
+			label1.Location = new Point(3, 10);
+			label1.Name = "label1";
+			label1.Size = new Size(103, 15);
+			label1.TabIndex = 0;
+			label1.Text = "Hardware Address";
 			// 
 			// label2
 			// 
-			this.label2.Anchor = AnchorStyles.Left;
-			this.label2.AutoSize = true;
-			this.label2.Location = new Point(3, 45);
-			this.label2.Name = "label2";
-			this.label2.Size = new Size(39, 15);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "Speed";
+			label2.Anchor = AnchorStyles.Left;
+			label2.AutoSize = true;
+			label2.Location = new Point(3, 45);
+			label2.Name = "label2";
+			label2.Size = new Size(39, 15);
+			label2.TabIndex = 1;
+			label2.Text = "Speed";
 			// 
 			// txtHardwareAddress
 			// 
@@ -616,13 +624,13 @@
 			// 
 			// label3
 			// 
-			this.label3.Anchor = AnchorStyles.Left;
-			this.label3.AutoSize = true;
-			this.label3.Location = new Point(3, 80);
-			this.label3.Name = "label3";
-			this.label3.Size = new Size(101, 15);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "Driver Description";
+			label3.Anchor = AnchorStyles.Left;
+			label3.AutoSize = true;
+			label3.Location = new Point(3, 80);
+			label3.Name = "label3";
+			label3.Size = new Size(101, 15);
+			label3.TabIndex = 4;
+			label3.Text = "Driver Description";
 			// 
 			// cmdRenewDHCPLease
 			// 
@@ -842,6 +850,22 @@
 			// 
 			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
 			// 
+			// toolStripSpringLabel1
+			// 
+			toolStripSpringLabel1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+			toolStripSpringLabel1.Name = "toolStripSpringLabel1";
+			toolStripSpringLabel1.Size = new Size(297, 21);
+			toolStripSpringLabel1.Text = "Shortcuts";
+			toolStripSpringLabel1.TextAlign = ContentAlignment.MiddleLeft;
+			// 
+			// toolStripSpringLabel2
+			// 
+			toolStripSpringLabel2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+			toolStripSpringLabel2.Name = "toolStripSpringLabel2";
+			toolStripSpringLabel2.Size = new Size(389, 21);
+			toolStripSpringLabel2.Text = "Adapters";
+			toolStripSpringLabel2.TextAlign = ContentAlignment.MiddleLeft;
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new SizeF(7F, 15F);
@@ -967,5 +991,6 @@
 		private ContextMenuStrip cmsAddressesListMenu;
 		private ToolStripMenuItem tsmiAddressesListNewShortcut;
 		private ToolStripMenuItem tsmiAddressesListCopy;
+		private ToolStripSpringLabel toolStripSpringLabel1;
 	}
 }
