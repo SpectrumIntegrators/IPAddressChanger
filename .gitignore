@@ -3,3 +3,4 @@
 /.vs
 **/Release
 **/Debug
+/releases
