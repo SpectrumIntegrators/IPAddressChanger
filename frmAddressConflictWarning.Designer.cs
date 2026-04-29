@@ -49,14 +49,14 @@ partial class frmAddressConflictWarning {
 		this.tableLayoutPanel1.RowCount = 3;
 		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 69.06475F));
 		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 30.9352512F));
-		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
 		this.tableLayoutPanel1.Size = new Size(444, 173);
 		this.tableLayoutPanel1.TabIndex = 2;
 		// 
 		// cmdClose
 		// 
 		this.cmdClose.Anchor = AnchorStyles.Top;
-		this.cmdClose.Location = new Point(174, 106);
+		this.cmdClose.Location = new Point(174, 105);
 		this.cmdClose.Name = "cmdClose";
 		this.cmdClose.Size = new Size(95, 37);
 		this.cmdClose.TabIndex = 2;
@@ -76,7 +76,7 @@ partial class frmAddressConflictWarning {
 		this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 		this.tableLayoutPanel2.RowCount = 1;
 		this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-		this.tableLayoutPanel2.Size = new Size(438, 97);
+		this.tableLayoutPanel2.Size = new Size(438, 96);
 		this.tableLayoutPanel2.TabIndex = 3;
 		// 
 		// txtConflictWarning
@@ -87,7 +87,7 @@ partial class frmAddressConflictWarning {
 		this.txtConflictWarning.Multiline = true;
 		this.txtConflictWarning.Name = "txtConflictWarning";
 		this.txtConflictWarning.ReadOnly = true;
-		this.txtConflictWarning.Size = new Size(364, 91);
+		this.txtConflictWarning.Size = new Size(364, 90);
 		this.txtConflictWarning.TabIndex = 0;
 		// 
 		// pictureBox1
@@ -96,7 +96,7 @@ partial class frmAddressConflictWarning {
 		this.pictureBox1.Image = Properties.Resources.warning_yellow_7231_32wx31h_exp;
 		this.pictureBox1.Location = new Point(3, 3);
 		this.pictureBox1.Name = "pictureBox1";
-		this.pictureBox1.Size = new Size(62, 91);
+		this.pictureBox1.Size = new Size(62, 90);
 		this.pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
 		this.pictureBox1.TabIndex = 1;
 		this.pictureBox1.TabStop = false;
@@ -104,9 +104,9 @@ partial class frmAddressConflictWarning {
 		// chkSuppressMessages
 		// 
 		this.chkSuppressMessages.AutoSize = true;
-		this.chkSuppressMessages.Location = new Point(3, 152);
+		this.chkSuppressMessages.Location = new Point(3, 151);
 		this.chkSuppressMessages.Name = "chkSuppressMessages";
-		this.chkSuppressMessages.Size = new Size(249, 18);
+		this.chkSuppressMessages.Size = new Size(249, 19);
 		this.chkSuppressMessages.TabIndex = 4;
 		this.chkSuppressMessages.Text = "Don't show this warning again this session";
 		this.chkSuppressMessages.UseVisualStyleBackColor = true;

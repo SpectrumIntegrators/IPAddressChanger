@@ -1,11 +1,9 @@
 ﻿# IP Address Changer
 
 ## Overview
-This application allows changing IP address settings for network adapters from a quick list of user-defined configurations. IP addresses may be IPv4 or IPv6, or DHCP can be enabled. (IPv6 has not been tested.)
+This application allows changing IP address settings for network adapters from a quick list of user-defined configurations or copy/paste.
 
-The application requires elevated privileges and may only be run by a user who has administrator access to the system.
-
-The network adapter settings functionality is provided by PowerShell. If PowerShell is restricted or disabled, the application will not function properly.
+The application requires [elevated privileges](#privilege-elevation--uac-prompt) and may only be run by a user who has administrator access to the system.
 
 ## Table of Contents
 1. [Shortcuts](#shortcuts)
@@ -13,11 +11,15 @@ The network adapter settings functionality is provided by PowerShell. If PowerSh
     1. [Tool Bar](#tool-bar)
     1. [Status Bar](#status-bar)
     1. [Adapters List](#adapters-list)
+        1. [Adapter Context Menu](#adapter-context-menu)
     1. [Shortcuts List](#shortcuts-list)
+        1. [Shortcut Context Menu](#shortcut-context-menu)
     1. [Adapter Details](#adapter-details)
     1. [Adapter Address List](#adapter-addresses-list)
 1. [Notification Area Icon](#notification-area-icon)
 1. [New/Edit Shortcut Window](#newedit-shortcut-window)
+1. [Adapter Busy Dialog](#adapter-busy-dialog)
+1. [Address Conflict Warning](#address-conflict-warning)
 1. [Settings Window](#settings-window)
 1. [Debug Messages Window](#debug-messages-window)
 1. [Copyright](#copyright)
@@ -26,7 +28,7 @@ The network adapter settings functionality is provided by PowerShell. If PowerSh
 The functionality of the program revolves around Shortcuts, which are configuration presets for specific adapters. If the adapter name is changed, the shortcut should still work (it's based on its device ID). The adapter must be present for the shortcut to work, but the current adapter index does not matter because the shortcuts are based on the device ID.
 
 ## Main Window
-![Main Window](https://spectrumintegrators.github.io/IPAddressChanger/images/main.png)
+![Main Window](./images/main.png)
 
 ### Layout
 The main window is divided into a [Tool Bar](#tool-bar), a [Status Bar](#status-bar), and four areas: [Adapters List](#adapters-listadapters), [Shortcuts List](#shortcuts-list), [Adapter Details](#adapter-details), and [Adapters Address List](#adapter-addresses-list). The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).
@@ -75,12 +77,51 @@ Selecting an adapter will display additional details in the [Adapter Details](#a
 
 Double-clicking an adapter will create a new shortcut for that adapter.
 
+#### Adapter Context Menu
+
+![Adapter Context Menu](./images/adaptercontextmenu.png)
+
+Right-clicking an adapter shows a context menu with the following items:
+
+##### New Shortcut
+Creates a new empty shortcut for this adapter.
+
+##### New Shortcut with...
+Pre-fills the new-shortcut dialog with this adapter's currently configured method — either `DHCP` (if the adapter is set to acquire its address via DHCP) or the adapter's first IPv4 address and prefix length. Disabled when the adapter has neither (e.g. an adapter with no IPv4 configuration). The menu label shows what will be pre-filled, e.g. *New Shortcut with 10.0.0.69/16*.
+
+##### Renew DHCP for adapter
+Same action as the [Renew DHCP Lease](#renew-dhcp-lease) button in the [Adapter Details](#adapter-details) area. Enabled only when the adapter has IPv4 DHCP configured.
+
+##### Paste *value*
+Applies an IP/CIDR or `DHCP` value from the clipboard directly to this adapter, with the same workflow as recalling a shortcut. The menu label shows the value that will be pasted, e.g. *Paste 10.0.0.69/16* or *Paste DHCP*. Disabled when the clipboard does not contain a valid IPv4/CIDR or `DHCP` string.
+
+Note that the address in the clipboard does not have to have come from this software, if you copy a valid IP address and network prefix in CIDR notation or the literal string `DHCP`, the software will use that value to paste. If the IP address is invalid (like `123.456.789.12`), the paste feature will ignore it. Addresses with leading zeroes in an octet (`010.001.001.001`) will also be ignored.
+
+A pre-apply check refuses to assign an IP that is already in use on a different adapter on the same system, before any changes are made to this adapter.
+
 ### Shortcuts List
 This list shows all of the stored configuration preset shortcuts.
 
 Double-clicking a shortcut will either edit the shortcut or recall the shortcut, depending on the value of the [Start minimized](#start-minimized) setting.
 
 These shortcuts are also available in the Shortcuts menu of the [Notification Area Icon Menu](#notificaion-area-icon-menu).
+
+#### Shortcut Context Menu
+![Shortcut Context Menu](./images/shortcutcontextmenu.png)
+
+Right-clicking a shortcut shows a context menu with the following items:
+
+##### New Shortcut
+Creates a new shortcut.
+
+##### Edit Shortcut
+Opens the [New/Edit Shortcut Window](#newedit-shortcut-window) for the selected shortcut.
+
+##### Recall Shortcut
+Applies the selected shortcut to its associated adapter.
+
+##### Copy Shortcut
+Copies the shortcut's value (IP/CIDR or `DHCP`) to the clipboard. The clipboard contents can then be pasted onto any adapter via the [Paste](#paste-value) item on the adapter context menu.
 
 ### Adapter Details
 
@@ -95,6 +136,15 @@ The description of the driver that is used to interface with the adapter hardwar
 
 #### Device ID
 The unique identifier of this adapter.
+
+#### Renew DHCP Lease
+Releases and renews the DHCP lease on this adapter. Enabled only when the adapter has IPv4 DHCP configured. The renew operation typically completes in well under a second when a DHCP server responds, but may take 30–60 seconds when the network is unreachable or no server replies. While the process is underway, the [Adapter Busy Dialog](#adapter-busy-dialog) is displayed. It can be dismissed while the process continues in the background (additional operation on this adapter will be blocked until the process is complete). DHCP renewal errors will be shown in the [debug window](#debug-messages-window) and also in a popup dialog.
+
+![DHCP renewal error example](./images/dhcprenewerror.png)
+
+![DHCP not available error](./images/dhcprenewerror2.png)
+
+After a successful renew, the status bar suggests using [Refresh](#refresh) to update the address list with the new lease.
 
 ### Adapter Addresses List
 This shows all of the addresses configured for the selected adapter. You may resize and rearrange the columns (size and position will be saved on exit).
@@ -119,7 +169,7 @@ The origin of the host  portion of the address.
 ## Notification Area Icon
 The notification area icon appears in the notification area of the task bar near the clock (you may need to click the expand button to see it). Double-clicking the icon will show the application. Right clicking it will show a quick-access menu.
 
-![Notification Area](https://spectrumintegrators.github.io/IPAddressChanger/images/notificationmenu.png)
+![Notification Area](./images/notificationmenu.png)
 
 ### Notificaion Area Icon Menu
 
@@ -139,7 +189,7 @@ Launches the network adapters control panel.
 This menu contains all of the configured network adapter shortcuts. It is the same list as the [Shortcuts List](#shortcuts-list). Clicking one of these items will recall that shortcut.
 
 ## New/Edit Shortcut Window
-![Shortcut Window](https://spectrumintegrators.github.io/IPAddressChanger/images/shortcut.png)
+![Shortcut Window](./images/shortcut.png)
 
 ### Shortcut Name
 This is the name you will see in the [Shortcuts List](#shortcuts-list) and in the [Notification Area Icon Menu](#notificaion-area-icon-menu).
@@ -161,10 +211,26 @@ The length of the network portion of the address to use for this shortcut. For I
 ### Delete Button
 When editing an existing shortcut, you can instead choose to delete the shortcut from this window.
 
+## Adapter Busy Dialog
+![Adapter Busy Dialog](./images/adapterbusy.png)
+
+When an operation that mutates an adapter (recalling a shortcut, pasting an address, or renewing a DHCP lease) is in flight, a non-modal busy dialog appears for that adapter showing the current step. The dialog can be dismissed without aborting the operation, but closing it just hides the progress indicator while the operation continues in the background. If a second action is attempted on the same adapter while it is still busy, the dialog re-shows itself rather than starting a new operation.
+
+Operations on different adapters run in parallel, and each gets its own busy dialog. The rest of the UI (selecting other adapters, viewing details, opening Settings, etc.) remains responsive throughout.
+
+## Address Conflict Warning
+![Address Conflict Warning](./images/addressconflictwarning.png)
+
+After a refresh, if the application detects that two or more adapters are sharing the same IP address, a warning dialog is shown listing each conflict. Two adapters with the same address on the same machine is always a misconfiguration — Windows picks one and effectively ignores the other for routing purposes — so the warning is intended to surface accidents (e.g. recalling the same static-IP shortcut against two adapters).
+
+The dialog has a "do not show again" checkbox; checking it suppresses future conflict warnings for the remainder of the session. Restart the application to re-enable warnings.
+
+The application also performs a pre-apply check before assigning a static IP, refusing to create a conflict in the first place if it can detect one. The post-refresh warning catches conflicts that arise from outside the application or from operations that bypass the pre-apply check.
+
 ## Settings Window
 This window allows changing the functionality of the program.
 
-![Settings Window](https://spectrumintegrators.github.io/IPAddressChanger/images/settings.png)
+![Settings Window](./images/settings.png)
 
 ### Hide when minimized
 Hides the window from the task bar when it is minimized (it can be shown again from the [Notification Area Icon Menu](#notificaion-area-icon-menu)).
@@ -191,7 +257,7 @@ If for some reason your settings get hosed (for example, if somehow it stores th
 ## Debug Messages Window
 This window shows additional information about the actions the program is performing and the results of those actions. Note: this will delete all of your shortcuts too!
 
-![Debug Messages Window](https://spectrumintegrators.github.io/IPAddressChanger/images/debug.png)
+![Debug Messages Window](./images/debug.png)
 
 ### Tool Bar
 
@@ -209,9 +275,30 @@ This list contains all of the debug messages. Clicking a line will select it, us
 
 `CTRL+C` will copy selected items to the clipboard. `CTRL+A` will select all items.
 
+## Privilege Elevation & UAC Prompt
+
+![UAC Prompt](./images/uac.png)
+
+Privilege elevation is required to make changes to network configuration. The Settings app and `ncpa.cpl` route changes through the Network Connections service, which is already elevated and checks the caller's permissions itself — hence no UAC prompt. This application calls CIM/WMI directly, and those providers check the calling process's token, so the application has to be elevated up front. That's the UAC prompt at launch.
+
+The software isn't digitally signed, so the UAC prompt shows "unknown publisher."
+
+## Windows SmartScreen Warning
+If you downloaded this file from the Internet, there's a good chance you'll see the Windows SmartScreen warning saying "Windows has protected your PC." This is because the application isn't digitally signed and known to be safe by Microsoft. The path to fixing this is too long and expensive for an in-house tool, so you'll just have to "trust me, bro."
+
+## Things I Haven't Tested
+If you find a bug, use the bug report feature. But there are some things that I know might not work well and I just can't be bothered to test for since this is a limited-audience tech tool.
+
+* Different font DPI settings - may make text in forms cropped and unreadable
+* Different window scaling settings - this should be OK but different elements on the form may not scale correctly or proportionately
+* IPv6 - the software is generally aimed at IPv4 (and dotted-decimal addresses specifically)
+
+## AI Disclosure
+This project was completed before AI coding agents were a thing, but recent revisions have used the aid of an agent for refactorings and documentation. (Release [1.0.5.1](https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1) was the last non-AI-assisted release.)
+
 ## Copyright
 	IP Address Changer - Windows GUI application to quickly change network address settings.
-    Copyright (C) 2024 Jonathan Dean (jonathand at spectrumintegrators.com)
+    Copyright (C) 2024-2026 Jonathan Dean (jonathand at spectrumintegrators.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
