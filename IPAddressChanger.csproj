@@ -50,10 +50,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="index.html">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
     <None Update="IP Address Changer Documentation.url">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="IP Address Changer Feedback.url">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Properties\Settings.settings">
