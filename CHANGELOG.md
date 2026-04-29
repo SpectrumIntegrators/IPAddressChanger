@@ -15,6 +15,7 @@ A substantial overhaul of the underlying networking layer and the per-operation 
 - **Pre-apply duplicate-IP check**: before disabling DHCP and removing existing addresses, the app verifies the target IP is not already assigned to a different adapter. If it is, the operation is refused with a clear message and no state mutation occurs.
 - **Per-adapter "busy" dialogs** that report progress for slow operations. Operations on different adapters can run in parallel; the dialog can be dismissed without aborting the operation, and re-shows itself if a second action is attempted while the adapter is still busy.
 - **Adapter-state cache** so that change notifications which represent no user-visible difference are logged once as "no detectable change" instead of dumping the full adapter list, and the refresh icon only highlights when something actually changed.
+- **Adapter address list context menu**: right-clicking a row in the per-adapter addresses list now offers *New Shortcut with {value}* (pre-fills the new-shortcut dialog with the selected address's IP/prefix or `DHCP`) and *Copy {value}* (copies the same string to the clipboard for pasting onto another adapter). Both menu labels reflect the actual selected row.
 
 ### Changed
 - **Networking layer**: all `Get-NetAdapter` / `Get-NetIPAddress` / `Set-NetIPInterface` / `New-NetIPAddress` / `Remove-NetIPAddress` invocations replaced with direct CIM calls via `Microsoft.Management.Infrastructure` against `root\StandardCimv2`. DHCP renew uses `Win32_NetworkAdapterConfiguration.RenewDHCPLease` in `root\cimv2`.
@@ -26,6 +27,7 @@ A substantial overhaul of the underlying networking layer and the per-operation 
 ### Fixed
 - "*Object reference not set to an instance of an object.*" popup when iterating adapters with null CIM property values (loopback, virtual NICs, Bluetooth PAN adapters). Property access is now null-safe with documented fallbacks.
 - Adapter list now refreshes after a failed shortcut apply so the displayed state reflects the actual (possibly partial) configuration rather than stale pre-failure data.
+- The cryptic "*The object already exists*" CIM error from `MSFT_NetIPAddress.Create` (when an attempted IP assignment collides with another adapter) is now translated to a clear "the address is already assigned to another adapter on this system" message. Acts as defense-in-depth if the pre-apply duplicate check is bypassed by a race or external state change.
 - Stray unused `using` directives removed.
 
 ### Removed

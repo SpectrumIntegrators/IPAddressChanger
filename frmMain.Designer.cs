@@ -77,6 +77,9 @@
 			this.chAddressFamily = new ColumnHeader();
 			this.chPrefixOrigin = new ColumnHeader();
 			this.chSuffixOrigin = new ColumnHeader();
+			this.cmsAddressesListMenu = new ContextMenuStrip(this.components);
+			this.tsmiAddressesListNewShortcut = new ToolStripMenuItem();
+			this.tsmiAddressesListCopy = new ToolStripMenuItem();
 			this.tsMain = new ToolStrip();
 			this.tsbSettings = new ToolStripButton();
 			this.tsbDebug = new ToolStripButton();
@@ -113,6 +116,7 @@
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
+			this.cmsAddressesListMenu.SuspendLayout();
 			this.tsMain.SuspendLayout();
 			this.cmsNotifyIconMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -229,20 +233,20 @@
 			// 
 			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiNewShortcutForAdapterWithAddress, this.tsmiRenewDHCPForAdapter, this.tsmiPasteAddressForAdapter });
 			this.cmsAdaptersListMenu.Name = "cmsAdaptersListMenu";
-			this.cmsAdaptersListMenu.Size = new Size(181, 114);
+			this.cmsAdaptersListMenu.Size = new Size(177, 92);
 			this.cmsAdaptersListMenu.Opening += this.cmsAdaptersListMenu_Opening;
 			// 
 			// tsmiNewShortcutForAdapter
 			// 
 			this.tsmiNewShortcutForAdapter.Name = "tsmiNewShortcutForAdapter";
-			this.tsmiNewShortcutForAdapter.Size = new Size(180, 22);
+			this.tsmiNewShortcutForAdapter.Size = new Size(176, 22);
 			this.tsmiNewShortcutForAdapter.Text = "New Shortcut";
 			this.tsmiNewShortcutForAdapter.Click += this.tsmiNewShortcutForAdapter_Click;
 			// 
 			// tsmiNewShortcutForAdapterWithAddress
 			// 
 			this.tsmiNewShortcutForAdapterWithAddress.Name = "tsmiNewShortcutForAdapterWithAddress";
-			this.tsmiNewShortcutForAdapterWithAddress.Size = new Size(180, 22);
+			this.tsmiNewShortcutForAdapterWithAddress.Size = new Size(176, 22);
 			this.tsmiNewShortcutForAdapterWithAddress.Text = "New Shortcut with";
 			this.tsmiNewShortcutForAdapterWithAddress.Click += this.tsmiNewShortcutWithForAdapter_Click;
 			// 
@@ -250,7 +254,7 @@
 			// 
 			this.tsmiRenewDHCPForAdapter.Enabled = false;
 			this.tsmiRenewDHCPForAdapter.Name = "tsmiRenewDHCPForAdapter";
-			this.tsmiRenewDHCPForAdapter.Size = new Size(180, 22);
+			this.tsmiRenewDHCPForAdapter.Size = new Size(176, 22);
 			this.tsmiRenewDHCPForAdapter.Text = "Renew DHCP Lease";
 			this.tsmiRenewDHCPForAdapter.Click += this.tsmiRenewDHCPForAdapter_Click;
 			// 
@@ -258,7 +262,7 @@
 			// 
 			this.tsmiPasteAddressForAdapter.Enabled = false;
 			this.tsmiPasteAddressForAdapter.Name = "tsmiPasteAddressForAdapter";
-			this.tsmiPasteAddressForAdapter.Size = new Size(180, 22);
+			this.tsmiPasteAddressForAdapter.Size = new Size(176, 22);
 			this.tsmiPasteAddressForAdapter.Text = "Paste";
 			this.tsmiPasteAddressForAdapter.Click += this.tsmiPasteAddressForAdapter_Click;
 			// 
@@ -302,7 +306,7 @@
 			this.tsbOnlineOnly.Name = "tsbOnlineOnly";
 			this.tsbOnlineOnly.Size = new Size(23, 21);
 			this.tsbOnlineOnly.Text = "Hide Offline";
-			this.tsbOnlineOnly.ToolTipText = "Hide offline adapters";
+			this.tsbOnlineOnly.ToolTipText = "Hide/show offline adapters";
 			this.tsbOnlineOnly.Click += this.tsbOnlineOnly_Click;
 			// 
 			// tableLayoutPanel2
@@ -465,6 +469,7 @@
 			this.tsbMoveShortcutUp.Name = "tsbMoveShortcutUp";
 			this.tsbMoveShortcutUp.Size = new Size(23, 21);
 			this.tsbMoveShortcutUp.Text = "toolStripButton1";
+			this.tsbMoveShortcutUp.ToolTipText = "Move selected shortcut up";
 			this.tsbMoveShortcutUp.Click += this.tsbMoveShortcutUp_Click;
 			// 
 			// tsbMoveShortcutDown
@@ -476,6 +481,7 @@
 			this.tsbMoveShortcutDown.Name = "tsbMoveShortcutDown";
 			this.tsbMoveShortcutDown.Size = new Size(23, 21);
 			this.tsbMoveShortcutDown.Text = "toolStripButton2";
+			this.tsbMoveShortcutDown.ToolTipText = "Move selected shortcut down";
 			this.tsbMoveShortcutDown.Click += this.tsbMoveShortcutDown_Click;
 			// 
 			// splitContainer2
@@ -499,8 +505,8 @@
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25.05176F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 74.94824F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
 			this.tableLayoutPanel1.Controls.Add(this.txtDeviceID, 1, 3);
 			this.tableLayoutPanel1.Controls.Add(this.txtDriver, 1, 2);
@@ -538,7 +544,7 @@
 			this.txtDeviceID.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtDeviceID, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtDeviceID, HelpNavigator.Topic);
-			this.txtDeviceID.Location = new Point(152, 111);
+			this.txtDeviceID.Location = new Point(123, 111);
 			this.txtDeviceID.Name = "txtDeviceID";
 			this.txtDeviceID.PlaceholderText = "Select an Adapter";
 			this.txtDeviceID.ReadOnly = true;
@@ -552,7 +558,7 @@
 			this.txtDriver.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtDriver, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtDriver, HelpNavigator.Topic);
-			this.txtDriver.Location = new Point(152, 76);
+			this.txtDriver.Location = new Point(123, 76);
 			this.txtDriver.Name = "txtDriver";
 			this.txtDriver.PlaceholderText = "Select an Adapter";
 			this.txtDriver.ReadOnly = true;
@@ -586,7 +592,7 @@
 			this.txtHardwareAddress.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtHardwareAddress, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtHardwareAddress, HelpNavigator.Topic);
-			this.txtHardwareAddress.Location = new Point(152, 6);
+			this.txtHardwareAddress.Location = new Point(123, 6);
 			this.txtHardwareAddress.Name = "txtHardwareAddress";
 			this.txtHardwareAddress.PlaceholderText = "Select an Adapter";
 			this.txtHardwareAddress.ReadOnly = true;
@@ -600,7 +606,7 @@
 			this.txtSpeed.Font = new Font("Consolas", 9F);
 			this.helpProvider1.SetHelpKeyword(this.txtSpeed, "adapter-details");
 			this.helpProvider1.SetHelpNavigator(this.txtSpeed, HelpNavigator.Topic);
-			this.txtSpeed.Location = new Point(152, 41);
+			this.txtSpeed.Location = new Point(123, 41);
 			this.txtSpeed.Name = "txtSpeed";
 			this.txtSpeed.PlaceholderText = "Select an Adapter";
 			this.txtSpeed.ReadOnly = true;
@@ -622,7 +628,7 @@
 			// 
 			this.cmdRenewDHCPLease.Anchor = AnchorStyles.Left;
 			this.cmdRenewDHCPLease.Enabled = false;
-			this.cmdRenewDHCPLease.Location = new Point(152, 146);
+			this.cmdRenewDHCPLease.Location = new Point(123, 146);
 			this.cmdRenewDHCPLease.Name = "cmdRenewDHCPLease";
 			this.cmdRenewDHCPLease.Size = new Size(130, 23);
 			this.cmdRenewDHCPLease.TabIndex = 9;
@@ -634,12 +640,14 @@
 			// 
 			this.lsvAddresses.AllowColumnReorder = true;
 			this.lsvAddresses.Columns.AddRange(new ColumnHeader[] { this.chAddress, this.chPrefixLength, this.chAddressFamily, this.chPrefixOrigin, this.chSuffixOrigin });
+			this.lsvAddresses.ContextMenuStrip = this.cmsAddressesListMenu;
 			this.lsvAddresses.Dock = DockStyle.Fill;
 			this.lsvAddresses.FullRowSelect = true;
 			this.lsvAddresses.HeaderStyle = ColumnHeaderStyle.Nonclickable;
 			this.helpProvider1.SetHelpKeyword(this.lsvAddresses, "adapter-addresses-list");
 			this.helpProvider1.SetHelpNavigator(this.lsvAddresses, HelpNavigator.Topic);
 			this.lsvAddresses.Location = new Point(0, 0);
+			this.lsvAddresses.MultiSelect = false;
 			this.lsvAddresses.Name = "lsvAddresses";
 			this.helpProvider1.SetShowHelp(this.lsvAddresses, true);
 			this.lsvAddresses.Size = new Size(596, 219);
@@ -670,6 +678,27 @@
 			// 
 			this.chSuffixOrigin.Text = "Suffix Origin";
 			this.chSuffixOrigin.Width = 100;
+			// 
+			// cmsAddressesListMenu
+			// 
+			this.cmsAddressesListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiAddressesListNewShortcut, this.tsmiAddressesListCopy });
+			this.cmsAddressesListMenu.Name = "cmsAddressesListMenu";
+			this.cmsAddressesListMenu.Size = new Size(147, 48);
+			this.cmsAddressesListMenu.Opening += this.cmsAddressesListMenu_Opening;
+			// 
+			// tsmiAddressesListNewShortcut
+			// 
+			this.tsmiAddressesListNewShortcut.Name = "tsmiAddressesListNewShortcut";
+			this.tsmiAddressesListNewShortcut.Size = new Size(146, 22);
+			this.tsmiAddressesListNewShortcut.Text = "New Shortcut";
+			this.tsmiAddressesListNewShortcut.Click += this.tsmiAddressesListNewShortcut_Click;
+			// 
+			// tsmiAddressesListCopy
+			// 
+			this.tsmiAddressesListCopy.Name = "tsmiAddressesListCopy";
+			this.tsmiAddressesListCopy.Size = new Size(146, 22);
+			this.tsmiAddressesListCopy.Text = "Copy";
+			this.tsmiAddressesListCopy.Click += this.tsmiAddressesListCopy_Click;
 			// 
 			// tsMain
 			// 
@@ -856,6 +885,7 @@
 			this.splitContainer2.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
+			this.cmsAddressesListMenu.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
 			this.cmsNotifyIconMenu.ResumeLayout(false);
@@ -934,5 +964,8 @@
 		private ToolStripMenuItem tsmiCopyShortcut;
 		private ToolStripMenuItem tsmiPasteAddressForAdapter;
 		private ToolStripMenuItem tsmiNewShortcutForAdapterWithAddress;
+		private ContextMenuStrip cmsAddressesListMenu;
+		private ToolStripMenuItem tsmiAddressesListNewShortcut;
+		private ToolStripMenuItem tsmiAddressesListCopy;
 	}
 }

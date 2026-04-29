@@ -1124,6 +1124,7 @@ namespace IPAddressChanger {
 			}
 			return "DHCP";
 		}
+
 		private void tsmiCopyShortcut_Click(object sender, EventArgs e) {
 			if (lsbShortcuts.SelectedIndex < 0) return;
 			int? shortcutIndex = GetShortcutIndexFromListIndex(lsbShortcuts.SelectedIndex);
@@ -1160,6 +1161,33 @@ namespace IPAddressChanger {
 				prototype.PrefixLength = int.Parse(parts[1]);
 			}
 			EditShortcut(null, ai, prototype);
+		}
+
+		private void cmsAddressesListMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+			if (lsvAddresses.SelectedItems.Count == 0) {
+				e.Cancel = true;
+				return;
+			}
+			ListViewItem lvi = lsvAddresses.SelectedItems[0];
+			string text = (lvi.SubItems[3].Text == "DHCP")
+				? "DHCP"
+				: $"{lvi.SubItems[0].Text}/{lvi.SubItems[1].Text}";
+			tsmiAddressesListNewShortcut.Text = $"New Shortcut with {text}";
+			tsmiAddressesListCopy.Text = $"Copy {text}";
+		}
+
+		private void tsmiAddressesListNewShortcut_Click(object sender, EventArgs e) {
+			// Same behavior as double-clicking an address row.
+			lsvAddresses_DoubleClick(sender, e);
+		}
+
+		private void tsmiAddressesListCopy_Click(object sender, EventArgs e) {
+			if (lsvAddresses.SelectedItems.Count == 0) return;
+			ListViewItem lvi = lsvAddresses.SelectedItems[0];
+			string textToCopy = (lvi.SubItems[3].Text == "DHCP")
+				? "DHCP"
+				: $"{lvi.SubItems[0].Text}/{lvi.SubItems[1].Text}";
+			Clipboard.SetText(textToCopy);
 		}
 	}
 

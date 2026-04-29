@@ -8,20 +8,27 @@ The application requires [elevated privileges](#privilege-elevation--uac-prompt)
 ## Table of Contents
 1. [Shortcuts](#shortcuts)
 1. [Main Window](#main-window)
-    1. [Tool Bar](#tool-bar)
+    1. [Main Tool Bar](#main-tool-bar)
     1. [Status Bar](#status-bar)
+    1. [Adapters Tool Bar](#adapters-tool-bar)
+    1. [Shortcuts Tool Bar](#shortcuts-tool-bar)
     1. [Adapters List](#adapters-list)
         1. [Adapter Context Menu](#adapter-context-menu)
     1. [Shortcuts List](#shortcuts-list)
         1. [Shortcut Context Menu](#shortcut-context-menu)
     1. [Adapter Details](#adapter-details)
-    1. [Adapter Address List](#adapter-addresses-list)
+    1. [Adapter Addresses List](#adapter-addresses-list)
+        1. [Adapter Addresses Context Menu](#adapter-addresses-context-menu)
 1. [Notification Area Icon](#notification-area-icon)
 1. [New/Edit Shortcut Window](#newedit-shortcut-window)
 1. [Adapter Busy Dialog](#adapter-busy-dialog)
 1. [Address Conflict Warning](#address-conflict-warning)
 1. [Settings Window](#settings-window)
 1. [Debug Messages Window](#debug-messages-window)
+1. [Privilege Elevation & UAC Prompt](#privilege-elevation--uac-prompt)
+1. [Windows SmartScreen Warning](#windows-smartscreen-warning)
+1. [Things I Haven't Tested](#things-i-havent-tested)
+1. [AI Disclosure](#ai-disclosure)
 1. [Copyright](#copyright)
 
 ## Shortcuts
@@ -31,27 +38,11 @@ The functionality of the program revolves around Shortcuts, which are configurat
 ![Main Window](./images/main.png)
 
 ### Layout
-The main window is divided into a [Tool Bar](#tool-bar), a [Status Bar](#status-bar), and four areas: [Adapters List](#adapters-listadapters), [Shortcuts List](#shortcuts-list), [Adapter Details](#adapter-details), and [Adapters Address List](#adapter-addresses-list). The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).
+The main window is divided into and four areas: [Adapters List](#adapters-list), [Shortcuts List](#shortcuts-list), [Adapter Details](#adapter-details), and [Adapters Address List](#adapter-addresses-list). The relative sizes of each area may be changed by dragging the bar between the areas (sizes are saved on exit).
 
-### Tool Bar
+### Main Tool Bar
 
-#### Refresh
-Refresh the list of adapters.
-
-#### Hide Offline Adapters
-Toggles hiding and showing offline adapters.
-
-#### New Shortcut
-Creates a new address configuration shortcut for the currently selected network adapter.
-
-#### Delete Shortcut
-Deletes the currently selected shortcut.
-
-#### Edit Shortcut
-Edits the currently selected shortcut.
-
-#### Recall Shortcut
-Sets the adapter configuration information for the adapter referenced in the currently selected shortcut.
+![Main Tool Bar](./images/maintoolbar.png)
 
 #### Settings
 Displays the settings window.
@@ -70,7 +61,46 @@ Launches a browser window to submit bug reports and feedback.
 
 ### Status Bar
 
+![Status Bar](./images/statusbar.png)
+
+Shows what the software is currently doing or the results of the last operation, as well as the current version of the software.
+
+### Adapters Tool Bar
+
+![Adapters Tool Bar](./images/adapterstoolbar.png)
+
+#### Refresh
+Refresh the list of adapters.
+
+#### Hide Offline Adapters
+Toggles hiding and showing offline adapters.
+
+### Shortcuts Tool Bar
+
+![Shortcuts Tool Bar](./images/shortcutstoolbar.png)
+
+#### New Shortcut
+Creates a new address configuration shortcut for the currently selected network adapter.
+
+#### Delete Shortcut
+Deletes the currently selected shortcut.
+
+#### Edit Shortcut
+Edits the currently selected shortcut.
+
+#### Recall Shortcut
+Sets the adapter configuration information for the adapter referenced in the currently selected shortcut.
+
+#### Move Shortcut Up
+Moves the shortcut up in the list of shortcuts.
+
+#### Move Shortcut Down
+Moves the shortcut down in the list of shortcuts.
+
 ### Adapters List
+
+![Adapters List](./images/adapterslist.png)
+
 This list shows all of the network adapters present in the system. Each line shows the current adapter index (this may changed after a reboot but it doesn't affect the shortcuts), the adapter name, and its up/down/disabled state. (The icons correspond to up, down, or disabled; they look awful right now, someday they'll look better.)
 
 Selecting an adapter will display additional details in the [Adapter Details](#adapter-details) area and associated addresses in the [Adapter Addresses List](#adapter-addresses-list). Selecting a disabled adapter will only show "Adapter disabled" in the addresses list.
@@ -89,7 +119,7 @@ Creates a new empty shortcut for this adapter.
 ##### New Shortcut with...
 Pre-fills the new-shortcut dialog with this adapter's currently configured method — either `DHCP` (if the adapter is set to acquire its address via DHCP) or the adapter's first IPv4 address and prefix length. Disabled when the adapter has neither (e.g. an adapter with no IPv4 configuration). The menu label shows what will be pre-filled, e.g. *New Shortcut with 10.0.0.69/16*.
 
-##### Renew DHCP for adapter
+##### Renew DHCP Lease
 Same action as the [Renew DHCP Lease](#renew-dhcp-lease) button in the [Adapter Details](#adapter-details) area. Enabled only when the adapter has IPv4 DHCP configured.
 
 ##### Paste *value*
@@ -100,6 +130,9 @@ Note that the address in the clipboard does not have to have come from this soft
 A pre-apply check refuses to assign an IP that is already in use on a different adapter on the same system, before any changes are made to this adapter.
 
 ### Shortcuts List
+
+![Shortcuts List](./images/shortcutslist.png)
+
 This list shows all of the stored configuration preset shortcuts.
 
 Double-clicking a shortcut will either edit the shortcut or recall the shortcut, depending on the value of the [Start minimized](#start-minimized) setting.
@@ -111,25 +144,30 @@ These shortcuts are also available in the Shortcuts menu of the [Notification Ar
 
 Right-clicking a shortcut shows a context menu with the following items:
 
-##### New Shortcut
+##### New
 Creates a new shortcut.
+
+##### Delete
+Deletes the selected shortcut.
 
 ##### Edit Shortcut
 Opens the [New/Edit Shortcut Window](#newedit-shortcut-window) for the selected shortcut.
 
-##### Recall Shortcut
+##### Recall
 Applies the selected shortcut to its associated adapter.
 
-##### Copy Shortcut
+##### Copy *value*
 Copies the shortcut's value (IP/CIDR or `DHCP`) to the clipboard. The clipboard contents can then be pasted onto any adapter via the [Paste](#paste-value) item on the adapter context menu.
 
 ### Adapter Details
+
+![Adapter Details](./images/adapterdetails.png)
 
 #### Hardware Address
 The unformatted hardware address of the adapter (usually the MAC address for an Ethernet device)
 
 #### Speed
-The one-way data rate of the adatper in scaled bits per second (bits, kilobits, megabits, etc.).
+The one-way data rate of the adapter in scaled bits per second (bits, kilobits, megabits, etc.).
 
 #### Driver Description
 The description of the driver that is used to interface with the adapter hardware.
@@ -147,6 +185,9 @@ Releases and renews the DHCP lease on this adapter. Enabled only when the adapte
 After a successful renew, the status bar suggests using [Refresh](#refresh) to update the address list with the new lease.
 
 ### Adapter Addresses List
+
+![Adapter Addresses List](./images/adapteraddresslist.png)
+
 This shows all of the addresses configured for the selected adapter. You may resize and rearrange the columns (size and position will be saved on exit).
 
 Double-clicking an address will create a shortcut for the adapter using that address and prefix length or DHCP.
@@ -164,14 +205,24 @@ The address family this address uses.
 The origin of the network portion of the address.
 
 #### Suffix Origin
-The origin of the host  portion of the address.
+The origin of the host portion of the address.
+
+#### Adapter Addresses Context Menu
+
+![Adapter Addresses Context Menu](./images/adapteraddressesmenu.png)
+
+##### New Shortcut with *value*
+Opens the new shortcut dialog pre-filled with the selected address' values (or `DHCP`).
+
+##### Copy *value*
+Copies the selected addresses' values (or `DHCP`) to the clipboard.
 
 ## Notification Area Icon
 The notification area icon appears in the notification area of the task bar near the clock (you may need to click the expand button to see it). Double-clicking the icon will show the application. Right clicking it will show a quick-access menu.
 
 ![Notification Area](./images/notificationmenu.png)
 
-### Notificaion Area Icon Menu
+### Notification Area Icon Menu
 
 #### Show
 Shows the application.
@@ -194,7 +245,7 @@ This menu contains all of the configured network adapter shortcuts. It is the sa
 ### Shortcut Name
 This is the name you will see in the [Shortcuts List](#shortcuts-list) and in the [Notification Area Icon Menu](#notificaion-area-icon-menu).
 
-When creating a new shortcut, this name will be automatically generated util you manually edit the name, but after you edit it manually it will retain whatever value you provide.
+When creating a new shortcut, this name will be automatically generated until you manually edit the name, but after you edit it manually it will retain whatever value you provide.
 
 ### Adapter
 The name and device ID of the adapter this shortcut applies to, for reference.
@@ -261,6 +312,8 @@ This window shows additional information about the actions the program is perfor
 
 ### Tool Bar
 
+![Debug Messages Window Tool Bar](./images/debugtoolbar.png)
+
 #### Clear Log
 Clears all entries from the debug messages log.
 
@@ -291,7 +344,7 @@ If you find a bug, use the bug report feature. But there are some things that I 
 
 * Different font DPI settings - may make text in forms cropped and unreadable
 * Different window scaling settings - this should be OK but different elements on the form may not scale correctly or proportionately
-* IPv6 - the software is generally aimed at IPv4 (and dotted-decimal addresses specifically)
+* IPv6 - the software is generally aimed at IPv4 (and dotted-decimal addresses specifically), though it is possible to create IPv6 shortcuts
 
 ## AI Disclosure
 This project was completed before AI coding agents were a thing, but recent revisions have used the aid of an agent for refactorings and documentation. (Release [1.0.5.1](https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1) was the last non-AI-assisted release.)
