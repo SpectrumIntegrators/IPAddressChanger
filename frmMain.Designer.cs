@@ -133,6 +133,9 @@
 			// 
 			this.ssStatus.ImageScalingSize = new Size(24, 24);
 			this.ssStatus.Items.AddRange(new ToolStripItem[] { this.tsslStatus, this.tsslVersion });
+			this.helpProvider1.SetHelpKeyword(this.ssStatus, "status-bar");
+			this.helpProvider1.SetHelpNavigator(this.ssStatus, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.ssStatus, true);
 			this.ssStatus.Location = new Point(0, 430);
 			this.ssStatus.Name = "ssStatus";
 			this.ssStatus.Size = new Size(1067, 22);
@@ -214,7 +217,7 @@
 			this.lsvAdapters.FullRowSelect = true;
 			this.lsvAdapters.HeaderStyle = ColumnHeaderStyle.Nonclickable;
 			this.helpProvider1.SetHelpKeyword(this.lsvAdapters, "adapters-list");
-			this.helpProvider1.SetHelpNavigator(this.lsvAdapters, HelpNavigator.TopicId);
+			this.helpProvider1.SetHelpNavigator(this.lsvAdapters, HelpNavigator.Topic);
 			this.lsvAdapters.Location = new Point(2, 26);
 			this.lsvAdapters.Margin = new Padding(2);
 			this.lsvAdapters.MultiSelect = false;
@@ -240,6 +243,9 @@
 			// cmsAdaptersListMenu
 			// 
 			this.cmsAdaptersListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcutForAdapter, this.tsmiNewShortcutForAdapterWithAddress, this.tsmiRenewDHCPForAdapter, this.tsmiPasteAddressForAdapter });
+			this.helpProvider1.SetHelpKeyword(this.cmsAdaptersListMenu, "adapter-context-menu");
+			this.helpProvider1.SetHelpNavigator(this.cmsAdaptersListMenu, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cmsAdaptersListMenu, true);
 			this.cmsAdaptersListMenu.Name = "cmsAdaptersListMenu";
 			this.cmsAdaptersListMenu.Size = new Size(177, 92);
 			this.cmsAdaptersListMenu.Opening += this.cmsAdaptersListMenu_Opening;
@@ -287,6 +293,8 @@
 			this.tsAdapters.Location = new Point(0, 0);
 			this.tsAdapters.Name = "tsAdapters";
 			this.tsAdapters.RenderMode = ToolStripRenderMode.System;
+			this.helpProvider1.SetHelpKeyword(this.tsAdapters, "adapters-tool-bar");
+			this.helpProvider1.SetHelpNavigator(this.tsAdapters, HelpNavigator.Topic);
 			this.helpProvider1.SetShowHelp(this.tsAdapters, true);
 			this.tsAdapters.Size = new Size(467, 24);
 			this.tsAdapters.TabIndex = 5;
@@ -354,6 +362,9 @@
 			// cmsShortcutsListMenu
 			// 
 			this.cmsShortcutsListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiNewShortcut, this.toolStripMenuItem1, this.tsmiDeleteShortcut, this.tsmiEditShortcut, this.tsmiRecallShortcut, this.toolStripMenuItem2, this.tsmiCopyShortcut });
+			this.helpProvider1.SetHelpKeyword(this.cmsShortcutsListMenu, "shortcut-context-menu");
+			this.helpProvider1.SetHelpNavigator(this.cmsShortcutsListMenu, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cmsShortcutsListMenu, true);
 			this.cmsShortcutsListMenu.Name = "cmsShortcutsListMenu";
 			this.cmsShortcutsListMenu.Size = new Size(108, 126);
 			this.cmsShortcutsListMenu.Opening += this.cmsShortcutsListMenu_Opening;
@@ -415,6 +426,8 @@
 			this.tsShortcuts.Location = new Point(0, 0);
 			this.tsShortcuts.Name = "tsShortcuts";
 			this.tsShortcuts.RenderMode = ToolStripRenderMode.System;
+			this.helpProvider1.SetHelpKeyword(this.tsShortcuts, "shortcuts-tool-bar");
+			this.helpProvider1.SetHelpNavigator(this.tsShortcuts, HelpNavigator.Topic);
 			this.helpProvider1.SetShowHelp(this.tsShortcuts, true);
 			this.tsShortcuts.Size = new Size(467, 24);
 			this.tsShortcuts.TabIndex = 1;
@@ -636,6 +649,9 @@
 			// 
 			this.cmdRenewDHCPLease.Anchor = AnchorStyles.Left;
 			this.cmdRenewDHCPLease.Enabled = false;
+			this.helpProvider1.SetHelpKeyword(this.cmdRenewDHCPLease, "renew-dhcp-lease");
+			this.helpProvider1.SetHelpNavigator(this.cmdRenewDHCPLease, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cmdRenewDHCPLease, true);
 			this.cmdRenewDHCPLease.Location = new Point(123, 146);
 			this.cmdRenewDHCPLease.Name = "cmdRenewDHCPLease";
 			this.cmdRenewDHCPLease.Size = new Size(130, 23);
@@ -690,6 +706,9 @@
 			// cmsAddressesListMenu
 			// 
 			this.cmsAddressesListMenu.Items.AddRange(new ToolStripItem[] { this.tsmiAddressesListNewShortcut, this.tsmiAddressesListCopy });
+			this.helpProvider1.SetHelpKeyword(this.cmsAddressesListMenu, "adapter-addresses-context-menu");
+			this.helpProvider1.SetHelpNavigator(this.cmsAddressesListMenu, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cmsAddressesListMenu, true);
 			this.cmsAddressesListMenu.Name = "cmsAddressesListMenu";
 			this.cmsAddressesListMenu.Size = new Size(147, 48);
 			this.cmsAddressesListMenu.Opening += this.cmsAddressesListMenu_Opening;
@@ -711,7 +730,7 @@
 			// tsMain
 			// 
 			this.tsMain.GripStyle = ToolStripGripStyle.Hidden;
-			this.helpProvider1.SetHelpKeyword(this.tsMain, "tool-bar");
+			this.helpProvider1.SetHelpKeyword(this.tsMain, "main-tool-bar");
 			this.helpProvider1.SetHelpNavigator(this.tsMain, HelpNavigator.Topic);
 			this.tsMain.ImageScalingSize = new Size(24, 24);
 			this.tsMain.Items.AddRange(new ToolStripItem[] { this.tsbSettings, this.tsbDebug, this.tsbControlPanel, this.tsbHelp, this.tsbBugReport });

@@ -136,7 +136,7 @@ Creates a new empty shortcut for this adapter.
 ##### New Shortcut with...
 Pre-fills the new-shortcut dialog with this adapter's currently configured method — either `DHCP` (if the adapter is set to acquire its address via DHCP) or the adapter's first IPv4 address and prefix length. Disabled when the adapter has neither (e.g. an adapter with no IPv4 configuration). The menu label shows what will be pre-filled, e.g. *New Shortcut with 10.0.0.69/16*.
 
-##### Renew DHCP Lease
+##### Renew DHCP for Adapter
 Same action as the [Renew DHCP Lease](#renew-dhcp-lease) button in the [Adapter Details](#adapter-details) area. Enabled only when the adapter has IPv4 DHCP configured.
 
 ##### Paste *value*

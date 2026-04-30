@@ -3,7 +3,7 @@
 		public override Size GetPreferredSize(Size constrainingSize) {
 			// Use the default size if the text box is on the overflow menu
 			// or is on a vertical ToolStrip.
-			if (IsOnOverflow || Owner.Orientation == Orientation.Vertical) {
+			if (IsOnOverflow || Owner is null || Owner.Orientation == Orientation.Vertical) {
 				return DefaultSize;
 			}
 

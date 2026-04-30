@@ -24,12 +24,17 @@ partial class frmAdapterBusy {
 	/// the contents of this method with the code editor.
 	/// </summary>
 	private void InitializeComponent() {
+		this.helpProvider1 = new HelpProvider();
 		this.tableLayoutPanel1 = new TableLayoutPanel();
 		this.lblBusyReason = new Label();
 		this.progressBar1 = new ProgressBar();
 		this.cmdClose = new Button();
 		this.tableLayoutPanel1.SuspendLayout();
 		this.SuspendLayout();
+		//
+		// helpProvider1
+		//
+		this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
 		// 
 		// tableLayoutPanel1
 		// 
@@ -88,6 +93,9 @@ partial class frmAdapterBusy {
 		this.ClientSize = new Size(444, 139);
 		this.Controls.Add(this.tableLayoutPanel1);
 		this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+		this.helpProvider1.SetHelpKeyword(this, "adapter-busy-dialog");
+		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
+		this.helpProvider1.SetShowHelp(this, true);
 		this.Name = "frmAdapterBusy";
 		this.ShowIcon = false;
 		this.ShowInTaskbar = false;
@@ -106,4 +114,5 @@ partial class frmAdapterBusy {
 	private ProgressBar progressBar1;
 	private Button cmdClose;
 	public Label lblBusyReason;
+	private HelpProvider helpProvider1;
 }

@@ -2,11 +2,13 @@
 
 All notable changes to this project are documented in this file. The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to a four-segment `Major.Minor.Patch.Build` version scheme.
 
-  ## [Unreleased]
+  ## [1.1.1.0] - 2026-04-30
 
   ### Changed
   - Restored compact section headings ("Adapters" / "Shortcuts") to the left of their respective toolbars.
   - Added Settings upgrade so new versions of the app will retain the previous versions' settings
+  - Fixed null reference build warnings
+  - Updated in-app help references so F1 works from anywhere
 
 ## [1.1.0.0] - 2026-04-29
 

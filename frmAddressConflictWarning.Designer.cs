@@ -24,6 +24,7 @@ partial class frmAddressConflictWarning {
 	/// the contents of this method with the code editor.
 	/// </summary>
 	private void InitializeComponent() {
+		this.helpProvider1 = new HelpProvider();
 		this.tableLayoutPanel1 = new TableLayoutPanel();
 		this.cmdClose = new Button();
 		this.tableLayoutPanel2 = new TableLayoutPanel();
@@ -34,6 +35,10 @@ partial class frmAddressConflictWarning {
 		this.tableLayoutPanel2.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
 		this.SuspendLayout();
+		//
+		// helpProvider1
+		//
+		this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
 		// 
 		// tableLayoutPanel1
 		// 
@@ -120,6 +125,9 @@ partial class frmAddressConflictWarning {
 		this.ClientSize = new Size(444, 173);
 		this.Controls.Add(this.tableLayoutPanel1);
 		this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+		this.helpProvider1.SetHelpKeyword(this, "address-conflict-warning");
+		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
+		this.helpProvider1.SetShowHelp(this, true);
 		this.Name = "frmAddressConflictWarning";
 		this.ShowIcon = false;
 		this.ShowInTaskbar = false;
@@ -143,4 +151,5 @@ partial class frmAddressConflictWarning {
 	private TextBox txtConflictWarning;
 	private PictureBox pictureBox1;
 	private CheckBox chkSuppressMessages;
+	private HelpProvider helpProvider1;
 }

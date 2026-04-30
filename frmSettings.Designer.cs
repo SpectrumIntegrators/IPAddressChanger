@@ -161,6 +161,9 @@
 			// 
 			this.chkHideWhenMinimized.Anchor = AnchorStyles.Left;
 			this.chkHideWhenMinimized.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkHideWhenMinimized, "hide-when-minimized");
+			this.helpProvider1.SetHelpNavigator(this.chkHideWhenMinimized, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.chkHideWhenMinimized, true);
 			this.chkHideWhenMinimized.Location = new Point(216, 9);
 			this.chkHideWhenMinimized.Margin = new Padding(2);
 			this.chkHideWhenMinimized.Name = "chkHideWhenMinimized";
@@ -186,6 +189,9 @@
 			this.cboShortcutDoubleClick.Anchor = AnchorStyles.Left;
 			this.cboShortcutDoubleClick.DropDownStyle = ComboBoxStyle.DropDownList;
 			this.cboShortcutDoubleClick.FormattingEnabled = true;
+			this.helpProvider1.SetHelpKeyword(this.cboShortcutDoubleClick, "double-clicking-a-shortcut-will");
+			this.helpProvider1.SetHelpNavigator(this.cboShortcutDoubleClick, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cboShortcutDoubleClick, true);
 			this.cboShortcutDoubleClick.Items.AddRange(new object[] { "Edit the shortcut", "Recall the shortcut" });
 			this.cboShortcutDoubleClick.Location = new Point(216, 68);
 			this.cboShortcutDoubleClick.Margin = new Padding(2);
@@ -211,6 +217,9 @@
 			// 
 			this.chkStartMinimized.Anchor = AnchorStyles.Left;
 			this.chkStartMinimized.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkStartMinimized, "start-minimized");
+			this.helpProvider1.SetHelpNavigator(this.chkStartMinimized, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.chkStartMinimized, true);
 			this.chkStartMinimized.Location = new Point(216, 41);
 			this.chkStartMinimized.Margin = new Padding(2);
 			this.chkStartMinimized.Name = "chkStartMinimized";
@@ -249,6 +258,9 @@
 			// cmdControlPanelBrowse
 			// 
 			this.cmdControlPanelBrowse.Dock = DockStyle.Fill;
+			this.helpProvider1.SetHelpKeyword(this.cmdControlPanelBrowse, "control-panel-file");
+			this.helpProvider1.SetHelpNavigator(this.cmdControlPanelBrowse, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cmdControlPanelBrowse, true);
 			this.cmdControlPanelBrowse.Location = new Point(313, 3);
 			this.cmdControlPanelBrowse.Name = "cmdControlPanelBrowse";
 			this.cmdControlPanelBrowse.Size = new Size(26, 26);
@@ -260,6 +272,9 @@
 			// txtControlPanelFile
 			// 
 			this.txtControlPanelFile.Anchor = AnchorStyles.Left;
+			this.helpProvider1.SetHelpKeyword(this.txtControlPanelFile, "control-panel-file");
+			this.helpProvider1.SetHelpNavigator(this.txtControlPanelFile, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.txtControlPanelFile, true);
 			this.txtControlPanelFile.Location = new Point(3, 4);
 			this.txtControlPanelFile.Name = "txtControlPanelFile";
 			this.txtControlPanelFile.Size = new Size(304, 23);
@@ -301,6 +316,9 @@
 			// 
 			this.chkCtrl.Anchor = AnchorStyles.Left;
 			this.chkCtrl.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkCtrl, "hotkey");
+			this.helpProvider1.SetHelpNavigator(this.chkCtrl, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.chkCtrl, true);
 			this.chkCtrl.Location = new Point(3, 6);
 			this.chkCtrl.Name = "chkCtrl";
 			this.chkCtrl.Size = new Size(45, 19);
@@ -313,6 +331,9 @@
 			// 
 			this.chkAlt.Anchor = AnchorStyles.Left;
 			this.chkAlt.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkAlt, "hotkey");
+			this.helpProvider1.SetHelpNavigator(this.chkAlt, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.chkAlt, true);
 			this.chkAlt.Location = new Point(73, 6);
 			this.chkAlt.Name = "chkAlt";
 			this.chkAlt.Size = new Size(41, 19);
@@ -325,6 +346,9 @@
 			// 
 			this.chkShift.Anchor = AnchorStyles.Left;
 			this.chkShift.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkShift, "hotkey");
+			this.helpProvider1.SetHelpNavigator(this.chkShift, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.chkShift, true);
 			this.chkShift.Location = new Point(143, 6);
 			this.chkShift.Name = "chkShift";
 			this.chkShift.Size = new Size(50, 19);
@@ -338,6 +362,9 @@
 			this.cboHotkey.Anchor = AnchorStyles.Left;
 			this.cboHotkey.DropDownStyle = ComboBoxStyle.DropDownList;
 			this.cboHotkey.FormattingEnabled = true;
+			this.helpProvider1.SetHelpKeyword(this.cboHotkey, "hotkey");
+			this.helpProvider1.SetHelpNavigator(this.cboHotkey, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.cboHotkey, true);
 			this.cboHotkey.Items.AddRange(new object[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" });
 			this.cboHotkey.Location = new Point(213, 4);
 			this.cboHotkey.Name = "cboHotkey";
@@ -361,6 +388,9 @@
 			// 
 			this.chkStartAtLogon.Anchor = AnchorStyles.Left;
 			this.chkStartAtLogon.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkStartAtLogon, "start-at-log-on");
+			this.helpProvider1.SetHelpNavigator(this.chkStartAtLogon, HelpNavigator.Topic);
+			this.helpProvider1.SetShowHelp(this.chkStartAtLogon, true);
 			this.chkStartAtLogon.Location = new Point(217, 169);
 			this.chkStartAtLogon.Name = "chkStartAtLogon";
 			this.chkStartAtLogon.Size = new Size(15, 14);

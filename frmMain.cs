@@ -347,8 +347,7 @@ namespace IPAddressChanger {
 					bool dhcpEnabled = await NetworkManager.GetIPv4DhcpEnabledAsync(adapter.Index);
 					if (isClosing) return;
 					// only apply if the user hasn't navigated to a different adapter while we were awaiting
-					if (lsvAdapters.SelectedItems.Count > 0 &&
-						((AdapterInfo)lsvAdapters.SelectedItems[0].Tag).DeviceID == adapter.DeviceID) {
+					if (GetSelectedAdapter()?.DeviceID == adapter.DeviceID) {
 						cmdRenewDHCPLease.Enabled = dhcpEnabled;
 						tsmiRenewDHCPForAdapter.Enabled = dhcpEnabled;
 					}
@@ -501,13 +500,21 @@ namespace IPAddressChanger {
 
 		private AdapterInfo? GetAdapterInfoFromDeviceID(string deviceID) {
 			foreach (ListViewItem item in lsvAdapters.Items) {
-				AdapterInfo ai = (AdapterInfo)item.Tag;
-				if (ai.DeviceID == deviceID) {
+				if (item.Tag is AdapterInfo ai && ai.DeviceID == deviceID) {
 					return ai;
 				}
 			}
 			return null;
 		}
+
+		// Returns the AdapterInfo of the currently selected adapter, or null if no row is selected
+		// (or, defensively, if the row's Tag isn't an AdapterInfo). Centralizes the common pattern of
+		// checking SelectedItems.Count then casting Tag, and avoids repeating the nullable-cast warning
+		// at every call site.
+		private AdapterInfo? GetSelectedAdapter() =>
+			lsvAdapters.SelectedItems.Count > 0
+				? lsvAdapters.SelectedItems[0].Tag as AdapterInfo
+				: null;
 
 		private async void RunShortcut(IPAddressShortcut shortcut) {
 			debugForm.AddMessage($"Running shortcut {shortcut.Name}");
@@ -707,9 +714,9 @@ namespace IPAddressChanger {
 		}
 
 		private void lsbAdapters_SelectedIndexChanged(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count > 0) {
+			if (GetSelectedAdapter() is AdapterInfo ai) {
 				tsbNewShortcut.Enabled = true;
-				ShowAdapterInfo((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+				ShowAdapterInfo(ai);
 			} else {
 				txtSpeed.Text = "";
 				txtHardwareAddress.Text = "";
@@ -765,10 +772,8 @@ namespace IPAddressChanger {
 		}
 
 		private void tsbNewShortcut_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) {
-				return;
-			}
-			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
+			EditShortcut(null, ai);
 		}
 
 		private void lsbShortcuts_DoubleClick(object sender, EventArgs e) {
@@ -856,10 +861,8 @@ namespace IPAddressChanger {
 		}
 
 		private void lsvAddresses_DoubleClick(object sender, EventArgs e) {
-			if (lsvAddresses.SelectedItems.Count == 0) {
-				return;
-			}
-			AdapterInfo ai = (AdapterInfo)lsvAdapters.SelectedItems[0].Tag;
+			if (lsvAddresses.SelectedItems.Count == 0) return;
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
 			ListViewItem lvi = lsvAddresses.SelectedItems[0];
 			EditShortcut(null, ai, new IPAddressShortcut() { IPAddress = lvi.SubItems[0].Text, PrefixLength = int.Parse(lvi.SubItems[1].Text), UseDHCP = (lvi.SubItems[3].Text == "DHCP") });
 		}
@@ -882,10 +885,10 @@ namespace IPAddressChanger {
 		}
 
 		private void lsvAdapters_SelectedIndexChanged(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count > 0) {
+			if (GetSelectedAdapter() is AdapterInfo ai) {
 				tsbNewShortcut.Enabled = true;
 				tsmiNewShortcut.Enabled = true;
-				ShowAdapterInfo((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+				ShowAdapterInfo(ai);
 			} else {
 				txtSpeed.Text = "";
 				txtHardwareAddress.Text = "";
@@ -964,24 +967,18 @@ namespace IPAddressChanger {
 		}
 
 		private void tsmiNewShortcut_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) {
-				return;
-			}
-			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
+			EditShortcut(null, ai);
 		}
 
 		private void tsmiNewShortcutForAdapter_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) {
-				return;
-			}
-			EditShortcut(null, (AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
+			EditShortcut(null, ai);
 		}
 
 		private void tsmiRenewDHCPForAdapter_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) {
-				return;
-			}
-			RenewAdapterDHCPLease((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
+			RenewAdapterDHCPLease(ai);
 		}
 
 		private void cmsAdaptersListMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
@@ -1050,9 +1047,9 @@ namespace IPAddressChanger {
 				busyAdapterDialogs[adapter] = newAdapterBusyDialog;
 				newAdapterBusyDialog.Show(this);
 				debugForm.AddMessage($"Showing busy dialog for {adapter.Name}");
-			} else {
+			} else if (busyAdapterDialogs[adapter] is frmAdapterBusy existingDialog) {
 				// form already exists, update its message
-				busyAdapterDialogs[adapter].lblBusyReason.Text = message;
+				existingDialog.lblBusyReason.Text = message;
 				debugForm.AddMessage($"Updating busy dialog for {adapter.Name}");
 			}
 		}
@@ -1061,9 +1058,9 @@ namespace IPAddressChanger {
 			if (!busyAdapterDialogs.ContainsKey(adapter)) {
 				return;
 			}
-			if (busyAdapterDialogs[adapter] != null) {
+			if (busyAdapterDialogs[adapter] is frmAdapterBusy dialog) {
 				debugForm.AddMessage($"Closing busy dialog for {adapter.Name}");
-				busyAdapterDialogs[adapter].Close();
+				dialog.Close();
 				busyAdapterDialogs[adapter] = null;
 			}
 		}
@@ -1111,17 +1108,14 @@ namespace IPAddressChanger {
 			} finally {
 				RemoveAdapterBusyDialog(adapter);
 				// If they've navigated away, ShowAdapterInfo for the new selection has already set the correct state.
-				if (lsvAdapters.SelectedItems.Count > 0 &&
-					((AdapterInfo)lsvAdapters.SelectedItems[0].Tag).DeviceID == adapter.DeviceID) {
+				if (GetSelectedAdapter()?.DeviceID == adapter.DeviceID) {
 				}
 			}
 		}
 
 		private void cmdRenewDHCPLease_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) {
-				return;
-			}
-			RenewAdapterDHCPLease((AdapterInfo)lsvAdapters.SelectedItems[0].Tag);
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
+			RenewAdapterDHCPLease(ai);
 		}
 
 		private string GetShortcutItemAddressText(int? shortcutIndex) {
@@ -1142,11 +1136,9 @@ namespace IPAddressChanger {
 		}
 
 		private async void tsmiPasteAddressForAdapter_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) return;
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
 			if (tsmiPasteAddressForAdapter.Tag is not string clipboardText) return;
 			if (!IPValidator.IpCidrOrDhcp().IsMatch(clipboardText)) return;
-
-			AdapterInfo ai = (AdapterInfo)lsvAdapters.SelectedItems[0].Tag;
 
 			if (clipboardText == "DHCP") {
 				await ApplyAddressToAdapter(ai, true, "", 0, "DHCP");
@@ -1157,10 +1149,8 @@ namespace IPAddressChanger {
 		}
 
 		private void tsmiNewShortcutWithForAdapter_Click(object sender, EventArgs e) {
-			if (lsvAdapters.SelectedItems.Count == 0) return;
+			if (GetSelectedAdapter() is not AdapterInfo ai) return;
 			if (tsmiNewShortcutForAdapterWithAddress.Tag is not string addressData) return;
-
-			AdapterInfo ai = (AdapterInfo)lsvAdapters.SelectedItems[0].Tag;
 
 			IPAddressShortcut prototype = new();
 			if (addressData == "DHCP") {
