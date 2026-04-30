@@ -938,13 +938,9 @@
 		private ColumnHeader chPrefixLength;
 		private SplitContainer splitContainer2;
 		private TableLayoutPanel tableLayoutPanel1;
-		private Label label1;
-		private Label label2;
 		private TextBox txtHardwareAddress;
 		private TextBox txtSpeed;
 		private TextBox txtDriver;
-		private Label label3;
-		private Label label4;
 		private TextBox txtDeviceID;
 		private SplitContainer splitContainer3;
 		private ListBox lsbShortcuts;
@@ -972,8 +968,6 @@
 		private ToolStripButton tsbRecallShortcut;
 		private ToolStripButton tsbMoveShortcutUp;
 		private ToolStripButton tsbMoveShortcutDown;
-		private ToolStripSpringLabel tslShortcuts;
-		private ToolStripSpringLabel tslAdapters;
 		private ContextMenuStrip cmsAdaptersListMenu;
 		private ToolStripMenuItem tsmiNewShortcutForAdapter;
 		private ToolStripMenuItem tsmiRenewDHCPForAdapter;
@@ -991,6 +985,5 @@
 		private ContextMenuStrip cmsAddressesListMenu;
 		private ToolStripMenuItem tsmiAddressesListNewShortcut;
 		private ToolStripMenuItem tsmiAddressesListCopy;
-		private ToolStripSpringLabel toolStripSpringLabel1;
 	}
 }
