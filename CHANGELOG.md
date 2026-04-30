@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file. The format is l
 
   ### Changed
   - Restored compact section headings ("Adapters" / "Shortcuts") to the left of their respective toolbars.
+  - Added Settings upgrade so new versions of the app will retain the previous versions' settings
 
 ## [1.1.0.0] - 2026-04-29
 

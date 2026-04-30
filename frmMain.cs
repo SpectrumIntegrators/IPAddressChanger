@@ -100,8 +100,18 @@ namespace IPAddressChanger {
 			netAdapterIcons.Images.Add("up", Resources.up);
 			netAdapterIcons.Images.Add("down", Resources.down);
 			debugForm.AddMessage($"Starting {Application.ProductName} version {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
+			if (Settings.Default.UpgradeRequired) {
+				// Carry forward settings from previous version
+				Settings.Default.Upgrade();
+				Settings.Default.UpgradeRequired = false;
+				Settings.Default.Save();
+			}
 			if (Control.ModifierKeys == Keys.Shift) {
+				// Reset settings to their default values
 				Settings.Default.Reset();
+				// UpgradeRequired defaults to true, which would cause the next launch to carry forward old settings
+				// We don't want that, so set it to false before saving
+				Settings.Default.UpgradeRequired = false;
 				Settings.Default.Save();
 			}
 			LoadSettings();

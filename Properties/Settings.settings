@@ -47,5 +47,8 @@
     <Setting Name="Hotkey" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">122</Value>
     </Setting>
+    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
