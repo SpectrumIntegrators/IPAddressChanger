@@ -1,16 +1,16 @@
 # Changelog
 
-All notable changes to this project are documented in this file. The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to a four-segment `Major.Minor.Patch.Build` version scheme.
+All notable changes to this project are documented in this file. The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The application's `AssemblyVersion` and `FileVersion` use the four-segment `Major.Minor.Patch.Build` scheme (Microsoft's convention for binary identity), but this changelog uses the three-segment `Major.Minor.Patch` form — the build segment exists to identify rebuilds and is not changelog-worthy on its own.
 
-  ## [1.1.1.0] - 2026-04-30
+## [1.1.1] - 2026-04-30
 
-  ### Changed
-  - Restored compact section headings ("Adapters" / "Shortcuts") to the left of their respective toolbars.
-  - Added Settings upgrade so new versions of the app will retain the previous versions' settings
-  - Fixed null reference build warnings
-  - Updated in-app help references so F1 works from anywhere
+### Changed
+- Restored compact section headings ("Adapters" / "Shortcuts") to the left of their respective toolbars.
+- Added Settings upgrade so new versions of the app will retain the previous versions' settings.
+- Fixed null reference build warnings.
+- Updated in-app help references so F1 works from anywhere.
 
-## [1.1.0.0] - 2026-04-29
+## [1.1.0] - 2026-04-29
 
 A substantial overhaul of the underlying networking layer and the per-operation UX. The application no longer depends on PowerShell or any third-party JSON library, and operations on different adapters can now run concurrently without freezing the UI.
 
@@ -43,7 +43,7 @@ A substantial overhaul of the underlying networking layer and the per-operation 
 - `Newtonsoft.Json` package reference.
 - Startup `Set-ExecutionPolicy` / `Import-Module NetTCPIP` calls (no longer needed).
 
-## [1.0.5.1] - 2024-07-21
+## [1.0.5] - 2024-07-21
 
 ### Added
 - Sortable shortcut list (move up / move down buttons).
@@ -51,23 +51,23 @@ A substantial overhaul of the underlying networking layer and the per-operation 
 ### Fixed
 - GitHub workflow issue.
 
-## [1.0.4.0] - 2024-06-24
+## [1.0.4] - 2024-06-24
 
 ### Added
 - Adapter status indicators (up / down / disabled icons in the adapter list).
 - *Start at log on* option, which creates a Task Scheduler entry to launch the app at user logon with elevated privileges (no UAC prompt at logon).
 
-## [1.0.2.1] - 2024-06-22
+## [1.0.2] - 2024-06-22
 
 ### Added
 - Global hotkey to show and focus the window (default `Ctrl + Alt + Shift + F11`, configurable in Settings).
 
-## [1.0.1.0] - 2024-06-21
+## [1.0.1] - 2024-06-21
 
 ### Added
 - Adapter change notifications — the refresh icon highlights when network state changes outside the application.
 
-## [1.0.0.0] - 2024-06-20
+## [1.0.0] - 2024-06-20
 
 Initial release.
 
@@ -80,9 +80,10 @@ Initial release.
 - Debug message log with copy / save / clear.
 - Configurable network adapters control-panel launcher path.
 
-[1.1.0.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.1.0.0
-[1.0.5.1]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1
-[1.0.4.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.4.0
-[1.0.2.1]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.2.1
-[1.0.1.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.1.0
-[1.0.0.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.0.0
+[1.1.1]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.1.1
+[1.1.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.1.0.0
+[1.0.5]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1
+[1.0.4]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.4.0
+[1.0.2]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.2.1
+[1.0.1]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.1.0
+[1.0.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.0.0
