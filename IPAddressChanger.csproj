@@ -8,17 +8,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <StartupObject>IPAddressChanger.Program</StartupObject>
-    <ApplicationIcon>icons\NetworkAdapter.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\NetworkAdapter.ico</ApplicationIcon>
     <Title>IP Address Changer</Title>
     <RepositoryUrl>https://github.com/SpectrumIntegrators/IPAddressChanger</RepositoryUrl>
-    <AssemblyVersion>1.1.1.0 </AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
+    <AssemblyVersion>1.2.0.0 </AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
     <Copyright>GNU GPLv3</Copyright>
     <Description>This application allows changing IP address settings for network adapters from a quick list of user-defined configurations.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="icons\NetworkAdapter.ico" />
+    <Content Include="Resources\NetworkAdapter.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +40,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="frmDHCPServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmDHCPServerBusy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmDHCPServerBusy.Designer.cs">
+      <DependentUpon>frmDHCPServerBusy.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="frmDHCPServerBusy.resx">
+      <DependentUpon>frmDHCPServerBusy.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +75,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

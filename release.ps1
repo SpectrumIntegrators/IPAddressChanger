@@ -65,6 +65,16 @@ if (-not $SkipChecks) {
     # 1) Version
     Write-Host "Version (from IPAddressChanger.csproj):" -NoNewline
     Write-Host " $version" -ForegroundColor Yellow
+    # Releases conventionally use .0 in the 4th (build) segment. A non-zero build segment
+    # usually means a rebuild after a recent release for a tiny fix — legitimate but worth
+    # confirming, since a stale non-zero from forgotten dev work would also fall here.
+    $versionParts = $version.Split('.')
+    if ($versionParts.Length -eq 4 -and $versionParts[3] -ne '0') {
+        Write-Host "  Note: build segment is .$($versionParts[3]), not .0." -ForegroundColor Yellow
+        Write-Host "  Most releases use .0 in the 4th segment. A non-zero value typically means" -ForegroundColor Yellow
+        Write-Host "  a rebuild for a tiny post-release fix. If that's intentional, continue;" -ForegroundColor Yellow
+        Write-Host "  otherwise abort and bump the patch (3rd) segment instead." -ForegroundColor Yellow
+    }
     if (-not (Confirm-Step "Is this version correct?")) { Abort-Release "version not confirmed" }
 
     # 2) CHANGELOG

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Net.NetworkInformation;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using IPAddressChanger.DHCP_Server;
 
 namespace IPAddressChanger {
 
@@ -71,6 +72,7 @@ namespace IPAddressChanger {
 		private List<IPAddressShortcut> ipAddressShortcuts = []; // list of all of the stored network adapter settings shortcuts
 		internal frmSettings? settingsForm = null; // Don't load the settings form now, but keep a reference when we do load it
 		internal frmDebug debugForm = new(); // Create and reference a debug form to send it debug log messages
+		internal frmDHCPServer? dhcpServerForm = null; // we only have this if there's one showing
 		internal KeyboardHook? hook = null;// Global hotkey object
 		private bool isClosing = false; // true if the application is closing and no more network operations should run
 		private bool isBusy = false; // serialize adapter queries and changes so concurrent calls don't fight over the UI
@@ -79,6 +81,7 @@ namespace IPAddressChanger {
 		private Dictionary<AdapterInfo, frmAdapterBusy?> busyAdapterDialogs = new(); // Tracks per-adapter in-flight operations. Key presence = adapter busy. Value = open dialog or null if user dismissed it.
 		private frmAddressConflictWarning? addressConflictWarningDialog;
 		private bool suppressFutureAddressConflictWarnings = false;
+		internal DHCPServer dhcpServer = new();
 
 		internal static partial class IPValidator {
 			[GeneratedRegex(@"(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)/(?:3[0-2]|[12]?\d)$)|(?:^DHCP$)")]
@@ -115,6 +118,16 @@ namespace IPAddressChanger {
 				Settings.Default.Save();
 			}
 			LoadSettings();
+			dhcpServer.DeviceCommunication += this.DhcpServer_DeviceCommunication;
+			dhcpServer.Log += this.DhcpServer_Log;
+		}
+
+		private void DhcpServer_DeviceCommunication(object? sender, DHCPMessageEventArgs e) {
+			debugForm.AddMessage($"DHCP {e.DirectionLabel} [{e.MACAddress}]: {e.Message}");
+		}
+
+		private void DhcpServer_Log(object? sender, string message) {
+			debugForm.AddMessage($"DHCP: {message}");
 		}
 
 		private static Dictionary<string, AdapterSnapshot> BuildAdapterSnapshot() {
@@ -1189,66 +1202,22 @@ namespace IPAddressChanger {
 				: $"{lvi.SubItems[0].Text}/{lvi.SubItems[1].Text}";
 			Clipboard.SetText(textToCopy);
 		}
-	}
 
-	public class AdapterInfo {
-		internal UInt32 Index { get; set; } = 0;
-		internal string Name { get; set; } = "";
-		internal string Driver { get; set; } = "";
-		internal bool IsConnected { get; set; } = false;
-		internal bool IsEnabled { get; set; } = false;
-		internal UInt64 Speed { get; set; } = 0;
-		internal string HardwareAddress { get; set; } = "";
-		internal string DeviceID { get; set; } = "";
-
-		public AdapterInfo() {
-			Index = 0;
-			Name = "";
-			Driver = "";
-			IsConnected = false;
-			IsEnabled = false;
-			Speed = 0;
-			HardwareAddress = "";
-			DeviceID = "";
-		}
-		public AdapterInfo(UInt32 index = 0, string name = "", string driver = "", bool isConnected = false, bool isEnabled = false, UInt64 speed = 0, string hardwareAddress = "", string deviceID = "") {
-			Index = index;
-			Name = name;
-			Driver = driver;
-			IsConnected = isConnected;
-			IsEnabled = isEnabled;
-			Speed = speed;
-			HardwareAddress = hardwareAddress;
-			DeviceID = deviceID;
-		}
-
-		public string Status { get {
-				return (IsEnabled ? (IsConnected ? "UP" : "down") : "disabled");
+		private void tsbDHCPServer_Click(object sender, EventArgs e) {
+			if (dhcpServerForm != null) {
+				dhcpServerForm.Show(this);
+				return;
 			}
-		}
-		public override string ToString() {
-			return $"{Index}: {Name} [{Status}]";
-		}
-
-		// Equality is by DeviceID so that Dictionary<AdapterInfo, ...> lookups stay valid
-		// across a refresh that produces new AdapterInfo references for the same physical adapter.
-		public override bool Equals(object? obj) {
-			return obj is AdapterInfo other && other.DeviceID == DeviceID;
-		}
-		public override int GetHashCode() {
-			return DeviceID?.GetHashCode() ?? 0;
+			dhcpServerForm = new(dhcpServer, debugForm);
+			dhcpServerForm.FormClosed += (s, e) => { dhcpServerForm = null; };
+			dhcpServerForm.Show(this);
+			dhcpServerForm.Activate();
 		}
 	}
 
-	public class IPAddressShortcut {
-		public string DeviceID { get; set; } = "";
-		public string AdapterName { get; set; } = "";
-		public string Name { get; set; } = "";
-		public string IPAddress { get; set; } = "";
-		public int PrefixLength { get; set; } = 0;
-		public bool UseDHCP { get; set; } = false;
 
-	}
+
+
 
 }
 

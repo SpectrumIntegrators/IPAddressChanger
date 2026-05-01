@@ -129,6 +129,22 @@ namespace IPAddressChanger {
 			}
 		}
 
+		public static Task RemoveIPAddressAsync(uint interfaceIndex, string ipAddress) =>
+			Task.Run(() => RemoveIPAddress(interfaceIndex, ipAddress));
+
+		private static void RemoveIPAddress(uint interfaceIndex, string ipAddress) {
+			using CimSession session = CimSession.Create(null);
+			string query = $"SELECT * FROM MSFT_NetIPAddress WHERE InterfaceIndex={interfaceIndex} AND IPAddress='{ipAddress}'";
+			foreach (CimInstance addr in session.QueryInstances(Namespace, "WQL", query)) {
+				using (addr) {
+					try {
+						session.DeleteInstance(Namespace, addr);
+					} catch (CimException) {
+					}
+				}
+			}
+		}
+
 		public static Task NewIPAddressAsync(uint interfaceIndex, string ipAddress, byte prefixLength) =>
 			Task.Run(() => NewIPAddress(interfaceIndex, ipAddress, prefixLength));
 

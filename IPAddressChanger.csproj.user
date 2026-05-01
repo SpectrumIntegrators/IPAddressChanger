@@ -4,10 +4,16 @@
     <_LastSelectedProfileId>d:\Programming Projects\IPAddressChanger\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="frmAddDHCPReservation.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="frmDebug.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="frmAdapterBusy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmDHCPServerBusy.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="frmEditShortcut.cs">
