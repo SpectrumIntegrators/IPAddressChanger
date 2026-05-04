@@ -8,66 +8,18 @@ using System.Net.NetworkInformation;
 using System.Configuration;
 using System.Text.RegularExpressions;
 using IPAddressChanger.DHCP_Server;
+using IPAddressChanger.Network_Manager;
 
 namespace IPAddressChanger {
 
 	public partial class frmMain : Form {
 
-		public enum SHORTCUT_DOUBLECLICK_ACTIONS {
+		public enum ShortcutDoubleclickActions {
 			EditShortcut,
 			RunShortcut
 		}
 
-		private readonly Dictionary<int, string> PREFIX_ORIGINS = new() {
-			[0] = "Other",
-			[1] = "Manual",
-			[2] = "Well Known",
-			[3] = "DHCP",
-			[4] = "Router Advertisement"
-		};
 
-		private readonly Dictionary<int, string> SUFFIX_ORIGINS = new() {
-			[0] = "Other",
-			[1] = "Manual",
-			[2] = "Well Known",
-			[3] = "Origin DHCP",
-			[4] = "Link Layer Address",
-			[5] = "Random"
-		};
-
-		private readonly Dictionary<int, string> ADDRESS_FAMILIES = new() {
-			[-1] = "Unknown",
-			[0] = "Unspecified",
-			[1] = "Unix",
-			[2] = "IPv4",
-			[3] = "ImpLink",
-			[4] = "Pup",
-			[5] = "Chaos",
-			[6] = "Ipx or NS",
-			[7] = "Iso or Osi",
-			[8] = "Ecma",
-			[9] = "DataKit",
-			[10] = "Ccitt",
-			[11] = "Sna",
-			[12] = "DecNet",
-			[13] = "DataLink",
-			[14] = "Lat",
-			[15] = "HyperChannel",
-			[16] = "AppleTalk",
-			[17] = "NetBios",
-			[18] = "VoiceView",
-			[19] = "FireFox",
-			[21] = "Banyan",
-			[22] = "Atm",
-			[23] = "IPv6",
-			[24] = "Cluster",
-			[25] = "Ieee12844",
-			[26] = "Irda",
-			[28] = "NetworkDesigners",
-			[29] = "Max",
-			[65536] = "Packet",
-			[65537] = "ControllerAreaNetwork"
-		};
 
 		private List<IPAddressShortcut> ipAddressShortcuts = []; // list of all of the stored network adapter settings shortcuts
 		internal frmSettings? settingsForm = null; // Don't load the settings form now, but keep a reference when we do load it
@@ -80,20 +32,15 @@ namespace IPAddressChanger {
 		private Dictionary<string, AdapterSnapshot> adapterSnapshots = new(); // last-known adapter state, keyed by NetworkInterface.Id, used to suppress no-op change notifications
 		private Dictionary<AdapterInfo, frmAdapterBusy?> busyAdapterDialogs = new(); // Tracks per-adapter in-flight operations. Key presence = adapter busy. Value = open dialog or null if user dismissed it.
 		private frmAddressConflictWarning? addressConflictWarningDialog;
-		private bool suppressFutureAddressConflictWarnings = false;
-		internal DHCPServer dhcpServer = new();
+		private bool suppressFutureAddressConflictWarnings = false; // If true, warnings about address conflicts will not be shown for the rest of this session
+		internal DHCPServer dhcpServer = new(); // The DHCP server (always exists, isn't runing by default)
 
 		internal static partial class IPValidator {
 			[GeneratedRegex(@"(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)/(?:3[0-2]|[12]?\d)$)|(?:^DHCP$)")]
 			public static partial Regex IpCidrOrDhcp();
 		}
 
-		private class AdapterSnapshot {
-			public string Name { get; set; } = "";
-			public OperationalStatus Status { get; set; }
-			public long Speed { get; set; }
-			public HashSet<string> IPs { get; set; } = new();
-		}
+
 
 		public frmMain() {
 			InitializeComponent();
@@ -338,7 +285,7 @@ namespace IPAddressChanger {
 					List<IPAddressInfo> addresses = await NetworkManager.GetIPAddressesAsync(adapter.Index);
 					if (isClosing) return;
 					foreach (IPAddressInfo addr in addresses) {
-						debugForm.AddMessage($"Address: {addr.IPAddress} ({ADDRESS_FAMILIES.GetValueOrDefault(addr.AddressFamily, "Unknown")})");
+						debugForm.AddMessage($"Address: {addr.IPAddress} ({NetworkLookups.AddressFamilies.GetValueOrDefault(addr.AddressFamily, "Unknown")})");
 						ListViewItem item = new();
 						if (addr.AddressFamily == (UInt16)AddressFamily.InterNetwork) {
 							item.Text = addr.IPv4Address;
@@ -348,9 +295,9 @@ namespace IPAddressChanger {
 							item.Text = addr.IPAddress;
 						}
 						item.SubItems.Add(addr.PrefixLength.ToString());
-						item.SubItems.Add(ADDRESS_FAMILIES.GetValueOrDefault(addr.AddressFamily, "Unknown"));
-						item.SubItems.Add(PREFIX_ORIGINS.GetValueOrDefault(addr.PrefixOrigin, "Unknown"));
-						item.SubItems.Add(SUFFIX_ORIGINS.GetValueOrDefault(addr.SuffixOrigin, "Unknown"));
+						item.SubItems.Add(NetworkLookups.AddressFamilies.GetValueOrDefault(addr.AddressFamily, "Unknown"));
+						item.SubItems.Add(NetworkLookups.PrefixOrigins.GetValueOrDefault(addr.PrefixOrigin, "Unknown"));
+						item.SubItems.Add(NetworkLookups.SuffixOrigins.GetValueOrDefault(addr.SuffixOrigin, "Unknown"));
 						lsvAddresses.Items.Add(item);
 					}
 				} catch (Exception ex) {
@@ -790,9 +737,9 @@ namespace IPAddressChanger {
 		}
 
 		private void lsbShortcuts_DoubleClick(object sender, EventArgs e) {
-			if (Settings.Default.ShortcutDoubleClick == (int)SHORTCUT_DOUBLECLICK_ACTIONS.EditShortcut) {
+			if (Settings.Default.ShortcutDoubleClick == (int)ShortcutDoubleclickActions.EditShortcut) {
 				tsbEditShortcut.PerformClick();
-			} else if (Settings.Default.ShortcutDoubleClick == (int)SHORTCUT_DOUBLECLICK_ACTIONS.RunShortcut) {
+			} else if (Settings.Default.ShortcutDoubleClick == (int)ShortcutDoubleclickActions.RunShortcut) {
 				tsbRecallShortcut.PerformClick();
 			}
 		}
@@ -1205,7 +1152,7 @@ namespace IPAddressChanger {
 
 		private void tsbDHCPServer_Click(object sender, EventArgs e) {
 			if (dhcpServerForm != null) {
-				dhcpServerForm.Show(this);
+				dhcpServerForm.Activate();
 				return;
 			}
 			dhcpServerForm = new(dhcpServer, debugForm);
