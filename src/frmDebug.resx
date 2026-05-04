@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
-    Microsoft ResX Schema 
+    Microsoft ResX Schema
 
     Version 2.0
 
@@ -48,7 +48,7 @@
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -127,27 +127,27 @@
   <data name="tsbClear.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAChSURBVDhPY/jy5YvBt2/f/pODGUAAyPhwsDjlPwhv2rTp
-        /8aVK/5v9LGA852cnLBiuAEfXz4Ha1ioxgvWBGODaKIM+P79ewKyITDNIDGYU3FhsAGgMEA3AOQSbBrQ
-        MdiAD48ff0R2NoxNdBjADADhPVs2/7948gSYTbQBMC8g+5kY/4Mw2AAQwCZJDIZqhxiAzZn4MPUNIAdD
-        tY/wMGBgAAAA57JIimRgDgAAAABJRU5ErkJggg==
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACkSURBVDhPY/jy5YvBt2/f/pODGUDg27dvHw4Wp/wH4U2b
+        Nv3fuHLF/40+FnC+k5MTVgw34OPL52ANC9V4wZpgbBBNlAHfv39PQDYEphkkhu5kdAw2ABQG6AaAXIKu
+        GBsGG/Dh8eOPyM5G9g5RXoAZAMJ7tmz+f/HkCdICEeYFZD8T43+4ASCALkEsRjEA3YmEMPUNIAdT1wB0
+        JxLC1DeAHAzSCwAA57JIrq8rewAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="tsbCopy.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACGSURBVDhP3Y/BDYAgDEXrBm7gRo7gnRMBVjcx4aKWFIK1
-        Fbj6kh8sLS8WrLWzc+4UEr33K7TIAioL+NgYszclmgDpkkgCWqFvJU2A9zkhhAXvxL/RBPSZyDPiSiMC
-        Orf7PIpkRMASH81UELyWKDM/EvCk5gf1zISSOqOCF9jkUp6moCcAABfaJtxSek6EjQAAAABJRU5ErkJg
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACGSURBVDhPY8jPzxcoLCz8jwX/Kioq8mMgBGAGoIuDNGdk
+        ZHwhaAguA0CAKEOwGYDFO7i9hMsAkDgMFxcXy4PEsLoGlwHIfJgarF4ixQAoHZefn/8dbggpBqCHCYok
+        sgZ0PjYAVzOMDEDH6BrQAbIaRuREg81F2ABeNSBJdEPRMUEDiMEgtQC0atxGhEkXwQAAAABJRU5ErkJg
         gg==
 </value>
   </data>
   <data name="tsbSave.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB+SURBVDhPY/j27Vs4EL8B4v8kYpCecJABb7QL1vxnCJ5D
-        EgbpAekFGYBVATEYrBfZgA/vPxKFh7MBpOJBagA2PyNjZLW0NQCdjy4OwmC9X758uVM8/xiGBnQ+ujgI
-        gw34+vWrDLIh6AqRNSOLgzDYABCAGQISACkC0cThb/8BXmPqvKWoVTAAAAAASUVORK5CYII=
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB1SURBVDhPY/j27Vv4t2/f3nz79u0/iRikJ5wBxNAuWPOf
+        IXgOSRikB6QXZACGJLEYrBfZgA/vPxKFh7MBpOJBagC6f9Ex/QxA56OLww348uXLneL5xzA0oPPRxeEG
+        fP36VQbZEHSFBA0AAZghIAGQIhBNLAYAXmPqvOlZyIcAAAAASUVORK5CYII=
 </value>
   </data>
 </root>

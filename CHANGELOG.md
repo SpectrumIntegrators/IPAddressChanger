@@ -4,6 +4,7 @@ All notable changes to this project are documented in this file. The format is l
 
 ## [1.2.0]
 - Added DHCP server
+- Added debug log auto scrolling
 
 ## [1.1.1] - 2026-04-30
 

@@ -148,4 +148,7 @@
   <data name="AddTable_5632" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AddTable_5632.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="filedownload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\filedownload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

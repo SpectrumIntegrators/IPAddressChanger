@@ -29,6 +29,7 @@
 			this.tsbClear = new ToolStripButton();
 			this.tsbCopy = new ToolStripButton();
 			this.tsbSave = new ToolStripButton();
+			this.tsbAutoScroll = new ToolStripButton();
 			this.helpProvider1 = new HelpProvider();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -56,7 +57,7 @@
 			// 
 			this.helpProvider1.SetHelpKeyword(this.toolStrip1, "debug-messages-window");
 			this.helpProvider1.SetHelpNavigator(this.toolStrip1, HelpNavigator.Topic);
-			this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.tsbClear, this.tsbCopy, this.tsbSave });
+			this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.tsbClear, this.tsbCopy, this.tsbSave, this.tsbAutoScroll });
 			this.toolStrip1.Location = new Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.helpProvider1.SetShowHelp(this.toolStrip1, true);
@@ -97,6 +98,18 @@
 			this.tsbSave.ToolTipText = "Save the debug log to a file";
 			this.tsbSave.Click += this.tsbSave_Click;
 			// 
+			// tsbAutoScroll
+			// 
+			this.tsbAutoScroll.CheckOnClick = true;
+			this.tsbAutoScroll.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbAutoScroll.Image = Properties.Resources.filedownload;
+			this.tsbAutoScroll.ImageTransparentColor = Color.Magenta;
+			this.tsbAutoScroll.Name = "tsbAutoScroll";
+			this.tsbAutoScroll.Size = new Size(23, 22);
+			this.tsbAutoScroll.Text = "Auto Scrolling";
+			this.tsbAutoScroll.ToolTipText = "Enable/disable automatically scrolling the output when a new message is added";
+			this.tsbAutoScroll.CheckedChanged += this.tsbAutoScroll_CheckedChanged;
+			// 
 			// helpProvider1
 			// 
 			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
@@ -132,5 +145,6 @@
 		private ToolStripButton tsbCopy;
 		private ToolStripButton tsbSave;
 		private HelpProvider helpProvider1;
+		private ToolStripButton tsbAutoScroll;
 	}
 }

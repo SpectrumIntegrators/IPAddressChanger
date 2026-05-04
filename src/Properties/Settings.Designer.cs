@@ -214,5 +214,17 @@ namespace IPAddressChanger.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DebugAutoScroll {
+            get {
+                return ((bool)(this["DebugAutoScroll"]));
+            }
+            set {
+                this["DebugAutoScroll"] = value;
+            }
+        }
     }
 }
