@@ -8,16 +8,16 @@ UX polish, and docs.
 
 ### DHCP server bugs / behavior
 
-- **#28 Debug window double-open exception.** ~~`tsbDebug_Click` (`frmMain.cs:858`)
+- ~~**#28 Debug window double-open exception.** `tsbDebug_Click` (`frmMain.cs:858`)
   calls `Show(this)` on an already-visible form, throwing
   `InvalidOperationException`. Fix: check `Visible` and `BringToFront`/`Activate`
   if already shown.~~ _Done 2025-05-04_
-- **#29 Reservation IP validation when server isn't running.** `TryAddReservation`
+- ~~**#29 Reservation IP validation when server isn't running.** `TryAddReservation`
   only validates against `RangeStart`/`RangeEnd`, which are unset until
   `SetLeaseRange` runs. If the user has typed an address+prefix in `frmDHCPServer`
   but hasn't clicked Enable, they can still add reservations outside that subnet.
   Cleanest fix: have the reservation dialog accept a tentative range from the
-  parent form and validate against it.
+  parent form and validate against it.~~
 - **#30 Existing leases outside new range at server start.** When the user starts
   the server (or stops, changes range, restarts), check whether any existing
   `_dhcpLeases` entries fall outside the newly-configured `[RangeStart, RangeEnd]`.

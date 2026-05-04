@@ -150,8 +150,25 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private void tsbAddCustomReservation_Click(object sender, EventArgs e) {
-		// show the dhcp lease reservation dialog
-		var _ = frmAddDHCPReservation.ShowNewDialog(_dhcpServer, _debugForm, this);
+		// Resolve the range to validate against. When the server is running it has its own
+		// range; otherwise compute a tentative one from the textboxes so reservations can't be
+		// added outside a subnet the user has typed but not yet applied.
+		IPAddress? rangeStart;
+		IPAddress? rangeEnd;
+		if (_dhcpServer.RangeStart is not null && _dhcpServer.RangeEnd is not null) {
+			rangeStart = _dhcpServer.RangeStart;
+			rangeEnd = _dhcpServer.RangeEnd;
+		} else {
+			if (!IPAddress.TryParse(GetAddressFromTextBoxes(), out IPAddress? tentativeAddress)
+				|| !int.TryParse(txtPrefixLength.Text, out int tentativePrefix)
+				|| DHCPServer.TryGetHostRange(tentativeAddress, tentativePrefix) is not (IPAddress s, IPAddress en)) {
+				MessageBox.Show("Set a valid IP address and prefix length before adding a reservation.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				return;
+			}
+			rangeStart = s;
+			rangeEnd = en;
+		}
+		var _ = frmAddDHCPReservation.ShowNewDialog(_dhcpServer, _debugForm, rangeStart, rangeEnd, this);
 	}
 
 	private void tsbDeleteLease_Click(object sender, EventArgs e) {

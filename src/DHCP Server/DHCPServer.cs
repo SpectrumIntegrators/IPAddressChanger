@@ -222,6 +222,26 @@ public class DHCPServer : IDisposable {
 	/// <param name="prefixLength">The subnet prefix length, 0–32.</param>
 	/// <exception cref="InvalidOperationException">The server is currently running.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">The specified IPAddress does not represent an IPv4 address, or the prefix length is invalid.</exception>
+	/// <summary>
+	/// Computes the allocatable host-address range for a given server address and prefix length.
+	/// Returns (start, end) covering every host address in the subnet excluding the network and
+	/// broadcast addresses. Returns null if the inputs don't form a usable IPv4 range (non-IPv4
+	/// address, or prefix outside 0–30).
+	/// </summary>
+	public static (IPAddress Start, IPAddress End)? TryGetHostRange(IPAddress serverAddress, int prefixLength) {
+		if (serverAddress.AddressFamily != AddressFamily.InterNetwork) return null;
+		if (prefixLength < 0 || prefixLength > 30) return null;
+		uint addrInt = BinaryPrimitives.ReadUInt32BigEndian(serverAddress.GetAddressBytes());
+		uint mask = prefixLength == 0 ? 0u : (uint.MaxValue << (32 - prefixLength));
+		uint network = addrInt & mask;
+		uint broadcast = network | ~mask;
+		byte[] startBytes = new byte[4];
+		BinaryPrimitives.WriteUInt32BigEndian(startBytes, network + 1);
+		byte[] endBytes = new byte[4];
+		BinaryPrimitives.WriteUInt32BigEndian(endBytes, broadcast - 1);
+		return (new IPAddress(startBytes), new IPAddress(endBytes));
+	}
+
 	public void SetLeaseRange(IPAddress serverAddress, int prefixLength) {
 		ObjectDisposedException.ThrowIf(_disposed, this);
 		if (Running) {

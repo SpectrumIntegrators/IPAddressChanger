@@ -1,18 +1,24 @@
-﻿using System.Net;
+using System.Buffers.Binary;
+using System.Net;
+using System.Net.Sockets;
 using IPAddressChanger.DHCP_Server;
 
 namespace IPAddressChanger;
 public partial class frmAddDHCPReservation : Form {
 	private readonly DHCPServer _dhcpServer;
 	private readonly frmDebug _debugForm;
-	public frmAddDHCPReservation(DHCPServer dhcpServer, frmDebug debugForm) {
+	private readonly IPAddress _rangeStart;
+	private readonly IPAddress _rangeEnd;
+	public frmAddDHCPReservation(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd) {
 		InitializeComponent();
 		_dhcpServer = dhcpServer;
 		_debugForm = debugForm;
+		_rangeStart = rangeStart;
+		_rangeEnd = rangeEnd;
 	}
 
-	public static DialogResult ShowNewDialog(DHCPServer dhcpServer, frmDebug debugForm, IWin32Window? owner) {
-		using frmAddDHCPReservation me = new(dhcpServer, debugForm);
+	public static DialogResult ShowNewDialog(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd, IWin32Window? owner) {
+		using frmAddDHCPReservation me = new(dhcpServer, debugForm, rangeStart, rangeEnd);
 		return me.ShowDialog(owner);
 	}
 
@@ -61,6 +67,22 @@ public partial class frmAddDHCPReservation : Form {
 			return;
 		}
 
+		// Range check up front. The server's TryAddReservation does this too when its range is
+		// set, but here we use the tentative range supplied by the parent form so reservations
+		// can't sneak in outside the (possibly not-yet-applied) subnet.
+		if (newIPAddress.AddressFamily != AddressFamily.InterNetwork) {
+			MessageBox.Show("Reserved address must be IPv4", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			DialogResult = DialogResult.None;
+			return;
+		}
+		uint ipInt = BinaryPrimitives.ReadUInt32BigEndian(newIPAddress.GetAddressBytes());
+		uint startInt = BinaryPrimitives.ReadUInt32BigEndian(_rangeStart.GetAddressBytes());
+		uint endInt = BinaryPrimitives.ReadUInt32BigEndian(_rangeEnd.GetAddressBytes());
+		if (ipInt < startInt || ipInt > endInt) {
+			MessageBox.Show($"Reserved address {newIPAddress} is outside the configured subnet ({_rangeStart}-{_rangeEnd})", "Address Out of Range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			DialogResult = DialogResult.None;
+			return;
+		}
 
 		if (!_dhcpServer.TryAddReservation(newMACAddress, newIPAddress, out string? errorMessage)) {
 			MessageBox.Show($"{errorMessage}", "Address Already Reserved", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -73,6 +95,6 @@ public partial class frmAddDHCPReservation : Form {
 		_debugForm.AddMessage($"DHCP reservation added: {newMACAddress}: {newIPAddress.ToString()}");
 		DialogResult = DialogResult.OK;
 		// addresses were valid, unused, and have been added to the lease reservations
-		
+
 	}
 }
