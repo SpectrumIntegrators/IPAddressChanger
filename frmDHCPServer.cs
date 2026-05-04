@@ -1,4 +1,5 @@
 using IPAddressChanger.DHCP_Server;
+using IPAddressChanger.Network_Manager;
 using System.Net;
 using System.Net.Sockets;
 
@@ -372,7 +373,7 @@ public partial class frmDHCPServer : Form {
 	private async Task<bool> DisableDHCPServer() {
 		_debugForm.AddMessage("Stopping DHCP server");
 		try {
-			_dhcpServer.Stop();
+			await _dhcpServer.StopAsync();
 		} catch (Exception ex) {
 			MessageBox.Show($"Error stopping DHCP server: {ex.Message}", "Error Stopping DHCP Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			_debugForm.AddMessage($"Error stopping DHCP server: {ex.Message}");

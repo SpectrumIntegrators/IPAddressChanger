@@ -8,10 +8,10 @@ UX polish, and docs.
 
 ### DHCP server bugs / behavior
 
-- **#28 Debug window double-open exception.** `tsbDebug_Click` (`frmMain.cs:858`)
+- **#28 Debug window double-open exception.** ~~`tsbDebug_Click` (`frmMain.cs:858`)
   calls `Show(this)` on an already-visible form, throwing
   `InvalidOperationException`. Fix: check `Visible` and `BringToFront`/`Activate`
-  if already shown.
+  if already shown.~~ _Done 2025-05-04_
 - **#29 Reservation IP validation when server isn't running.** `TryAddReservation`
   only validates against `RangeStart`/`RangeEnd`, which are unset until
   `SetLeaseRange` runs. If the user has typed an address+prefix in `frmDHCPServer`
