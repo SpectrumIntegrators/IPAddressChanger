@@ -477,24 +477,18 @@
 		private Button cmdCancel;
 		private Button cmdOK;
 		private TableLayoutPanel tableLayoutPanel3;
-		private Label lblHideWhenMinimized;
 		private CheckBox chkHideWhenMinimized;
-		private Label label2;
 		private ComboBox cboShortcutDoubleClick;
-		private Label lblStartMinimized;
 		private CheckBox chkStartMinimized;
-		private Label label1;
 		private TableLayoutPanel tableLayoutPanel4;
 		private Button cmdControlPanelBrowse;
 		private TextBox txtControlPanelFile;
 		private HelpProvider helpProvider1;
-		private Label label3;
 		private TableLayoutPanel tableLayoutPanel5;
 		private CheckBox chkCtrl;
 		private CheckBox chkAlt;
 		private CheckBox chkShift;
 		private ComboBox cboHotkey;
-		private Label lblStartAtLogon;
 		private CheckBox chkStartAtLogon;
 		private ComboBox cboSaveLeases;
 	}

@@ -121,6 +121,16 @@ namespace IPAddressChanger.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EditTableRow_16x {
+            get {
+                object obj = ResourceManager.GetObject("EditTableRow_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://forms.zohopublic.com/spectrumintegrators/form/IPAddressChangerFeedback/formperma/1QJZjlAMzZhwwIDZgIocEpoXOfLFuBrOJiVbNQzZ_n8.
         /// </summary>
         internal static string FeedbackURL {

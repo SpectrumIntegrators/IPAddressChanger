@@ -9,16 +9,23 @@ public partial class frmAddDHCPReservation : Form {
 	private readonly frmDebug _debugForm;
 	private readonly IPAddress _rangeStart;
 	private readonly IPAddress _rangeEnd;
-	public frmAddDHCPReservation(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd) {
+	private readonly DHCPLease? _editLease;
+	public frmAddDHCPReservation(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd, DHCPLease? editLease=null) {
 		InitializeComponent();
 		_dhcpServer = dhcpServer;
 		_debugForm = debugForm;
 		_rangeStart = rangeStart;
 		_rangeEnd = rangeEnd;
+		_editLease = editLease;
+		if (editLease != null) {
+			txtMACAddress.Text = editLease.MACAddress;
+			txtIPAddress.Text = editLease.IPAddress.ToString();
+			this.Text = "Edit DHCP Reservation";
+		}
 	}
 
-	public static DialogResult ShowNewDialog(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd, IWin32Window? owner) {
-		using frmAddDHCPReservation me = new(dhcpServer, debugForm, rangeStart, rangeEnd);
+	public static DialogResult ShowNewDialog(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd, IWin32Window? owner, DHCPLease? editLease=null) {
+		using frmAddDHCPReservation me = new(dhcpServer, debugForm, rangeStart, rangeEnd, editLease);
 		return me.ShowDialog(owner);
 	}
 
@@ -81,6 +88,20 @@ public partial class frmAddDHCPReservation : Form {
 		if (ipInt < startInt || ipInt > endInt) {
 			MessageBox.Show($"Reserved address {newIPAddress} is outside the configured subnet ({_rangeStart}-{_rangeEnd})", "Address Out of Range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			DialogResult = DialogResult.None;
+			return;
+		}
+
+		if (_editLease is not null) {
+			// Edit path: either MAC or IP (or both) may have changed. UpdateReservation handles
+			// the no-change case gracefully and validates duplicates against everything OTHER
+			// than the entry being edited.
+			if (!_dhcpServer.UpdateReservation(_editLease.MACAddress, newMACAddress, newIPAddress, out string? editError)) {
+				MessageBox.Show($"{editError}", "Cannot Update Reservation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				DialogResult = DialogResult.None;
+				return;
+			}
+			_debugForm.AddMessage($"DHCP reservation updated: {_editLease.MACAddress} → {newMACAddress}: {newIPAddress}");
+			DialogResult = DialogResult.OK;
 			return;
 		}
 

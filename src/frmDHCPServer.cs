@@ -72,6 +72,7 @@ public partial class frmDHCPServer : Form {
 		_dhcpServer.ServerStarted += this._dhcpServer_ServerStarted;
 		_dhcpServer.ServerStopped += this._dhcpServer_ServerStopped;
 		_dhcpServer.LeaseAssigned += this._dhcpServer_LeaseAssigned;
+		_dhcpServer.LeaseRemoved += this._dhcpServer_LeaseRemoved;
 		_dhcpServer.DeviceCommunication += this._dhcpServer_DeviceCommunication;
 
 		// Restore previously-configured address and prefix from the server (the textboxes are
@@ -139,6 +140,15 @@ public partial class frmDHCPServer : Form {
 			AddLeaseListViewItem(e.Lease);
 		});
 	}
+
+	private void _dhcpServer_LeaseRemoved(object? sender, string mac) {
+		BeginInvoke(() => {
+			if (_leaseItems.TryGetValue(mac, out ListViewItem? item)) {
+				lsvDHCPLeases.Items.Remove(item);
+				_leaseItems.Remove(mac);
+			}
+		});
+	}
 	private void _dhcpServer_ServerStopped(object? sender, EventArgs e) {
 		BeginInvoke(() => chkEnableDHCPServer.Checked = false);
 	}
@@ -152,25 +162,26 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private void tsbAddCustomReservation_Click(object sender, EventArgs e) {
-		// Resolve the range to validate against. When the server is running it has its own
-		// range; otherwise compute a tentative one from the textboxes so reservations can't be
-		// added outside a subnet the user has typed but not yet applied.
-		IPAddress? rangeStart;
-		IPAddress? rangeEnd;
-		if (_dhcpServer.RangeStart is not null && _dhcpServer.RangeEnd is not null) {
-			rangeStart = _dhcpServer.RangeStart;
-			rangeEnd = _dhcpServer.RangeEnd;
-		} else {
-			if (!IPAddress.TryParse(GetAddressFromTextBoxes(), out IPAddress? tentativeAddress)
-				|| !int.TryParse(txtPrefixLength.Text, out int tentativePrefix)
-				|| DHCPServer.TryGetHostRange(tentativeAddress, tentativePrefix) is not (IPAddress s, IPAddress en)) {
-				MessageBox.Show("Set a valid IP address and prefix length before adding a reservation.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-				return;
-			}
-			rangeStart = s;
-			rangeEnd = en;
+		if (TryGetCurrentRange() is not (IPAddress rangeStart, IPAddress rangeEnd)) {
+			MessageBox.Show("Set a valid IP address and prefix length before adding a reservation.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
 		}
 		var _ = frmAddDHCPReservation.ShowNewDialog(_dhcpServer, _debugForm, rangeStart, rangeEnd, this);
+	}
+
+	// Resolves the (start, end) range to validate reservation IPs against. When the server is
+	// running it has its own range; otherwise compute a tentative one from the textboxes so the
+	// reservation dialog can validate against a subnet the user has typed but not yet applied.
+	// Returns null if neither source yields a usable range.
+	private (IPAddress Start, IPAddress End)? TryGetCurrentRange() {
+		if (_dhcpServer.RangeStart is not null && _dhcpServer.RangeEnd is not null) {
+			return (_dhcpServer.RangeStart, _dhcpServer.RangeEnd);
+		}
+		if (!IPAddress.TryParse(GetAddressFromTextBoxes(), out IPAddress? tentativeAddress)
+			|| !int.TryParse(txtPrefixLength.Text, out int tentativePrefix)) {
+			return null;
+		}
+		return DHCPServer.TryGetHostRange(tentativeAddress, tentativePrefix);
 	}
 
 	private void DeleteSelectedLeases() {
@@ -321,6 +332,7 @@ public partial class frmDHCPServer : Form {
 		_dhcpServer.ServerStarted -= this._dhcpServer_ServerStarted;
 		_dhcpServer.ServerStopped -= this._dhcpServer_ServerStopped;
 		_dhcpServer.LeaseAssigned -= this._dhcpServer_LeaseAssigned;
+		_dhcpServer.LeaseRemoved -= this._dhcpServer_LeaseRemoved;
 		_dhcpServer.DeviceCommunication -= this._dhcpServer_DeviceCommunication;
 	}
 
@@ -529,18 +541,38 @@ public partial class frmDHCPServer : Form {
 		CopySelectedLeases();
 	}
 
-	private void tsmiEditLease_Click(object sender, EventArgs e) {
-
+	private void EditSelectedLease() {
+		if (lsvDHCPLeases.SelectedItems.Count == 0) return;
+		// Edit only the first selected item even if multiple are highlighted — there's no
+		// meaningful "edit many at once" semantic for individual reservation IPs.
+		string mac = lsvDHCPLeases.SelectedItems[0].Text;
+		DHCPLease? lease = _dhcpServer.Leases.FirstOrDefault(l => l.MACAddress == mac);
+		if (lease is null) {
+			_debugForm.AddMessage($"Edit cancelled: no lease found for {mac}");
+			return;
+		}
+		if (TryGetCurrentRange() is not (IPAddress rangeStart, IPAddress rangeEnd)) {
+			MessageBox.Show("Set a valid IP address and prefix length before editing a reservation.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+		var _ = frmAddDHCPReservation.ShowNewDialog(_dhcpServer, _debugForm, rangeStart, rangeEnd, this, lease);
 	}
-
-	private void lsvDHCPLeases_KeyPress(object sender, KeyPressEventArgs e) {
-
+	private void tsmiEditLease_Click(object sender, EventArgs e) {
+		if (lsvDHCPLeases.SelectedItems.Count == 0) {
+			return;
+		}
+		EditSelectedLease();
 	}
 
 	private void lsvDHCPLeases_KeyDown(object sender, KeyEventArgs e) {
 		if (e.KeyCode == Keys.Delete) {
 			// Del = delete selected
 			DeleteSelectedLeases();
+			e.Handled = true;
+			return;
+		} else if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) {
+			// Enter/return = edit lease
+			EditSelectedLease();
 			e.Handled = true;
 			return;
 		}
@@ -569,5 +601,15 @@ public partial class frmDHCPServer : Form {
 			e.Handled = true;
 			break;
 		}
+	}
+
+	private void tsbEditLease_Click(object sender, EventArgs e) {
+		if (lsvDHCPLeases.SelectedItems.Count == 0) { return; }
+		EditSelectedLease();
+	}
+
+	private void lsvDHCPLeases_DoubleClick(object sender, EventArgs e) {
+		if (lsvDHCPLeases.SelectedItems.Count == 0) { return; }
+		EditSelectedLease();
 	}
 }

@@ -76,7 +76,14 @@ public class DHCPServer : IDisposable {
 
 	public event EventHandler? ServerStarted;
 	public event EventHandler? ServerStopped;
+	/// <summary>Fired when a lease is created or its mutable fields (Hostname, IPAddress)
+	/// change. Subscribers should treat this as "lease added or updated" — for an existing MAC,
+	/// the form's listview is expected to update in place rather than add a duplicate row.</summary>
 	public event EventHandler<LeaseEventArgs>? LeaseAssigned;
+	/// <summary>Fired when a lease's entry is removed from the server. Currently fires when
+	/// UpdateReservation changes a reservation's MAC (the old-MAC entry is replaced by a new
+	/// one). The string payload is the removed MAC. Can fire on a non-UI thread.</summary>
+	public event EventHandler<string>? LeaseRemoved;
 	public event EventHandler<DHCPMessageEventArgs>? DeviceCommunication;
 	/// <summary>Fired with a human-readable narration of decisions the server is making
 	/// (e.g. "DISCOVER from MAC, new device, offering IP"). Subscribers can pipe to a debug log.</summary>
@@ -412,6 +419,77 @@ public class DHCPServer : IDisposable {
 	}
 
 	/// <summary>
+	/// Changes the MAC and/or IP of an existing reservation/lease atomically. Validates the
+	/// new pair against duplicates and the configured range, then either mutates the existing
+	/// lease (IP-only change) or replaces it with a fresh entry that carries the original
+	/// hostname/assigned/expires forward (MAC change).
+	/// </summary>
+	/// <returns>True if the reservation was updated, or already had the requested values.
+	/// False if the old MAC isn't known, the new pair is invalid, or either the new MAC or new IP
+	/// collides with another existing lease.</returns>
+	public bool UpdateReservation(string oldMacAddress, string newMacAddress, IPAddress newIpAddress, out string? errorMessage) {
+		ObjectDisposedException.ThrowIf(_disposed, this);
+		string oldMac = oldMacAddress.ToUpperInvariant();
+		string newMac = newMacAddress.ToUpperInvariant();
+		lock (_leasesLock) {
+			if (!_dhcpLeases.TryGetValue(oldMac, out DHCPLease? lease) || lease is null) {
+				errorMessage = "No reservation or lease exists for that MAC address";
+				return false;
+			}
+			bool macChanged = oldMac != newMac;
+			bool ipChanged = !lease.IPAddress.Equals(newIpAddress);
+			if (!macChanged && !ipChanged) {
+				// No change — succeed quietly without firing events.
+				errorMessage = null;
+				return true;
+			}
+			if (newIpAddress.AddressFamily != AddressFamily.InterNetwork) {
+				errorMessage = "Reserved address must be IPv4";
+				return false;
+			}
+			if (RangeStart is not null && RangeEnd is not null) {
+				uint ipInt = BinaryPrimitives.ReadUInt32BigEndian(newIpAddress.GetAddressBytes());
+				uint startInt = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
+				uint endInt = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+				if (ipInt < startInt || ipInt > endInt) {
+					errorMessage = $"Address {newIpAddress} is outside the configured subnet ({RangeStart}-{RangeEnd})";
+					return false;
+				}
+			}
+			// Duplicate checks ignore the entry being edited (it's about to be removed/replaced).
+			if (macChanged && _dhcpLeases.ContainsKey(newMac)) {
+				errorMessage = "MAC address already has a reservation";
+				return false;
+			}
+			if (ipChanged && _usedAddresses.Contains(newIpAddress)) {
+				errorMessage = "IP address already reserved";
+				return false;
+			}
+			if (macChanged) {
+				// MAC is the lease's identity (set at construction), so changing it means
+				// replacing the entry with a new DHCPLease that carries hostname/assigned/expires
+				// forward. Fire LeaseRemoved for the old MAC so the form drops its old row.
+				_dhcpLeases.Remove(oldMac);
+				_usedAddresses.Remove(lease.IPAddress);
+				var newLease = new DHCPLease(newMac, newIpAddress, lease.Hostname, lease.Assigned, lease.Expires);
+				_dhcpLeases.Add(newMac, newLease);
+				_usedAddresses.Add(newIpAddress);
+				LeaseRemoved?.Invoke(this, oldMac);
+				LeaseAssigned?.Invoke(this, new LeaseEventArgs(newLease));
+			} else {
+				// MAC unchanged, IP changed: mutate in place; the form's idempotent
+				// AddLeaseListViewItem will update the existing row.
+				_usedAddresses.Remove(lease.IPAddress);
+				lease.IPAddress = newIpAddress;
+				_usedAddresses.Add(newIpAddress);
+				LeaseAssigned?.Invoke(this, new LeaseEventArgs(lease));
+			}
+			errorMessage = null;
+			return true;
+		}
+	}
+
+	/// <summary>
 	/// Adds a reservation for the specified MAC address.
 	/// </summary>
 	/// <exception cref="ArgumentException">The MAC or IP address is already part of a reservation or lease.</exception>
@@ -542,11 +620,15 @@ public class DHCPServer : IDisposable {
 		string mac = packet.MacAddress;
 		IPAddress? offerAddress = null;
 		DHCPLease? newLease = null;
+		DHCPLease? hostnameUpdatedLease = null;
 
 		lock (_leasesLock) {
 			if (_dhcpLeases.TryGetValue(mac, out DHCPLease? existing) && existing is not null) {
 				// MAC is already known — re-offer the same address (sticky leases per design).
 				offerAddress = existing.IPAddress;
+				if (TryUpdateHostname(existing, packet.Hostname)) {
+					hostnameUpdatedLease = existing;
+				}
 			} else {
 				IPAddress? candidate = GetNextFreeAddress();
 				if (candidate is null) {
@@ -563,12 +645,24 @@ public class DHCPServer : IDisposable {
 		if (newLease is not null) {
 			FireLog($"DISCOVER from {mac}: new device, offering {offerAddress}");
 			LeaseAssigned?.Invoke(this, new LeaseEventArgs(newLease));
+		} else if (hostnameUpdatedLease is not null) {
+			FireLog($"DISCOVER from {mac}: known device, re-offering {offerAddress} (hostname updated to '{hostnameUpdatedLease.Hostname}')");
+			LeaseAssigned?.Invoke(this, new LeaseEventArgs(hostnameUpdatedLease));
 		} else {
 			FireLog($"DISCOVER from {mac}: known device, re-offering {offerAddress}");
 		}
 
 		var offer = BuildReply(packet, DHCPMessageTypes.DHCPOFFER, offerAddress!);
 		await SendPacketAsync(offer, packet);
+	}
+
+	// Updates an existing lease's hostname from a packet's Option 12 if it carries a non-empty,
+	// different hostname. Caller must hold _leasesLock. Returns true if the hostname changed.
+	private static bool TryUpdateHostname(DHCPLease lease, string packetHostname) {
+		if (string.IsNullOrEmpty(packetHostname)) return false;
+		if (lease.Hostname == packetHostname) return false;
+		lease.Hostname = packetHostname;
+		return true;
 	}
 
 	/// <summary>
@@ -578,11 +672,20 @@ public class DHCPServer : IDisposable {
 	private async Task HandleRequestAsync(DHCPPacket packet) {
 		string mac = packet.MacAddress;
 		IPAddress? ourAddress = null;
+		DHCPLease? hostnameUpdatedLease = null;
 
 		lock (_leasesLock) {
 			if (_dhcpLeases.TryGetValue(mac, out DHCPLease? lease) && lease is not null) {
 				ourAddress = lease.IPAddress;
+				if (TryUpdateHostname(lease, packet.Hostname)) {
+					hostnameUpdatedLease = lease;
+				}
 			}
+		}
+
+		if (hostnameUpdatedLease is not null) {
+			FireLog($"REQUEST from {mac}: hostname updated to '{hostnameUpdatedLease.Hostname}'");
+			LeaseAssigned?.Invoke(this, new LeaseEventArgs(hostnameUpdatedLease));
 		}
 
 		IPAddress? requested = packet.RequestedAddress ?? (packet.CIAddr.Equals(IPAddress.Any) ? null : packet.CIAddr);

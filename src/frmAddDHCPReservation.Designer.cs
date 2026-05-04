@@ -99,7 +99,7 @@ partial class frmAddDHCPReservation {
 		this.cmdOK.Location = new Point(3, 3);
 		this.cmdOK.Name = "cmdOK";
 		this.cmdOK.Size = new Size(94, 28);
-		this.cmdOK.TabIndex = 0;
+		this.cmdOK.TabIndex = 3;
 		this.cmdOK.Text = "&OK";
 		this.cmdOK.UseVisualStyleBackColor = true;
 		this.cmdOK.Click += this.cmdOK_Click;
@@ -111,7 +111,7 @@ partial class frmAddDHCPReservation {
 		this.cmdCancel.Location = new Point(103, 3);
 		this.cmdCancel.Name = "cmdCancel";
 		this.cmdCancel.Size = new Size(94, 28);
-		this.cmdCancel.TabIndex = 1;
+		this.cmdCancel.TabIndex = 2;
 		this.cmdCancel.Text = "&Cancel";
 		this.cmdCancel.UseVisualStyleBackColor = true;
 		// 
@@ -124,7 +124,7 @@ partial class frmAddDHCPReservation {
 		this.txtMACAddress.Name = "txtMACAddress";
 		this.txtMACAddress.PlaceholderText = "11:22:33:44:55:66";
 		this.txtMACAddress.Size = new Size(276, 22);
-		this.txtMACAddress.TabIndex = 1;
+		this.txtMACAddress.TabIndex = 0;
 		this.txtMACAddress.WordWrap = false;
 		// 
 		// txtIPAddress
@@ -136,7 +136,7 @@ partial class frmAddDHCPReservation {
 		this.txtIPAddress.Name = "txtIPAddress";
 		this.txtIPAddress.PlaceholderText = "10.10.10.10";
 		this.txtIPAddress.Size = new Size(276, 22);
-		this.txtIPAddress.TabIndex = 2;
+		this.txtIPAddress.TabIndex = 1;
 		this.txtIPAddress.WordWrap = false;
 		// 
 		// frmAddDHCPReservation

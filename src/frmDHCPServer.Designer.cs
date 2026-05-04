@@ -43,6 +43,7 @@ partial class frmDHCPServer
 		this.tsDHCPLeases = new ToolStrip();
 		this.tsbAddCustomReservation = new ToolStripButton();
 		this.tsbDeleteLease = new ToolStripButton();
+		this.tsbEditLease = new ToolStripButton();
 		this.lsvDHCPLeases = new ListView();
 		this.cmsLeases = new ContextMenuStrip(this.components);
 		this.tsmiCopyLease = new ToolStripMenuItem();
@@ -98,7 +99,7 @@ partial class frmDHCPServer
 		// 
 		// tsDHCPLeases
 		// 
-		this.tsDHCPLeases.Items.AddRange(new ToolStripItem[] { this.tsbAddCustomReservation, this.tsbDeleteLease });
+		this.tsDHCPLeases.Items.AddRange(new ToolStripItem[] { this.tsbAddCustomReservation, this.tsbDeleteLease, this.tsbEditLease });
 		this.tsDHCPLeases.Location = new Point(0, 105);
 		this.tsDHCPLeases.Name = "tsDHCPLeases";
 		this.tsDHCPLeases.Size = new Size(800, 25);
@@ -127,6 +128,17 @@ partial class frmDHCPServer
 		this.tsbDeleteLease.Text = "Delete Lease";
 		this.tsbDeleteLease.Click += this.tsbDeleteLease_Click;
 		// 
+		// tsbEditLease
+		// 
+		this.tsbEditLease.DisplayStyle = ToolStripItemDisplayStyle.Image;
+		this.tsbEditLease.Image = Properties.Resources.EditTableRow_16x;
+		this.tsbEditLease.ImageTransparentColor = Color.Magenta;
+		this.tsbEditLease.Name = "tsbEditLease";
+		this.tsbEditLease.Size = new Size(23, 22);
+		this.tsbEditLease.Text = "Edit Lease";
+		this.tsbEditLease.ToolTipText = "Edit Lease";
+		this.tsbEditLease.Click += this.tsbEditLease_Click;
+		// 
 		// lsvDHCPLeases
 		// 
 		this.lsvDHCPLeases.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
@@ -140,8 +152,8 @@ partial class frmDHCPServer
 		this.lsvDHCPLeases.UseCompatibleStateImageBehavior = false;
 		this.lsvDHCPLeases.View = View.Details;
 		this.lsvDHCPLeases.SelectedIndexChanged += this.lsvDHCPLeases_SelectedIndexChanged;
+		this.lsvDHCPLeases.DoubleClick += this.lsvDHCPLeases_DoubleClick;
 		this.lsvDHCPLeases.KeyDown += this.lsvDHCPLeases_KeyDown;
-		this.lsvDHCPLeases.KeyPress += this.lsvDHCPLeases_KeyPress;
 		// 
 		// columnHeader1
 		// 
@@ -448,4 +460,5 @@ partial class frmDHCPServer
 	private ToolStripMenuItem tsmiEditLease;
 	private ToolStripSeparator toolStripMenuItem1;
 	private ToolStripMenuItem tsmiDeleteLease;
+	private ToolStripButton tsbEditLease;
 }

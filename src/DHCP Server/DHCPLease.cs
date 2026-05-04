@@ -7,13 +7,16 @@ public class DHCPLease(string macAddress, IPAddress ipAddress, string hostname, 
 	/// </summary>
 	public string MACAddress { get; private set; } = macAddress.ToUpperInvariant();
 	/// <summary>
-	/// The IP address assigned to this reservation (either manually via reservation or automatically from the server)
+	/// The IP address assigned to this reservation (either manually via reservation or automatically from the server).
+	/// Updated by the server when an existing reservation's IP is edited via UpdateReservation.
 	/// </summary>
-	public IPAddress IPAddress { get; private set; } = ipAddress;
+	public IPAddress IPAddress { get; internal set; } = ipAddress;
 	/// <summary>
-	/// The hostname supplied by the device asking for an address; not set for manual reservations
+	/// The hostname supplied by the device asking for an address; not set for manual reservations,
+	/// but the server updates it from the client's Option 12 on later DISCOVER/REQUEST packets so
+	/// reservations end up with the device's hostname once it phones home.
 	/// </summary>
-	public string Hostname { get; private set; } = hostname;
+	public string Hostname { get; internal set; } = hostname;
 
 	/// <summary>
 	/// The time the lease was assigned; not set for manual reservations
