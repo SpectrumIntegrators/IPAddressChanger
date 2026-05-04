@@ -31,8 +31,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$projectFile   = Join-Path $PSScriptRoot 'IPAddressChanger.csproj'
-$publishDir    = Join-Path $PSScriptRoot "bin\$Configuration\net8.0-windows\$Runtime\publish"
+$projectFile   = Join-Path $PSScriptRoot 'src\IPAddressChanger\IPAddressChanger.csproj'
+$publishDir    = Join-Path $PSScriptRoot "src\IPAddressChanger\bin\$Configuration\net8.0-windows\$Runtime\publish"
 $releasesDir   = Join-Path $PSScriptRoot 'releases'
 $changelogPath = Join-Path $PSScriptRoot 'CHANGELOG.md'
 

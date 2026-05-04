@@ -11,7 +11,7 @@
     <ApplicationIcon>Resources\NetworkAdapter.ico</ApplicationIcon>
     <Title>IP Address Changer</Title>
     <RepositoryUrl>https://github.com/SpectrumIntegrators/IPAddressChanger</RepositoryUrl>
-    <AssemblyVersion>1.2.0.0 </AssemblyVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
     <FileVersion>1.2.0.0</FileVersion>
     <Copyright>GNU GPLv3</Copyright>
     <Description>This application allows changing IP address settings for network adapters from a quick list of user-defined configurations.</Description>
