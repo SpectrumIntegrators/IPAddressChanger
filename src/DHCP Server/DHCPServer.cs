@@ -449,6 +449,31 @@ public class DHCPServer : IDisposable {
 		}
 	}
 
+	/// <summary>
+	/// Returns a snapshot of leases/reservations whose IP falls outside the currently-configured
+	/// [RangeStart, RangeEnd]. Returns an empty list if no range is set.
+	/// </summary>
+	public List<DHCPLease> GetLeasesOutsideRange() {
+		ObjectDisposedException.ThrowIf(_disposed, this);
+		if (RangeStart is null || RangeEnd is null) return [];
+		uint startInt = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
+		uint endInt = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+		List<DHCPLease> result = [];
+		lock (_leasesLock) {
+			foreach (var lease in _dhcpLeases.Values) {
+				if (lease.IPAddress.AddressFamily != AddressFamily.InterNetwork) {
+					result.Add(lease);
+					continue;
+				}
+				uint ipInt = BinaryPrimitives.ReadUInt32BigEndian(lease.IPAddress.GetAddressBytes());
+				if (ipInt < startInt || ipInt > endInt) {
+					result.Add(lease);
+				}
+			}
+		}
+		return result;
+	}
+
 	// ===================================================================================
 	// Listen loop and packet handling
 	// ===================================================================================

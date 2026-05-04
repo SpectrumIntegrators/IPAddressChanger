@@ -177,9 +177,16 @@ public partial class frmDHCPServer : Form {
 			return;
 		}
 		ListViewItem toDelete = lsvDHCPLeases.SelectedItems[0];
-		_dhcpServer.RemoveLease(toDelete.SubItems[0].Text);
-		lsvDHCPLeases.Items.Remove(toDelete);
-		_leaseItems.Remove(toDelete.SubItems[0].Text);
+		RemoveLeaseEverywhere(toDelete.SubItems[0].Text);
+	}
+
+	// Removes a lease from the server and from this form's view. MAC is the listview key.
+	private void RemoveLeaseEverywhere(string macAddress) {
+		_dhcpServer.RemoveLease(macAddress);
+		if (_leaseItems.TryGetValue(macAddress, out ListViewItem? item)) {
+			lsvDHCPLeases.Items.Remove(item);
+			_leaseItems.Remove(macAddress);
+		}
 	}
 
 	private void lsvDHCPLeases_SelectedIndexChanged(object sender, EventArgs e) {
@@ -255,6 +262,30 @@ public partial class frmDHCPServer : Form {
 				MessageBox.Show($"Could not configure DHCP server: {ex.Message}", "DHCP Server Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_debugForm.AddMessage($"Error configuring DHCP server: {ex.Message}");
 				goto EnableDHCPServerBailout;
+			}
+
+			// Existing reservations from a prior subnet may now be outside the new range. Prompt
+			// the user before starting so they can clear them out (or knowingly keep them).
+			List<DHCPLease> outOfRange = _dhcpServer.GetLeasesOutsideRange();
+			if (outOfRange.Count > 0) {
+				string subnet = $"{_dhcpServer.RangeStart}-{_dhcpServer.RangeEnd}";
+				DialogResult choice = MessageBox.Show(
+					$"{outOfRange.Count} reservation(s) fall outside the new subnet ({subnet}).\r\n\r\nDo you want to clear them before starting the server?",
+					"Reservations Outside Subnet",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question);
+				if (choice == DialogResult.Cancel) {
+					_debugForm.AddMessage("DHCP server start cancelled (reservations outside new subnet)");
+					goto EnableDHCPServerBailout;
+				}
+				if (choice == DialogResult.Yes) {
+					foreach (var lease in outOfRange) {
+						RemoveLeaseEverywhere(lease.MACAddress);
+					}
+					_debugForm.AddMessage($"Removed {outOfRange.Count} out-of-range reservation(s)");
+				} else {
+					_debugForm.AddMessage($"Keeping {outOfRange.Count} out-of-range reservation(s) at user's request");
+				}
 			}
 		}
 
