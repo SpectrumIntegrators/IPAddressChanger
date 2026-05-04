@@ -44,6 +44,7 @@ The ZIP contains a framework-dependent build, so the [.NET 8 Desktop Runtime](ht
 1. [Debug Messages Window](#debug-messages-window)
 1. [Privilege Elevation & UAC Prompt](#privilege-elevation--uac-prompt)
 1. [Windows SmartScreen Warning](#windows-smartscreen-warning)
+1. [Reporting Bugs](#reporting-bugs)
 1. [Things I Haven't Tested](#things-i-havent-tested)
 1. [AI Disclosure](#ai-disclosure)
 1. [Copyright](#copyright)
@@ -74,7 +75,7 @@ Launches the network adapters control panel.
 Shows the program documentation.
 
 #### Feedback
-Launches a browser window to submit bug reports and feedback.
+Launches a browser window to [submit bug reports](#reporting-bugs) and feedback.
 
 ### Status Bar
 
@@ -357,8 +358,32 @@ The software isn't digitally signed, so the UAC prompt shows "unknown publisher.
 ## Windows SmartScreen Warning
 If you downloaded this file from the Internet, there's a good chance you'll see the Windows SmartScreen warning saying "Windows has protected your PC." This is because the application isn't digitally signed and known to be safe by Microsoft. The path to fixing this is too long and expensive for an in-house tool, so you'll just have to "trust me, bro."
 
+## Reporting Bugs
+The fastest way to send feedback is the [Feedback](#feedback) toolbar button on the main window — it opens a browser to the bug report form.
+
+If you can include the stack trace and the debug log when something goes wrong, the bug becomes a *lot* easier to fix.
+
+### When you see an "Unhandled Exception" dialog
+If something goes wrong in the program in a way I didn't anticipate, you'll see a dialog like this:
+
+![Unhandled Exception dialog](./images/unhandledexception.png)
+
+**Click "Details" — don't click "Quit".** "Continue" lets the program keep running so you can finish what you were doing and grab logs; "Quit" terminates immediately and you lose the in-memory debug log.
+
+After clicking "Details", you'll get the expanded view with the full stack trace and the list of loaded assemblies:
+
+![Unhandled Exception expanded view](./images/unhandledexceptionexpanded.png)
+
+Select all of that text and copy it into the bug report. The "Exception Text" section at the top is the most useful part (it points at the exact line of code that failed), but the rest of it helps too — please send the whole thing.
+
+### The debug log
+The [Debug Messages Window](#debug-messages-window) records what the program is doing as it runs — adapter operations, DHCP server traffic, errors. If a bug is reproducible, open the debug window before you reproduce it, then use the "Copy Selected" or "Save" toolbar button afterward and attach the log to your bug report. The combination of stack trace + debug log is usually enough to pinpoint the issue.
+
+### A note on privacy
+The "Loaded Assemblies" section of the unhandled-exception details includes full file paths to assemblies on your system, which can include your Windows username (e.g., `C:\Users\YourName\...`). That's normally harmless, but if you'd rather not share it, feel free to redact those paths before sending — just leave the "Exception Text" / stack trace section intact since that's where the diagnostic value is.
+
 ## Things I Haven't Tested
-If you find a bug, use the bug report feature. But there are some things that I know might not work well and I just can't be bothered to test for since this is a limited-audience tech tool.
+If you find a bug, [use the bug report feature](#reporting-bugs). But there are some things that I know might not work well and I just can't be bothered to test for since this is a limited-audience tech tool.
 
 * Different font DPI settings - may make text in forms cropped and unreadable
 * Different window scaling settings - this should be OK but different elements on the form may not scale correctly or proportionately
