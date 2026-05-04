@@ -7,6 +7,7 @@ namespace IPAddressChanger;
 
 public partial class frmDHCPServer : Form {
 	private readonly TextBox[] _octetTextBoxes;
+	private readonly TextBox[] _allAddressTextBoxes;
 	private readonly frmDebug _debugForm;
 	private readonly DHCPServer _dhcpServer;
 	private readonly Dictionary<string, ListViewItem> _leaseItems = [];
@@ -20,6 +21,49 @@ public partial class frmDHCPServer : Form {
 			txtAddressOctet3,
 			txtAddressOctet4
 		];
+		_allAddressTextBoxes = [
+			txtAddressOctet1,
+			txtAddressOctet2,
+			txtAddressOctet3,
+			txtAddressOctet4,
+			txtPrefixLength
+		];
+		foreach (var tb in _allAddressTextBoxes) {
+			tb.KeyPress += AddressTextBox_KeyPress;
+			tb.KeyDown += AddressTextBox_KeyDown;
+		}
+	}
+
+	// Lets the five address textboxes feel like a single field: '.' or '/' advances to the
+	// next box, and Backspace on an empty box jumps back and trims one character off the
+	// previous one.
+	private void AddressTextBox_KeyPress(object? sender, KeyPressEventArgs e) {
+		if (e.KeyChar != '.' && e.KeyChar != '/' && e.KeyChar != '\\') return;
+		if (sender is not TextBox tb) return;
+		int idx = Array.IndexOf(_allAddressTextBoxes, tb);
+		if (idx < 0) return;
+		e.Handled = true; // always swallow — these are separators, not data
+		if (idx >= _allAddressTextBoxes.Length - 1) return;
+		var next = _allAddressTextBoxes[idx + 1];
+		next.Focus();
+		next.SelectionStart = next.TextLength;
+		next.SelectionLength = 0;
+	}
+
+	private void AddressTextBox_KeyDown(object? sender, KeyEventArgs e) {
+		if (e.KeyCode != Keys.Back) return;
+		if (sender is not TextBox tb || tb.TextLength != 0) return;
+		int idx = Array.IndexOf(_allAddressTextBoxes, tb);
+		if (idx <= 0) return;
+		e.SuppressKeyPress = true;
+		var prev = _allAddressTextBoxes[idx - 1];
+		prev.Focus();
+		if (prev.TextLength > 0) {
+			prev.Select(prev.TextLength - 1, 1);
+			prev.SelectedText = "";
+		}
+		prev.SelectionStart = prev.TextLength;
+		prev.SelectionLength = 0;
 	}
 
 	private async void frmDHCPServer_Load(object sender, EventArgs e) {
@@ -126,7 +170,7 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private string GetAddressFromTextBoxes() {
-		return string.Join(".", [ txtAddressOctet1.Text, txtAddressOctet2.Text, txtAddressOctet3.Text, txtAddressOctet4.Text ]);
+		return string.Join(".", [txtAddressOctet1.Text, txtAddressOctet2.Text, txtAddressOctet3.Text, txtAddressOctet4.Text]);
 	}
 
 	private async void chkEnableDHCPServer_Click(object sender, EventArgs e) {
@@ -159,7 +203,7 @@ public partial class frmDHCPServer : Form {
 			uint broadcast = network | ~mask;
 			if (addrInt == network && prefixLength < 31) {
 				uint corrected = network + 1;
-				serverAddress = new ([
+				serverAddress = new([
 					(byte)((corrected >> 24) & 0xFF),
 					(byte)((corrected >> 16) & 0xFF),
 					(byte)((corrected >> 8) & 0xFF),
@@ -390,4 +434,6 @@ public partial class frmDHCPServer : Form {
 		}
 		return true;
 	}
+
+
 }
