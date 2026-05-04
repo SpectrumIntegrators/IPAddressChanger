@@ -95,7 +95,8 @@ partial class frmDHCPServer
 		this.tsDHCPLeases.Location = new Point(0, 105);
 		this.tsDHCPLeases.Name = "tsDHCPLeases";
 		this.tsDHCPLeases.Size = new Size(800, 25);
-		this.tsDHCPLeases.TabIndex = 0;
+		this.tsDHCPLeases.TabIndex = 7;
+		this.tsDHCPLeases.TabStop = true;
 		this.tsDHCPLeases.Text = "toolStrip1";
 		// 
 		// tsbAddCustomReservation
@@ -127,7 +128,7 @@ partial class frmDHCPServer
 		this.lsvDHCPLeases.Location = new Point(3, 133);
 		this.lsvDHCPLeases.Name = "lsvDHCPLeases";
 		this.lsvDHCPLeases.Size = new Size(794, 314);
-		this.lsvDHCPLeases.TabIndex = 1;
+		this.lsvDHCPLeases.TabIndex = 8;
 		this.lsvDHCPLeases.UseCompatibleStateImageBehavior = false;
 		this.lsvDHCPLeases.View = View.Details;
 		this.lsvDHCPLeases.SelectedIndexChanged += this.lsvDHCPLeases_SelectedIndexChanged;
@@ -201,7 +202,7 @@ partial class frmDHCPServer
 		this.cboAdapters.Location = new Point(83, 3);
 		this.cboAdapters.Name = "cboAdapters";
 		this.cboAdapters.Size = new Size(708, 23);
-		this.cboAdapters.TabIndex = 1;
+		this.cboAdapters.TabIndex = 0;
 		// 
 		// tableLayoutPanel3
 		// 
@@ -239,7 +240,7 @@ partial class frmDHCPServer
 		this.txtAddressOctet4.Name = "txtAddressOctet4";
 		this.txtAddressOctet4.PlaceholderText = "255";
 		this.txtAddressOctet4.Size = new Size(55, 22);
-		this.txtAddressOctet4.TabIndex = 12;
+		this.txtAddressOctet4.TabIndex = 4;
 		// 
 		// txtAddressOctet3
 		// 
@@ -249,7 +250,7 @@ partial class frmDHCPServer
 		this.txtAddressOctet3.Name = "txtAddressOctet3";
 		this.txtAddressOctet3.PlaceholderText = "255";
 		this.txtAddressOctet3.Size = new Size(55, 22);
-		this.txtAddressOctet3.TabIndex = 11;
+		this.txtAddressOctet3.TabIndex = 3;
 		// 
 		// txtAddressOctet2
 		// 
@@ -259,7 +260,7 @@ partial class frmDHCPServer
 		this.txtAddressOctet2.Name = "txtAddressOctet2";
 		this.txtAddressOctet2.PlaceholderText = "255";
 		this.txtAddressOctet2.Size = new Size(55, 22);
-		this.txtAddressOctet2.TabIndex = 10;
+		this.txtAddressOctet2.TabIndex = 2;
 		// 
 		// txtAddressOctet1
 		// 
@@ -269,7 +270,7 @@ partial class frmDHCPServer
 		this.txtAddressOctet1.Name = "txtAddressOctet1";
 		this.txtAddressOctet1.PlaceholderText = "255";
 		this.txtAddressOctet1.Size = new Size(55, 22);
-		this.txtAddressOctet1.TabIndex = 9;
+		this.txtAddressOctet1.TabIndex = 1;
 		// 
 		// txtPrefixLength
 		// 
@@ -279,7 +280,7 @@ partial class frmDHCPServer
 		this.txtPrefixLength.Name = "txtPrefixLength";
 		this.txtPrefixLength.PlaceholderText = "32";
 		this.txtPrefixLength.Size = new Size(56, 22);
-		this.txtPrefixLength.TabIndex = 0;
+		this.txtPrefixLength.TabIndex = 5;
 		// 
 		// label3
 		// 
@@ -352,7 +353,7 @@ partial class frmDHCPServer
 		this.chkEnableDHCPServer.Location = new Point(83, 74);
 		this.chkEnableDHCPServer.Name = "chkEnableDHCPServer";
 		this.chkEnableDHCPServer.Size = new Size(15, 14);
-		this.chkEnableDHCPServer.TabIndex = 5;
+		this.chkEnableDHCPServer.TabIndex = 6;
 		this.chkEnableDHCPServer.UseVisualStyleBackColor = true;
 		this.chkEnableDHCPServer.CheckedChanged += this.chkEnableDHCPServer_CheckedChanged;
 		this.chkEnableDHCPServer.Click += this.chkEnableDHCPServer_Click;

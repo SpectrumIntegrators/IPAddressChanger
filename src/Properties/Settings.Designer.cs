@@ -226,5 +226,41 @@ namespace IPAddressChanger.Properties {
                 this["DebugAutoScroll"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DHCPServerAddress {
+            get {
+                return ((string)(this["DHCPServerAddress"]));
+            }
+            set {
+                this["DHCPServerAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DHCPLeases {
+            get {
+                return ((string)(this["DHCPLeases"]));
+            }
+            set {
+                this["DHCPLeases"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SaveDHCPLeases {
+            get {
+                return ((int)(this["SaveDHCPLeases"]));
+            }
+            set {
+                this["SaveDHCPLeases"] = value;
+            }
+        }
     }
 }

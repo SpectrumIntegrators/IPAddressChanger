@@ -1,14 +1,14 @@
-using IPAddressChanger.Properties;
-using Microsoft.Management.Infrastructure;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Text.Json;
-using System.Reflection;
-using System.Net.NetworkInformation;
-using System.Configuration;
-using System.Text.RegularExpressions;
 using IPAddressChanger.DHCP_Server;
 using IPAddressChanger.Network_Manager;
+using IPAddressChanger.Properties;
+using System.Configuration;
+using System.Diagnostics;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace IPAddressChanger {
 
@@ -19,7 +19,10 @@ namespace IPAddressChanger {
 			RunShortcut
 		}
 
-
+		public enum SaveDHCPLeaseOptions {
+			OnlySaveReservations,
+			SaveReservationsAndLeases
+		}
 
 		private List<IPAddressShortcut> ipAddressShortcuts = []; // list of all of the stored network adapter settings shortcuts
 		internal frmSettings? settingsForm = null; // Don't load the settings form now, but keep a reference when we do load it
@@ -343,15 +346,27 @@ namespace IPAddressChanger {
 			return MessageBox.Show(message, title, buttons, icon);
 		}
 
+		void hook_KeyPressed(object? sender, KeyPressedEventArgs e) {
+			this.Show();
+			if (this.WindowState == FormWindowState.Minimized) {
+				this.WindowState = lastWindowState;
+			}
+			this.Activate();
+			notifyIcon1.Visible = false;
+			notifyIcon1.Visible = true;
+		}
+
 		internal void LoadSettings() {
 			debugForm.AddMessage($"Current settings file location: {ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath}");
 			try {
+				// Window size and layout
 				this.Width = Settings.Default.WindowWidth;
 				this.Height = Settings.Default.WindowHeight;
 				this.WindowState = (FormWindowState)Settings.Default.WindowState;
 				splitContainer1.SplitterDistance = Settings.Default.SplitterWidth;
 				splitContainer2.SplitterDistance = Settings.Default.SplitterHeight;
-				tsbOnlineOnly.Checked = Settings.Default.HideOfflineAdapters;
+
+				// Adapter details columns
 				string[] columnsOrder = Settings.Default.ColumnsOrder.Split(",");
 				string[] columnsWidths = Settings.Default.ColumnsWidths.Split(",");
 				for (int i = 0; i < lsvAddresses.Columns.Count; i++) {
@@ -368,6 +383,11 @@ namespace IPAddressChanger {
 
 					}
 				}
+
+				// Hide offline adapters checkbox
+				tsbOnlineOnly.Checked = Settings.Default.HideOfflineAdapters;
+
+				// Global keyboard shortcut
 				if (hook is not null) {
 					// make sure we unregistger/get rid of the old keyboard shortcut
 					debugForm.AddMessage("Disposing old hotkey");
@@ -380,20 +400,54 @@ namespace IPAddressChanger {
 				hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
 				hook.RegisterHotKey((ModifierKeys)Settings.Default.HotkeyModifier, (Keys)Settings.Default.Hotkey);
 				hook.KeyPressed += hook_KeyPressed;
+
+				// DHCP server address
+				try {
+					string[] subnetparts = Settings.Default.DHCPServerAddress.Split('/', StringSplitOptions.RemoveEmptyEntries);
+					if (subnetparts.Length == 2) {
+						bool goodPrefix = int.TryParse(subnetparts[1], out int prefixLength);
+						if (prefixLength < DHCPServer.MIN_PREFIX_LENGTH || prefixLength > DHCPServer.MAX_PREFIX_LENGTH) {
+							debugForm.AddMessage($"DHCP server address prefix length in settings is not valid; settings had {prefixLength} but it must be between {DHCPServer.MIN_PREFIX_LENGTH} and {DHCPServer.MAX_PREFIX_LENGTH} exclusive");
+							goodPrefix = false;
+						}
+						bool goodAddress = IPAddress.TryParse(subnetparts[0], out IPAddress? serverAddress);
+						if (goodPrefix || goodAddress) {
+							// we have a good IP address and prefix length
+							dhcpServer.SetLeaseRange(serverAddress!, prefixLength);
+						}
+					}
+				} catch (Exception ex) {
+					debugForm.AddMessage($"Error retrieving DHCP server address from settings: {ex.Message}");
+				}
+
+				// DHCP reservations
+				string[] dhcpLeases = (Settings.Default.DHCPLeases ?? "").Split(";", StringSplitOptions.RemoveEmptyEntries);
+				if (dhcpLeases.Length > 0) {
+					foreach (string? lease in dhcpLeases) {
+						if (lease == null || lease == "") {
+							continue;
+						}
+						string[] leaseParts = lease.Split("=", StringSplitOptions.RemoveEmptyEntries);
+						if (leaseParts.Length != 2) {
+							debugForm.AddMessage($"Loaded lease string from settings is invalid: {lease}");
+							continue;
+						}
+						if (!IPAddress.TryParse(leaseParts[1], out IPAddress? leasedAddress)) {
+							debugForm.AddMessage($"Loaded lease from settings does not contain a valid IP address: {lease}");
+							continue;
+						}
+						debugForm.AddMessage($"Adding DHCP lease reservation from settings: {leaseParts[0]} : {leasedAddress.ToString()}");
+						if (!dhcpServer.TryAddReservation(leaseParts[0], leasedAddress, out string? errorMessage)) {
+							debugForm.AddMessage($"Error adding DHCP lease from settings: {errorMessage}");
+						}
+					}
+				}
+
 			} catch (Exception ex) {
 				ShowAndLogError($"Error loading settings: {ex.Message}", "Error Loading Settings");
 			}
 		}
-		void hook_KeyPressed(object? sender, KeyPressedEventArgs e) {
-			this.Show();
-			if (this.WindowState == FormWindowState.Minimized) {
-				this.WindowState = lastWindowState;
-			}
-			this.Activate();
-			notifyIcon1.Visible = false;
-			notifyIcon1.Visible = true;
-		}
-
+		
 		private void SaveSettings() {
 			debugForm.AddMessage("Saving settings");
 			try {
@@ -417,6 +471,16 @@ namespace IPAddressChanger {
 				}
 				Settings.Default.ColumnsOrder = string.Join(",", columnDisplayIndexes);
 				Settings.Default.ColumnsWidths = string.Join(",", columnWidths);
+				if ((SaveDHCPLeaseOptions)(Settings.Default.SaveDHCPLeases) == SaveDHCPLeaseOptions.OnlySaveReservations) {
+					Settings.Default.DHCPLeases = string.Join(";", dhcpServer.Leases.Where(x => x.Assigned is null).Select(x => $"{x.MACAddress}={x.IPAddress}"));
+				} else if ((SaveDHCPLeaseOptions)(Settings.Default.SaveDHCPLeases) == SaveDHCPLeaseOptions.SaveReservationsAndLeases) {
+					Settings.Default.DHCPLeases = string.Join(";", dhcpServer.Leases.Select(x => $"{x.MACAddress}={x.IPAddress}"));
+				}
+				if (dhcpServer.Address != null) {
+					Settings.Default.DHCPServerAddress = $"{dhcpServer.Address}/{dhcpServer.PrefixLength}";
+				} else {
+					Settings.Default.DHCPServerAddress = "";
+				}
 			} catch (Exception ex) {
 				ShowAndLogError($"Error saving settings: {ex.Message}", "Error Saving Settings");
 			}

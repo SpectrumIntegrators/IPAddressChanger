@@ -23,6 +23,12 @@ public class DHCPServer : IDisposable {
 	// different network don't hold a stale lease for too long; long enough to avoid renewal chatter.
 	private const uint LEASE_SECONDS = 15 * 60;
 
+	// Allowable prefix-length range for the DHCP scope. /31 has no usable hosts and /32 is a
+	// single host, so we cap at /30 to guarantee room for a network address, the server, at
+	// least one client, and a broadcast.
+	public const int MIN_PREFIX_LENGTH = 0;
+	public const int MAX_PREFIX_LENGTH = 30;
+
 	private bool _disposed = false;
 
 	private readonly object _disposedLock = new();
@@ -63,7 +69,7 @@ public class DHCPServer : IDisposable {
 	public List<DHCPLease> Leases {
 		get {
 			lock (_leasesLock) {
-				return new(_dhcpLeases.Values);
+				return [.. _dhcpLeases.Values];
 			}
 		}
 	}
@@ -271,7 +277,7 @@ public class DHCPServer : IDisposable {
 	/// </summary>
 	public static (IPAddress Start, IPAddress End)? TryGetHostRange(IPAddress serverAddress, int prefixLength) {
 		if (serverAddress.AddressFamily != AddressFamily.InterNetwork) return null;
-		if (prefixLength < 0 || prefixLength > 30) return null;
+		if (prefixLength < MIN_PREFIX_LENGTH || prefixLength > MAX_PREFIX_LENGTH) return null;
 		uint addrInt = BinaryPrimitives.ReadUInt32BigEndian(serverAddress.GetAddressBytes());
 		uint mask = prefixLength == 0 ? 0u : (uint.MaxValue << (32 - prefixLength));
 		uint network = addrInt & mask;
@@ -293,10 +299,8 @@ public class DHCPServer : IDisposable {
 		if (serverAddress.AddressFamily != AddressFamily.InterNetwork) {
 			throw new ArgumentOutOfRangeException(nameof(serverAddress), "AddressFamily must be InterNetwork (IPv4)");
 		}
-		// /0 and /31 and /32 don't make sense for a usable DHCP pool — require room for a network,
-		// at least one host besides the server, and a broadcast.
-		ArgumentOutOfRangeException.ThrowIfLessThan(prefixLength, 0, nameof(prefixLength));
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(prefixLength, 30, nameof(prefixLength));
+		ArgumentOutOfRangeException.ThrowIfLessThan(prefixLength, MIN_PREFIX_LENGTH, nameof(prefixLength));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(prefixLength, MAX_PREFIX_LENGTH, nameof(prefixLength));
 
 		uint addrInt = BinaryPrimitives.ReadUInt32BigEndian(serverAddress.GetAddressBytes());
 		uint mask = prefixLength == 0 ? 0u : (uint.MaxValue << (32 - prefixLength));

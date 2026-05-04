@@ -18,12 +18,12 @@ UX polish, and docs.
   but hasn't clicked Enable, they can still add reservations outside that subnet.
   Cleanest fix: have the reservation dialog accept a tentative range from the
   parent form and validate against it.~~
-- **#30 Existing leases outside new range at server start.** When the user starts
+- ~~**#30 Existing leases outside new range at server start.** When the user starts
   the server (or stops, changes range, restarts), check whether any existing
   `_dhcpLeases` entries fall outside the newly-configured `[RangeStart, RangeEnd]`.
   If so, prompt three-way: "Clear and continue / Keep them and continue / Abort".
   Likely needs a `DHCPServer.GetLeasesOutsideRange()` helper plus a `ClearLeases()`.
-  Open question: keep "Keep them and continue" or simplify to two-way?
+  Open question: keep "Keep them and continue" or simplify to two-way?~~
 - ~~**#33 Prevent shortcuts from clobbering bound DHCP adapter.** Running a shortcut
   on the adapter the DHCP server is bound to set the adapter to DHCP, stripped the
   static IP, and left the server in a zombie state. Block in `frmMain` (shortcuts,
@@ -74,7 +74,21 @@ User opinion needed: "/8 lower bound — go ahead, or wider?"
 ## Deferred (not started)
 
 - **README** needs significant updates to cover the DHCP server feature
-  (configuration, lease management, help-doc anchors, screenshot).
+  (configuration, lease management, help-doc anchors, screenshot). Specific
+  notes to remember when writing it:
+  - In the "saving DHCP addresses" section: when "Save reserved and automatic
+    addresses" is selected, server-issued leases come back as reservations on
+    the next launch — round-trip flattens them because the load path uses
+    `TryAddReservation`, which sets `Assigned`/`Expires` to null.
+  - In the address-entry section: `.`, `/`, and `\` all advance focus between
+    the four octet boxes and the prefix-length box, so users can type
+    `10.0.0.1/24`, `10/0/0/1/24`, etc. — whatever feels natural. Backspace
+    on an empty box jumps back and trims a character off the previous one.
+  - In the address-entry section: entering the network address of the subnet
+    (e.g. `10.0.0.0/24`) is allowed; the server will automatically bump it to
+    the first host address (`10.0.0.1`) on Enable. Same goes for the broadcast
+    address — it's bumped down by one. Any other host address is kept as-is,
+    so the server doesn't have to live at `.1`.
 - **CHANGELOG** — single line "Added DHCP server" is sufficient.
 - **Help doc** — add a section for the new help keyword
   `dhcp-server-busy-dialog` so F1 from the busy dialog doesn't 404.

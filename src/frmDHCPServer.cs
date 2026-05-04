@@ -1,5 +1,6 @@
 using IPAddressChanger.DHCP_Server;
 using IPAddressChanger.Network_Manager;
+using IPAddressChanger.Properties;
 using System.Net;
 using System.Net.Sockets;
 
@@ -172,12 +173,16 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private void tsbDeleteLease_Click(object sender, EventArgs e) {
-		// remove the selected mac address from the dhcp lease reservations
+		
 		if (lsvDHCPLeases.SelectedItems.Count == 0) {
 			return;
 		}
-		ListViewItem toDelete = lsvDHCPLeases.SelectedItems[0];
-		RemoveLeaseEverywhere(toDelete.SubItems[0].Text);
+
+		// remove the selected mac addresses from the dhcp lease reservations
+		foreach (ListViewItem toDelete in lsvDHCPLeases.SelectedItems) {
+			RemoveLeaseEverywhere(toDelete.SubItems[0].Text);
+		}
+		
 	}
 
 	// Removes a lease from the server and from this form's view. MAC is the listview key.
@@ -198,6 +203,8 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private async void chkEnableDHCPServer_Click(object sender, EventArgs e) {
+		IPAddress? serverAddress = null;
+		int prefixLength = 0;
 
 		if (!_dhcpServer.Running) {
 			// we only validate these fields if we're trying to START the server
@@ -206,14 +213,13 @@ public partial class frmDHCPServer : Form {
 				goto EnableDHCPServerBailout;
 			}
 
-			if (!IPAddress.TryParse(GetAddressFromTextBoxes(), out IPAddress? serverAddress)) {
+			if (!IPAddress.TryParse(GetAddressFromTextBoxes(), out serverAddress)) {
 				MessageBox.Show("Entered values do not form a valid IPv4 address", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				goto EnableDHCPServerBailout;
 			}
 
-			// /31 has no usable hosts and /32 is a single host, so cap at /30 for an actual DHCP scope
-			if (!int.TryParse(txtPrefixLength.Text, out int prefixLength) || prefixLength < 0 || prefixLength > 30) {
-				MessageBox.Show("Prefix length must be a number between 0 and 30", "Invalid Prefix Length", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			if (!int.TryParse(txtPrefixLength.Text, out prefixLength) || prefixLength < DHCPServer.MIN_PREFIX_LENGTH || prefixLength > DHCPServer.MAX_PREFIX_LENGTH) {
+				MessageBox.Show($"Prefix length must be a number between {DHCPServer.MIN_PREFIX_LENGTH} and {DHCPServer.MAX_PREFIX_LENGTH}", "Invalid Prefix Length", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				goto EnableDHCPServerBailout;
 			}
 
@@ -295,7 +301,6 @@ public partial class frmDHCPServer : Form {
 		} else {
 			var _ = await DisableDHCPServer();
 		}
-		chkEnableDHCPServer.Checked = _dhcpServer.Running;
 		return;
 	EnableDHCPServerBailout:
 		chkEnableDHCPServer.Checked = false;
@@ -317,6 +322,18 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private void AddLeaseListViewItem(DHCPLease lease) {
+		// Update in place when the MAC is already in the list. Can happen when the server
+		// silently drops a lease (e.g. DHCPDECLINE removes from _dhcpLeases without firing
+		// LeaseRemoved) and the same MAC then re-DISCOVERs, or when BeginInvoke ordering
+		// reorders LeaseAssigned callbacks against a user-driven delete-then-reserve.
+		if (_leaseItems.TryGetValue(lease.MACAddress, out ListViewItem? existing)) {
+			_debugForm.AddMessage($"Updating lease for {lease.MACAddress} in list");
+			existing.SubItems[1].Text = lease.IPAddress.ToString();
+			existing.SubItems[2].Text = lease.Hostname;
+			existing.SubItems[3].Text = lease.Assigned?.ToString() ?? "Reserved";
+			existing.SubItems[4].Text = lease.Expires?.ToString() ?? "Reserved";
+			return;
+		}
 		_debugForm.AddMessage($"Adding lease for {lease.MACAddress} to list");
 		ListViewItem newLease = new() {
 			Text = lease.MACAddress
@@ -326,7 +343,6 @@ public partial class frmDHCPServer : Form {
 		newLease.SubItems.Add(lease.Assigned?.ToString() ?? "Reserved");
 		newLease.SubItems.Add(lease.Expires?.ToString() ?? "Reserved");
 		lsvDHCPLeases.Items.Add(newLease);
-		// If this lease/listview item somehow already exists, this will throw an unhandled exception. Maybe someday we'll decide on a way to make this add/replace or do something better but for now I don't think it'll even come up
 		_leaseItems.Add(lease.MACAddress, newLease);
 	}
 

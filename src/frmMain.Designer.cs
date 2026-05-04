@@ -88,6 +88,7 @@
 			this.tsbControlPanel = new ToolStripButton();
 			this.tsbHelp = new ToolStripButton();
 			this.tsbBugReport = new ToolStripButton();
+			this.tsbDHCPServer = new ToolStripButton();
 			this.notifyIcon1 = new NotifyIcon(this.components);
 			this.cmsNotifyIconMenu = new ContextMenuStrip(this.components);
 			this.tsmiShow = new ToolStripMenuItem();
@@ -98,7 +99,6 @@
 			this.toolStripSeparator2 = new ToolStripSeparator();
 			this.tsmiShortcuts = new ToolStripMenuItem();
 			this.helpProvider1 = new HelpProvider();
-			this.tsbDHCPServer = new ToolStripButton();
 			label4 = new Label();
 			label1 = new Label();
 			label2 = new Label();
@@ -750,7 +750,7 @@
 			this.helpProvider1.SetHelpKeyword(this.tsMain, "main-tool-bar");
 			this.helpProvider1.SetHelpNavigator(this.tsMain, HelpNavigator.Topic);
 			this.tsMain.ImageScalingSize = new Size(24, 24);
-			this.tsMain.Items.AddRange(new ToolStripItem[] { this.tsbSettings, this.tsbDebug, this.tsbControlPanel, this.tsbHelp, this.tsbBugReport, this.tsbDHCPServer });
+			this.tsMain.Items.AddRange(new ToolStripItem[] { this.tsbSettings, this.tsbDHCPServer, this.tsbDebug, this.tsbControlPanel, this.tsbHelp, this.tsbBugReport });
 			this.tsMain.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.tsMain.Location = new Point(0, 0);
 			this.tsMain.Name = "tsMain";
@@ -815,6 +815,16 @@
 			this.tsbBugReport.Text = "Bug Report";
 			this.tsbBugReport.ToolTipText = "Submit bug reports or other feedback";
 			this.tsbBugReport.Click += this.tsbBugReport_Click;
+			// 
+			// tsbDHCPServer
+			// 
+			this.tsbDHCPServer.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbDHCPServer.Image = Properties.Resources.DatabaseOptions_12882;
+			this.tsbDHCPServer.ImageTransparentColor = Color.Magenta;
+			this.tsbDHCPServer.Name = "tsbDHCPServer";
+			this.tsbDHCPServer.Size = new Size(28, 28);
+			this.tsbDHCPServer.Text = "DHCP Server";
+			this.tsbDHCPServer.Click += this.tsbDHCPServer_Click;
 			// 
 			// notifyIcon1
 			// 
@@ -885,16 +895,6 @@
 			// helpProvider1
 			// 
 			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
-			// 
-			// tsbDHCPServer
-			// 
-			this.tsbDHCPServer.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.tsbDHCPServer.Image = (Image)resources.GetObject("tsbDHCPServer.Image");
-			this.tsbDHCPServer.ImageTransparentColor = Color.Magenta;
-			this.tsbDHCPServer.Name = "tsbDHCPServer";
-			this.tsbDHCPServer.Size = new Size(28, 28);
-			this.tsbDHCPServer.Text = "DHCP Server";
-			this.tsbDHCPServer.Click += this.tsbDHCPServer_Click;
 			// 
 			// frmMain
 			// 

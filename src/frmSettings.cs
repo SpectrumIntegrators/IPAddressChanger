@@ -25,6 +25,7 @@ namespace IPAddressChanger {
 			chkStartMinimized.Checked = Settings.Default.StartMinimized;
 			txtControlPanelFile.Text = Settings.Default.AdaptersControlPanelFile;
 			cmdOK.Enabled = false;
+			cboSaveLeases.SelectedIndex = Settings.Default.SaveDHCPLeases;
 			this.controlsDirty = false;
 		}
 
@@ -32,7 +33,7 @@ namespace IPAddressChanger {
 			if (chkStartAtLogon.Checked) {
 				TaskDefinition td = taskService.NewTask();
 				td.RegistrationInfo.Description = $"Start {Application.ProductName} when {Environment.UserName} logs on";
-				td.Triggers.Add(new LogonTrigger() { UserId = Environment.UserName, Delay = new TimeSpan(0, 0, 30)});
+				td.Triggers.Add(new LogonTrigger() { UserId = Environment.UserName, Delay = new TimeSpan(0, 0, 30) });
 				td.Principal.RunLevel = TaskRunLevel.Highest;
 				td.Principal.UserId = Environment.UserName;
 				td.Actions.Add(new ExecAction(Application.ExecutablePath));
@@ -50,6 +51,7 @@ namespace IPAddressChanger {
 				| (uint)(chkAlt.Checked ? IPAddressChanger.ModifierKeys.Alt : 0)
 				| (uint)(chkShift.Checked ? IPAddressChanger.ModifierKeys.Shift : 0)
 			);
+			Settings.Default.SaveDHCPLeases = cboSaveLeases.SelectedIndex;
 			this.controlsDirty = false;
 			Settings.Default.Save();
 			this.mainForm.LoadSettings();
@@ -68,17 +70,17 @@ namespace IPAddressChanger {
 			if (e.CloseReason == CloseReason.UserClosing && controlsDirty) {
 				DialogResult userAnswer = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 				switch (userAnswer) {
-					case DialogResult.Yes:
-						// save and let the form close
-						SaveSettings();
-						break;
-					case DialogResult.No:
-						// don't save but let the form close (don't do anything)
-						break;
-					case DialogResult.Cancel:
-						// don't close the form
-						e.Cancel = true;
-						break;
+				case DialogResult.Yes:
+					// save and let the form close
+					SaveSettings();
+					break;
+				case DialogResult.No:
+					// don't save but let the form close (don't do anything)
+					break;
+				case DialogResult.Cancel:
+					// don't close the form
+					e.Cancel = true;
+					break;
 				}
 			}
 		}
@@ -157,6 +159,10 @@ namespace IPAddressChanger {
 		}
 
 		private void chkStartAtLogon_CheckedChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void cboSaveLeases_SelectedIndexChanged(object sender, EventArgs e) {
 			MarkDirty();
 		}
 	}
