@@ -3,6 +3,7 @@ using IPAddressChanger.Network_Manager;
 using IPAddressChanger.Properties;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace IPAddressChanger;
 
@@ -172,8 +173,7 @@ public partial class frmDHCPServer : Form {
 		var _ = frmAddDHCPReservation.ShowNewDialog(_dhcpServer, _debugForm, rangeStart, rangeEnd, this);
 	}
 
-	private void tsbDeleteLease_Click(object sender, EventArgs e) {
-		
+	private void DeleteSelectedLeases() {
 		if (lsvDHCPLeases.SelectedItems.Count == 0) {
 			return;
 		}
@@ -182,7 +182,10 @@ public partial class frmDHCPServer : Form {
 		foreach (ListViewItem toDelete in lsvDHCPLeases.SelectedItems) {
 			RemoveLeaseEverywhere(toDelete.SubItems[0].Text);
 		}
-		
+	}
+
+	private void tsbDeleteLease_Click(object sender, EventArgs e) {
+		DeleteSelectedLeases();
 	}
 
 	// Removes a lease from the server and from this form's view. MAC is the listview key.
@@ -499,5 +502,72 @@ public partial class frmDHCPServer : Form {
 		return true;
 	}
 
+	private void tsmiDeleteLease_Click(object sender, EventArgs e) {
+		DeleteSelectedLeases();
+	}
 
+	private void cmsLeases_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+		if (lsvDHCPLeases.SelectedItems.Count == 0) {
+			e.Cancel = true;
+		}
+	}
+
+	private void CopySelectedLeases() {
+		if (lsvDHCPLeases.SelectedItems.Count == 0) {
+			return;
+		}
+		try {
+			// Sets the clipboard to "MACAddress = IPAddress" or "MACAddress = IPAddress (Hostname)"
+			Clipboard.SetText(string.Join(Environment.NewLine, lsvDHCPLeases.SelectedItems.Cast<ListViewItem>().Select(x => $"{x.Text} = {x.SubItems[1].Text}{(!string.IsNullOrEmpty(x.SubItems[2].Text) ? $" ({x.SubItems[2].Text})" : "")}")));
+		} catch (Exception ex) when (ex is ExternalException or ArgumentException) {
+			MessageBox.Show($"Error copying lease to clipboard: {ex.Message}", "Error Copying Lease", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			_debugForm.AddMessage($"Error copying lease to clipboard: {ex.Message}");
+		}
+	}
+
+	private void tsmiCopyLease_Click(object sender, EventArgs e) {
+		CopySelectedLeases();
+	}
+
+	private void tsmiEditLease_Click(object sender, EventArgs e) {
+
+	}
+
+	private void lsvDHCPLeases_KeyPress(object sender, KeyPressEventArgs e) {
+
+	}
+
+	private void lsvDHCPLeases_KeyDown(object sender, KeyEventArgs e) {
+		if (e.KeyCode == Keys.Delete) {
+			// Del = delete selected
+			DeleteSelectedLeases();
+			e.Handled = true;
+			return;
+		}
+
+		// past here, we only want CTRL+key combinations (we don't care if shift or alt or win are pressed too or not)
+		if (!e.Control) {
+			return;
+		}
+
+		switch (e.KeyCode) {
+		case Keys.C:
+			// CTRL+C = copy selected
+			CopySelectedLeases();
+			e.Handled = true;
+			break;
+		case Keys.A:
+			// CTRL+A = select all
+			lsvDHCPLeases.BeginUpdate();
+			try {
+				foreach (ListViewItem item in lsvDHCPLeases.Items) {
+					item.Selected = true;
+				}
+			} finally {
+				lsvDHCPLeases.EndUpdate();
+			}
+			e.Handled = true;
+			break;
+		}
+	}
 }

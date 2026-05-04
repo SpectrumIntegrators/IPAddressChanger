@@ -30,6 +30,7 @@ partial class frmDHCPServer
 	/// the contents of this method with the code editor.
 	/// </summary>
 	private void InitializeComponent() {
+		this.components = new Container();
 		TableLayoutPanel tableLayoutPanel1;
 		ColumnHeader columnHeader1;
 		ColumnHeader columnHeader2;
@@ -43,6 +44,11 @@ partial class frmDHCPServer
 		this.tsbAddCustomReservation = new ToolStripButton();
 		this.tsbDeleteLease = new ToolStripButton();
 		this.lsvDHCPLeases = new ListView();
+		this.cmsLeases = new ContextMenuStrip(this.components);
+		this.tsmiCopyLease = new ToolStripMenuItem();
+		this.tsmiEditLease = new ToolStripMenuItem();
+		this.toolStripMenuItem1 = new ToolStripSeparator();
+		this.tsmiDeleteLease = new ToolStripMenuItem();
 		this.cboAdapters = new ComboBox();
 		this.tableLayoutPanel3 = new TableLayoutPanel();
 		this.txtAddressOctet4 = new TextBox();
@@ -68,6 +74,7 @@ partial class frmDHCPServer
 		label1 = new Label();
 		tableLayoutPanel1.SuspendLayout();
 		this.tsDHCPLeases.SuspendLayout();
+		this.cmsLeases.SuspendLayout();
 		tableLayoutPanel2.SuspendLayout();
 		this.tableLayoutPanel3.SuspendLayout();
 		this.SuspendLayout();
@@ -123,6 +130,7 @@ partial class frmDHCPServer
 		// lsvDHCPLeases
 		// 
 		this.lsvDHCPLeases.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
+		this.lsvDHCPLeases.ContextMenuStrip = this.cmsLeases;
 		this.lsvDHCPLeases.Dock = DockStyle.Fill;
 		this.lsvDHCPLeases.FullRowSelect = true;
 		this.lsvDHCPLeases.Location = new Point(3, 133);
@@ -132,6 +140,8 @@ partial class frmDHCPServer
 		this.lsvDHCPLeases.UseCompatibleStateImageBehavior = false;
 		this.lsvDHCPLeases.View = View.Details;
 		this.lsvDHCPLeases.SelectedIndexChanged += this.lsvDHCPLeases_SelectedIndexChanged;
+		this.lsvDHCPLeases.KeyDown += this.lsvDHCPLeases_KeyDown;
+		this.lsvDHCPLeases.KeyPress += this.lsvDHCPLeases_KeyPress;
 		// 
 		// columnHeader1
 		// 
@@ -162,6 +172,39 @@ partial class frmDHCPServer
 		// 
 		columnHeader6.Text = "Last Commuication";
 		columnHeader6.Width = 110;
+		// 
+		// cmsLeases
+		// 
+		this.cmsLeases.Items.AddRange(new ToolStripItem[] { this.tsmiCopyLease, this.tsmiEditLease, this.toolStripMenuItem1, this.tsmiDeleteLease });
+		this.cmsLeases.Name = "cmsLeases";
+		this.cmsLeases.Size = new Size(108, 76);
+		this.cmsLeases.Opening += this.cmsLeases_Opening;
+		// 
+		// tsmiCopyLease
+		// 
+		this.tsmiCopyLease.Name = "tsmiCopyLease";
+		this.tsmiCopyLease.Size = new Size(107, 22);
+		this.tsmiCopyLease.Text = "&Copy";
+		this.tsmiCopyLease.Click += this.tsmiCopyLease_Click;
+		// 
+		// tsmiEditLease
+		// 
+		this.tsmiEditLease.Name = "tsmiEditLease";
+		this.tsmiEditLease.Size = new Size(107, 22);
+		this.tsmiEditLease.Text = "&Edit";
+		this.tsmiEditLease.Click += this.tsmiEditLease_Click;
+		// 
+		// toolStripMenuItem1
+		// 
+		this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+		this.toolStripMenuItem1.Size = new Size(104, 6);
+		// 
+		// tsmiDeleteLease
+		// 
+		this.tsmiDeleteLease.Name = "tsmiDeleteLease";
+		this.tsmiDeleteLease.Size = new Size(107, 22);
+		this.tsmiDeleteLease.Text = "&Delete";
+		this.tsmiDeleteLease.Click += this.tsmiDeleteLease_Click;
 		// 
 		// tableLayoutPanel2
 		// 
@@ -372,6 +415,7 @@ partial class frmDHCPServer
 		tableLayoutPanel1.PerformLayout();
 		this.tsDHCPLeases.ResumeLayout(false);
 		this.tsDHCPLeases.PerformLayout();
+		this.cmsLeases.ResumeLayout(false);
 		tableLayoutPanel2.ResumeLayout(false);
 		tableLayoutPanel2.PerformLayout();
 		this.tableLayoutPanel3.ResumeLayout(false);
@@ -399,4 +443,9 @@ partial class frmDHCPServer
 	private TextBox txtAddressOctet3;
 	private TextBox txtAddressOctet2;
 	private TextBox txtAddressOctet1;
+	private ContextMenuStrip cmsLeases;
+	private ToolStripMenuItem tsmiCopyLease;
+	private ToolStripMenuItem tsmiEditLease;
+	private ToolStripSeparator toolStripMenuItem1;
+	private ToolStripMenuItem tsmiDeleteLease;
 }
