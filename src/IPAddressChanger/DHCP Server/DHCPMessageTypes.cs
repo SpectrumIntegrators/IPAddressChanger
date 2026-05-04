@@ -1,43 +1,28 @@
-﻿namespace IPAddressChanger.DHCP_Server;
-public class DHCPMessageTypes(int val, string name) {
+using Ardalis.SmartEnum;
 
-	public static DHCPMessageTypes DHCPDISCOVER { get; } = new DHCPMessageTypes(1, "DHCPDISCOVER");
-	public static DHCPMessageTypes DHCPOFFER { get; } = new DHCPMessageTypes(2, "DHCPOFFER");
-	public static DHCPMessageTypes DHCPREQUEST { get; } = new DHCPMessageTypes(3, "DHCPREQUEST");
-	public static DHCPMessageTypes DHCPDECLINE { get; } = new DHCPMessageTypes(4, "DHCPDECLINE");
-	public static DHCPMessageTypes DHCPACK { get; } = new DHCPMessageTypes(5, "DHCPACK");
-	public static DHCPMessageTypes DHCPNAK { get; } = new DHCPMessageTypes(6, "DHCPNAK");
-	public static DHCPMessageTypes DHCPRELEASE { get; } = new DHCPMessageTypes(7, "DHCPRELEASE");
-	public static DHCPMessageTypes DHCPINFORM { get; } = new DHCPMessageTypes(8, "DHCPINFORM");
-	public static DHCPMessageTypes DHCPFORCERENEW { get; } = new DHCPMessageTypes(9, "DHCPFORCERENEW");
-	public static DHCPMessageTypes DHCPLEASEQUERY { get; } = new DHCPMessageTypes(10, "DHCPLEASEQUERY");
-	public static DHCPMessageTypes DHCPLEASEUNASSIGNED { get; } = new DHCPMessageTypes(11, "DHCPLEASEUNASSIGNED");
-	public static DHCPMessageTypes DHCPLEASEUNKNOWN { get; } = new DHCPMessageTypes(12, "DHCPLEASEUNKNOWN");
-	public static DHCPMessageTypes DHCPLEASEACTIVE { get; } = new DHCPMessageTypes(13, "DHCPLEASEACTIVE");
-	public static DHCPMessageTypes DHCPBULKLEASEQUERY { get; } = new DHCPMessageTypes(14, "DHCPBULKLEASEQUERY");
-	public static DHCPMessageTypes DHCPLEASEQUERYDONE { get; } = new DHCPMessageTypes(15, "DHCPLEASEQUERYDONE");
-	public static DHCPMessageTypes DHCPACTIVELEASEQUERY { get; } = new DHCPMessageTypes(16, "DHCPACTIVELEASEQUERY");
-	public static DHCPMessageTypes DHCPLEASEQUERYSTATUS { get; } = new DHCPMessageTypes(17, "DHCPLEASEQUERYSTATUS");
-	public static DHCPMessageTypes DHCPTLS { get; } = new DHCPMessageTypes(18, "DHCPTLS");
+namespace IPAddressChanger.DHCP_Server;
 
-	public int Value { get; private set; } = val;
-	public string Name { get; private set; } = name;
+public sealed class DHCPMessageTypes : SmartEnum<DHCPMessageTypes> {
 
-	public static IEnumerable<DHCPMessageTypes> List() {
-		return new[] { DHCPDISCOVER, DHCPOFFER, DHCPREQUEST, DHCPDECLINE, DHCPACK, DHCPNAK, DHCPRELEASE, DHCPINFORM, DHCPFORCERENEW, DHCPLEASEQUERY, DHCPLEASEUNASSIGNED, DHCPLEASEUNKNOWN, DHCPLEASEACTIVE, DHCPBULKLEASEQUERY, DHCPLEASEQUERYDONE, DHCPACTIVELEASEQUERY, DHCPLEASEQUERYSTATUS, DHCPTLS };
-	}
+	public static readonly DHCPMessageTypes DHCPDISCOVER = new(nameof(DHCPDISCOVER), 1);
+	public static readonly DHCPMessageTypes DHCPOFFER = new(nameof(DHCPOFFER), 2);
+	public static readonly DHCPMessageTypes DHCPREQUEST = new(nameof(DHCPREQUEST), 3);
+	public static readonly DHCPMessageTypes DHCPDECLINE = new(nameof(DHCPDECLINE), 4);
+	public static readonly DHCPMessageTypes DHCPACK = new(nameof(DHCPACK), 5);
+	public static readonly DHCPMessageTypes DHCPNAK = new(nameof(DHCPNAK), 6);
+	public static readonly DHCPMessageTypes DHCPRELEASE = new(nameof(DHCPRELEASE), 7);
+	public static readonly DHCPMessageTypes DHCPINFORM = new(nameof(DHCPINFORM), 8);
+	public static readonly DHCPMessageTypes DHCPFORCERENEW = new(nameof(DHCPFORCERENEW), 9);
+	public static readonly DHCPMessageTypes DHCPLEASEQUERY = new(nameof(DHCPLEASEQUERY), 10);
+	public static readonly DHCPMessageTypes DHCPLEASEUNASSIGNED = new(nameof(DHCPLEASEUNASSIGNED), 11);
+	public static readonly DHCPMessageTypes DHCPLEASEUNKNOWN = new(nameof(DHCPLEASEUNKNOWN), 12);
+	public static readonly DHCPMessageTypes DHCPLEASEACTIVE = new(nameof(DHCPLEASEACTIVE), 13);
+	public static readonly DHCPMessageTypes DHCPBULKLEASEQUERY = new(nameof(DHCPBULKLEASEQUERY), 14);
+	public static readonly DHCPMessageTypes DHCPLEASEQUERYDONE = new(nameof(DHCPLEASEQUERYDONE), 15);
+	public static readonly DHCPMessageTypes DHCPACTIVELEASEQUERY = new(nameof(DHCPACTIVELEASEQUERY), 16);
+	public static readonly DHCPMessageTypes DHCPLEASEQUERYSTATUS = new(nameof(DHCPLEASEQUERYSTATUS), 17);
+	public static readonly DHCPMessageTypes DHCPTLS = new(nameof(DHCPTLS), 18);
 
-	public static DHCPMessageTypes FromValue(int value) {
-		return List().Single(r => r.Value == value);
-	}
-
-	public static DHCPMessageTypes FromName(string name) {
-		return List().Single(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
-	}
-
-	public override string ToString() {
-		return Name;
-	}
-
+	private DHCPMessageTypes(string name, int value) : base(name, value) { }
 
 }
