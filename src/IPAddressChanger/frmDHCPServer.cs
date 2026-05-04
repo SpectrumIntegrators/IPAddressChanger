@@ -6,21 +6,20 @@ using System.Net.Sockets;
 namespace IPAddressChanger;
 
 public partial class frmDHCPServer : Form {
-	private static frmDHCPServer? _frmDHCPServer;
-	private TextBox[] _octetTextBoxes;
-	private frmDebug _debugForm;
-	private DHCPServer _dhcpServer;
-	private Dictionary<string, ListViewItem> _leaseItems = new();
+	private readonly TextBox[] _octetTextBoxes;
+	private readonly frmDebug _debugForm;
+	private readonly DHCPServer _dhcpServer;
+	private readonly Dictionary<string, ListViewItem> _leaseItems = [];
 	public frmDHCPServer(DHCPServer dhcpServer, frmDebug debugForm) {
 		InitializeComponent();
 		_dhcpServer = dhcpServer;
 		_debugForm = debugForm;
-		_octetTextBoxes = new[] {
+		_octetTextBoxes = [
 			txtAddressOctet1,
 			txtAddressOctet2,
 			txtAddressOctet3,
 			txtAddressOctet4
-		};
+		];
 	}
 
 	private async void frmDHCPServer_Load(object sender, EventArgs e) {
@@ -78,8 +77,7 @@ public partial class frmDHCPServer : Form {
 
 	private void _dhcpServer_DeviceCommunication(object? sender, DHCPMessageEventArgs e) {
 		BeginInvoke(() => {
-			ListViewItem? item;
-			_leaseItems.TryGetValue(e.MACAddress, out item);
+			_leaseItems.TryGetValue(e.MACAddress, out ListViewItem? item);
 			if (item != null) {
 				string text = $"{e.DirectionLabel}: {e.Message}";
 				if (item.SubItems.Count >= 6) {
@@ -128,7 +126,7 @@ public partial class frmDHCPServer : Form {
 	}
 
 	private string GetAddressFromTextBoxes() {
-		return string.Join(".", new[] { txtAddressOctet1.Text, txtAddressOctet2.Text, txtAddressOctet3.Text, txtAddressOctet4.Text });
+		return string.Join(".", [ txtAddressOctet1.Text, txtAddressOctet2.Text, txtAddressOctet3.Text, txtAddressOctet4.Text ]);
 	}
 
 	private async void chkEnableDHCPServer_Click(object sender, EventArgs e) {
@@ -161,7 +159,12 @@ public partial class frmDHCPServer : Form {
 			uint broadcast = network | ~mask;
 			if (addrInt == network && prefixLength < 31) {
 				uint corrected = network + 1;
-				serverAddress = new IPAddress(new[] { (byte)((corrected >> 24) & 0xFF), (byte)((corrected >> 16) & 0xFF), (byte)((corrected >> 8) & 0xFF), (byte)(corrected & 0xFF) });
+				serverAddress = new ([
+					(byte)((corrected >> 24) & 0xFF),
+					(byte)((corrected >> 16) & 0xFF),
+					(byte)((corrected >> 8) & 0xFF),
+					(byte)(corrected & 0xFF)
+				]);
 				addrBytes = serverAddress.GetAddressBytes();
 				txtAddressOctet1.Text = addrBytes[0].ToString();
 				txtAddressOctet2.Text = addrBytes[1].ToString();
@@ -170,7 +173,12 @@ public partial class frmDHCPServer : Form {
 				_debugForm.AddMessage($"Adjusted server address to {serverAddress} (network address is not a valid host)");
 			} else if (addrInt == broadcast && prefixLength < 31) {
 				uint corrected = broadcast - 1;
-				serverAddress = new IPAddress(new[] { (byte)((corrected >> 24) & 0xFF), (byte)((corrected >> 16) & 0xFF), (byte)((corrected >> 8) & 0xFF), (byte)(corrected & 0xFF) });
+				serverAddress = new IPAddress([
+					(byte)((corrected >> 24) & 0xFF),
+					(byte)((corrected >> 16) & 0xFF),
+					(byte)((corrected >> 8) & 0xFF),
+					(byte)(corrected & 0xFF)
+				]);
 				addrBytes = serverAddress.GetAddressBytes();
 				txtAddressOctet1.Text = addrBytes[0].ToString();
 				txtAddressOctet2.Text = addrBytes[1].ToString();
@@ -218,8 +226,9 @@ public partial class frmDHCPServer : Form {
 
 	private void AddLeaseListViewItem(DHCPLease lease) {
 		_debugForm.AddMessage($"Adding lease for {lease.MACAddress} to list");
-		ListViewItem newLease = new ListViewItem();
-		newLease.Text = lease.MACAddress;
+		ListViewItem newLease = new() {
+			Text = lease.MACAddress
+		};
 		newLease.SubItems.Add(lease.IPAddress.ToString());
 		newLease.SubItems.Add(lease.Hostname);
 		newLease.SubItems.Add(lease.Assigned?.ToString() ?? "Reserved");

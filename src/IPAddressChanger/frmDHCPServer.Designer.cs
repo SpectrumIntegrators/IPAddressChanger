@@ -380,7 +380,6 @@ partial class frmDHCPServer
 
 	#endregion
 
-	private TableLayoutPanel tableLayoutPanel1;
 	private ToolStrip tsDHCPLeases;
 	private ListView lsvDHCPLeases;
 	private ComboBox cboAdapters;
@@ -393,11 +392,6 @@ partial class frmDHCPServer
 	private Label label6;
 	private ToolStripButton tsbAddCustomReservation;
 	private ToolStripButton tsbDeleteLease;
-	private ColumnHeader columnHeader1;
-	private ColumnHeader columnHeader2;
-	private ColumnHeader columnHeader3;
-	private ColumnHeader columnHeader4;
-	private ColumnHeader columnHeader5;
 	private Label lblEnableDHCPServer;
 	private CheckBox chkEnableDHCPServer;
 	private TextBox txtAddressOctet4;

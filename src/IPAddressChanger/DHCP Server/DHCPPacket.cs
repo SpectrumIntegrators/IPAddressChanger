@@ -48,7 +48,7 @@ internal class DHCPPacket {
 	public string SName = "";
 	public string File = "";
 
-	public Dictionary<byte, byte[]> Options = new();
+	public Dictionary<byte, byte[]> Options = [];
 
 	/// <summary>True if the broadcast bit is set in the flags field.</summary>
 	public bool BroadcastFlag => (Flags & 0x8000) != 0;
@@ -70,8 +70,9 @@ internal class DHCPPacket {
 	public DHCPMessageTypes? MessageType {
 		get {
 			if (Options.TryGetValue(OPT_MESSAGE_TYPE, out var data) && data.Length >= 1) {
-				try { return DHCPMessageTypes.FromValue(data[0]); }
-				catch { return null; }
+				if (DHCPMessageTypes.TryFromValue(data[0], out var ret)) {
+					return ret;
+				}
 			}
 			return null;
 		}
@@ -194,7 +195,7 @@ internal class DHCPPacket {
 		writer.Write(fileBytes);
 
 		// Magic cookie
-		writer.Write(new byte[] { 0x63, 0x82, 0x53, 0x63 });
+		writer.Write([ 0x63, 0x82, 0x53, 0x63 ]);
 
 		// Options. Write message type first per convention (RFC 2132 §9.6).
 		if (Options.TryGetValue(OPT_MESSAGE_TYPE, out var msgType)) {
@@ -226,7 +227,7 @@ internal class DHCPPacket {
 	// ----- Convenience setters for common options -----
 
 	public void SetMessageType(DHCPMessageTypes type) {
-		Options[OPT_MESSAGE_TYPE] = new byte[] { (byte)type.Value };
+		Options[OPT_MESSAGE_TYPE] = [ (byte)type.Value ];
 	}
 
 	public void SetServerIdentifier(IPAddress serverIp) {
