@@ -24,19 +24,19 @@ UX polish, and docs.
   If so, prompt three-way: "Clear and continue / Keep them and continue / Abort".
   Likely needs a `DHCPServer.GetLeasesOutsideRange()` helper plus a `ClearLeases()`.
   Open question: keep "Keep them and continue" or simplify to two-way?
-- **#33 Prevent shortcuts from clobbering bound DHCP adapter.** Running a shortcut
+- ~~**#33 Prevent shortcuts from clobbering bound DHCP adapter.** Running a shortcut
   on the adapter the DHCP server is bound to set the adapter to DHCP, stripped the
   static IP, and left the server in a zombie state. Block in `frmMain` (shortcuts,
   RenewDhcp, SetDhcp, ApplyAddress, per-adapter context menu) when target adapter
   matches `_dhcpServer.Adapter` and server is running. Either warn-and-refuse or
-  prompt-to-stop-server-first.
-- **#34 Detect when bound DHCP adapter's IP changes and stop the server.**
+  prompt-to-stop-server-first.~~
+- ~~**#34 Detect when bound DHCP adapter's IP changes and stop the server.**
   Defense-in-depth for #33 — even if external tooling (cmd-line netsh, USB
   unplug, sleep/wake, Windows resetting the adapter) strips the server's IP,
   the server should self-fault rather than zombie. Subscribe to
   `NetworkChange.NetworkAddressChanged` inside `DHCPServer`; on each event verify
   `Adapter` still has `Address`/`PrefixLength` bound. If not, fire a
-  `ServerFaulted` event and `Stop()`. Form pipes `ServerFaulted` to a MessageBox.
+  `ServerFaulted` event and `Stop()`. Form pipes `ServerFaulted` to a MessageBox.~~
 
 ### DHCP server UX
 

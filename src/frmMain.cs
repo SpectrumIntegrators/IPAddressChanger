@@ -67,10 +67,27 @@ namespace IPAddressChanger {
 			LoadSettings();
 			dhcpServer.DeviceCommunication += this.DhcpServer_DeviceCommunication;
 			dhcpServer.Log += this.DhcpServer_Log;
+			dhcpServer.ServerFaulted += this.DhcpServer_ServerFaulted;
 		}
 
 		private void DhcpServer_DeviceCommunication(object? sender, DHCPMessageEventArgs e) {
 			debugForm.AddMessage($"DHCP {e.DirectionLabel} [{e.MACAddress}]: {e.Message}");
+		}
+
+		private void DhcpServer_ServerFaulted(object? sender, string reason) {
+			if (InvokeRequired) {
+				BeginInvoke(() => DhcpServer_ServerFaulted(sender, reason));
+				return;
+			}
+			debugForm.AddMessage($"DHCP server faulted: {reason}");
+			MessageBox.Show(this, reason, "DHCP Server Stopped", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+		// True when the DHCP server is bound to and currently running on the given adapter.
+		// Used to refuse adapter-mutating actions (apply shortcut, paste address, renew DHCP)
+		// that would otherwise pull the rug out from under the running server.
+		private bool DhcpServerBoundTo(AdapterInfo ai) {
+			return dhcpServer.Running && dhcpServer.Adapter is not null && dhcpServer.Adapter == ai;
 		}
 
 		private void DhcpServer_Log(object? sender, string message) {
@@ -490,6 +507,10 @@ namespace IPAddressChanger {
 		// dialog and progress messages. operationDescription is folded into status/log lines
 		// (e.g. "shortcut 'Office Static'", "address 10.0.0.69/16", "DHCP").
 		private async Task ApplyAddressToAdapter(AdapterInfo ai, bool useDhcp, string ipAddress, int prefixLength, string operationDescription) {
+			if (DhcpServerBoundTo(ai)) {
+				ShowAndLogError($"Cannot apply {operationDescription} to {ai.Name}: the DHCP server is running on this adapter. Stop it from the DHCP Server window first.", "DHCP Server Running");
+				return;
+			}
 			if (busyAdapterDialogs.ContainsKey(ai)) {
 				debugForm.AddMessage($"Skipping {operationDescription}: {ai.Name} is busy with another operation");
 				if (busyAdapterDialogs[ai] == null) {
@@ -1035,6 +1056,10 @@ namespace IPAddressChanger {
 		}
 
 		private async void RenewAdapterDHCPLease(AdapterInfo adapter) {
+			if (DhcpServerBoundTo(adapter)) {
+				ShowAndLogError($"Cannot renew DHCP lease on {adapter.Name}: the DHCP server is running on this adapter. Stop it from the DHCP Server window first.", "DHCP Server Running");
+				return;
+			}
 			if (busyAdapterDialogs.ContainsKey(adapter)) {
 				debugForm.AddMessage("Skipping DHCP renew: another network operation is in progress");
 				if (busyAdapterDialogs[adapter] == null) {

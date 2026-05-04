@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace IPAddressChanger.DHCP_Server;
@@ -74,6 +75,11 @@ public class DHCPServer : IDisposable {
 	/// <summary>Fired with a human-readable narration of decisions the server is making
 	/// (e.g. "DISCOVER from MAC, new device, offering IP"). Subscribers can pipe to a debug log.</summary>
 	public event EventHandler<string>? Log;
+	/// <summary>Fired (after the server has been stopped) when the bound adapter's address
+	/// configuration is changed out from under us — e.g. external netsh, USB unplug,
+	/// sleep/wake. The string is a human-readable reason. Subscribers may show it to the
+	/// user; this event can fire on a non-UI thread, so marshal as needed.</summary>
+	public event EventHandler<string>? ServerFaulted;
 
 	private void FireLog(string text) {
 		try { Log?.Invoke(this, text); } catch { /* don't let a buggy subscriber crash us */ }
@@ -174,6 +180,9 @@ public class DHCPServer : IDisposable {
 
 		Running = true;
 		_listenTask = Task.Run(() => ListenLoopAsync(_cts.Token));
+		// Watch for the bound adapter's address being yanked (external netsh, USB unplug,
+		// sleep/wake, etc.) so we self-stop instead of zombieing on a missing IP.
+		NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
 		ServerStarted?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -184,6 +193,10 @@ public class DHCPServer : IDisposable {
 	public void Stop() {
 		if (_disposed) { return; }
 		if (!Running) { return; }
+
+		// Unsubscribe up front so a tear-down-induced address change doesn't re-enter the
+		// fault path while we're already stopping.
+		NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
 
 		// Cancel the listen loop and close the socket so any in-flight ReceiveMessageFromAsync
 		// throws and the loop exits.
@@ -213,6 +226,34 @@ public class DHCPServer : IDisposable {
 		if (_disposed) { return Task.CompletedTask; }
 		if (!Running) { return Task.CompletedTask; }
 		return Task.Run(() => Stop());
+	}
+
+	// Defense-in-depth for the "shortcut clobbered the bound adapter" case: any time the OS
+	// reports a network address change, verify our bound adapter still has our IP. If not,
+	// stop and fault. Fires on a thread pool thread.
+	private void OnNetworkAddressChanged(object? sender, EventArgs e) {
+		if (!Running || _boundAdapter is null || Address is null) return;
+		string? reason = null;
+		try {
+			NetworkInterface? nic = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(n => {
+				try { return n.GetIPProperties().GetIPv4Properties()?.Index == _boundAdapter.Index; }
+				catch { return false; }
+			});
+			if (nic is null) {
+				reason = $"Bound adapter {_boundAdapter.Name} is no longer present.";
+			} else if (!nic.GetIPProperties().UnicastAddresses.Any(ua => ua.Address.Equals(Address))) {
+				reason = $"DHCP server's IP {Address} was removed from {_boundAdapter.Name}.";
+			}
+		} catch (Exception ex) {
+			// If we can't check, don't fault — better to keep running and let a real bind
+			// failure surface the issue. Log so it's visible if this becomes a pattern.
+			Debug.WriteLine($"OnNetworkAddressChanged check failed: {ex.Message}");
+			return;
+		}
+		if (reason is null) return;
+		FireLog(reason);
+		Stop();
+		ServerFaulted?.Invoke(this, reason);
 	}
 
 	/// <summary>
