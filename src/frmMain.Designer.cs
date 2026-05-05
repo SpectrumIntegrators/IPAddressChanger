@@ -84,11 +84,11 @@
 			this.tsmiAddressesListCopy = new ToolStripMenuItem();
 			this.tsMain = new ToolStrip();
 			this.tsbSettings = new ToolStripButton();
+			this.tsbDHCPServer = new ToolStripButton();
 			this.tsbDebug = new ToolStripButton();
 			this.tsbControlPanel = new ToolStripButton();
 			this.tsbHelp = new ToolStripButton();
 			this.tsbBugReport = new ToolStripButton();
-			this.tsbDHCPServer = new ToolStripButton();
 			this.notifyIcon1 = new NotifyIcon(this.components);
 			this.cmsNotifyIconMenu = new ContextMenuStrip(this.components);
 			this.tsmiShow = new ToolStripMenuItem();
@@ -291,6 +291,7 @@
 			// chAdapterStatus
 			// 
 			this.chAdapterStatus.Text = "";
+			this.chAdapterStatus.Width = 24;
 			// 
 			// chAdapterName
 			// 
@@ -772,6 +773,16 @@
 			this.tsbSettings.ToolTipText = "Open the application settings dialog";
 			this.tsbSettings.Click += this.tsbSettings_Click;
 			// 
+			// tsbDHCPServer
+			// 
+			this.tsbDHCPServer.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			this.tsbDHCPServer.Image = Properties.Resources.DatabaseOptions_12882;
+			this.tsbDHCPServer.ImageTransparentColor = Color.Magenta;
+			this.tsbDHCPServer.Name = "tsbDHCPServer";
+			this.tsbDHCPServer.Size = new Size(28, 28);
+			this.tsbDHCPServer.Text = "DHCP Server";
+			this.tsbDHCPServer.Click += this.tsbDHCPServer_Click;
+			// 
 			// tsbDebug
 			// 
 			this.tsbDebug.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -815,16 +826,6 @@
 			this.tsbBugReport.Text = "Bug Report";
 			this.tsbBugReport.ToolTipText = "Submit bug reports or other feedback";
 			this.tsbBugReport.Click += this.tsbBugReport_Click;
-			// 
-			// tsbDHCPServer
-			// 
-			this.tsbDHCPServer.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.tsbDHCPServer.Image = Properties.Resources.DatabaseOptions_12882;
-			this.tsbDHCPServer.ImageTransparentColor = Color.Magenta;
-			this.tsbDHCPServer.Name = "tsbDHCPServer";
-			this.tsbDHCPServer.Size = new Size(28, 28);
-			this.tsbDHCPServer.Text = "DHCP Server";
-			this.tsbDHCPServer.Click += this.tsbDHCPServer_Click;
 			// 
 			// notifyIcon1
 			// 
