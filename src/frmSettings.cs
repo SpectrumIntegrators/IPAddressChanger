@@ -24,8 +24,9 @@ namespace IPAddressChanger {
 			cboShortcutDoubleClick.SelectedIndex = Settings.Default.ShortcutDoubleClick;
 			chkStartMinimized.Checked = Settings.Default.StartMinimized;
 			txtControlPanelFile.Text = Settings.Default.AdaptersControlPanelFile;
-			cmdOK.Enabled = false;
 			cboSaveLeases.SelectedIndex = Settings.Default.SaveDHCPLeases;
+			chkDHCPPreflightCheck.Checked = Settings.Default.DHCPPreflightCheck;
+			cmdOK.Enabled = false;
 			this.controlsDirty = false;
 		}
 
@@ -52,6 +53,7 @@ namespace IPAddressChanger {
 				| (uint)(chkShift.Checked ? IPAddressChanger.ModifierKeys.Shift : 0)
 			);
 			Settings.Default.SaveDHCPLeases = cboSaveLeases.SelectedIndex;
+			Settings.Default.DHCPPreflightCheck = chkDHCPPreflightCheck.Checked;
 			this.controlsDirty = false;
 			Settings.Default.Save();
 			this.mainForm.LoadSettings();
@@ -163,6 +165,10 @@ namespace IPAddressChanger {
 		}
 
 		private void cboSaveLeases_SelectedIndexChanged(object sender, EventArgs e) {
+			MarkDirty();
+		}
+
+		private void chkDHCPPreflightCheck_CheckedChanged(object sender, EventArgs e) {
 			MarkDirty();
 		}
 	}

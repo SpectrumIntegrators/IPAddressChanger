@@ -274,5 +274,29 @@ namespace IPAddressChanger.Properties {
                 this["SuppressDHCPWarning"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DHCPPreflightCheck {
+            get {
+                return ((bool)(this["DHCPPreflightCheck"]));
+            }
+            set {
+                this["DHCPPreflightCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int DHCPPreflightDuration {
+            get {
+                return ((int)(this["DHCPPreflightDuration"]));
+            }
+            set {
+                this["DHCPPreflightDuration"] = value;
+            }
+        }
     }
 }

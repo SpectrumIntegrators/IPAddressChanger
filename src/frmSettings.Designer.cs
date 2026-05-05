@@ -30,6 +30,7 @@
 			Label label3;
 			Label lblStartAtLogon;
 			Label label4;
+			Label label5;
 			this.tableLayoutPanel1 = new TableLayoutPanel();
 			this.tableLayoutPanel2 = new TableLayoutPanel();
 			this.cmdCancel = new Button();
@@ -48,6 +49,7 @@
 			this.cboHotkey = new ComboBox();
 			this.chkStartAtLogon = new CheckBox();
 			this.cboSaveLeases = new ComboBox();
+			this.chkDHCPPreflightCheck = new CheckBox();
 			this.helpProvider1 = new HelpProvider();
 			lblHideWhenMinimized = new Label();
 			label2 = new Label();
@@ -56,6 +58,7 @@
 			label3 = new Label();
 			lblStartAtLogon = new Label();
 			label4 = new Label();
+			label5 = new Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
@@ -141,10 +144,21 @@
 			label4.Dock = DockStyle.Fill;
 			label4.Location = new Point(3, 192);
 			label4.Name = "label4";
-			label4.Size = new Size(208, 38);
+			label4.Size = new Size(208, 32);
 			label4.TabIndex = 11;
 			label4.Text = "Save DHCP addresses";
 			label4.TextAlign = ContentAlignment.MiddleLeft;
+			// 
+			// label5
+			// 
+			label5.AutoSize = true;
+			label5.Dock = DockStyle.Fill;
+			label5.Location = new Point(3, 224);
+			label5.Name = "label5";
+			label5.Size = new Size(208, 32);
+			label5.TabIndex = 13;
+			label5.Text = "DHCP DISCOVER preflight check";
+			label5.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// tableLayoutPanel1
 			// 
@@ -159,19 +173,19 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
-			this.tableLayoutPanel1.Size = new Size(560, 270);
+			this.tableLayoutPanel1.Size = new Size(560, 306);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
 			// 
 			this.tableLayoutPanel2.ColumnCount = 3;
 			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
 			this.tableLayoutPanel2.Controls.Add(this.cmdCancel, 2, 0);
 			this.tableLayoutPanel2.Controls.Add(this.cmdOK, 1, 0);
 			this.tableLayoutPanel2.Dock = DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new Point(2, 236);
+			this.tableLayoutPanel2.Location = new Point(2, 272);
 			this.tableLayoutPanel2.Margin = new Padding(2);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
@@ -182,7 +196,7 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.Anchor = AnchorStyles.Top;
-			this.cmdCancel.Location = new Point(447, 2);
+			this.cmdCancel.Location = new Point(472, 2);
 			this.cmdCancel.Margin = new Padding(2);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new Size(78, 24);
@@ -195,7 +209,7 @@
 			// 
 			this.cmdOK.Anchor = AnchorStyles.Top;
 			this.cmdOK.Enabled = false;
-			this.cmdOK.Location = new Point(307, 2);
+			this.cmdOK.Location = new Point(382, 2);
 			this.cmdOK.Margin = new Padding(2);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new Size(78, 24);
@@ -223,11 +237,15 @@
 			this.tableLayoutPanel3.Controls.Add(this.chkStartAtLogon, 1, 5);
 			this.tableLayoutPanel3.Controls.Add(label4, 0, 6);
 			this.tableLayoutPanel3.Controls.Add(this.cboSaveLeases, 1, 6);
+			this.tableLayoutPanel3.Controls.Add(label5, 0, 7);
+			this.tableLayoutPanel3.Controls.Add(this.chkDHCPPreflightCheck, 1, 7);
 			this.tableLayoutPanel3.Dock = DockStyle.Fill;
 			this.tableLayoutPanel3.Location = new Point(2, 2);
 			this.tableLayoutPanel3.Margin = new Padding(2);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 7;
+			this.tableLayoutPanel3.RowCount = 9;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
@@ -235,7 +253,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new Size(556, 230);
+			this.tableLayoutPanel3.Size = new Size(556, 266);
 			this.tableLayoutPanel3.TabIndex = 1;
 			// 
 			// chkHideWhenMinimized
@@ -426,12 +444,23 @@
 			this.cboSaveLeases.DropDownStyle = ComboBoxStyle.DropDownList;
 			this.cboSaveLeases.FormattingEnabled = true;
 			this.cboSaveLeases.Items.AddRange(new object[] { "Only save reserved addresses", "Save reserved and automatic addresses" });
-			this.cboSaveLeases.Location = new Point(216, 199);
+			this.cboSaveLeases.Location = new Point(216, 196);
 			this.cboSaveLeases.Margin = new Padding(2);
 			this.cboSaveLeases.Name = "cboSaveLeases";
 			this.cboSaveLeases.Size = new Size(302, 23);
 			this.cboSaveLeases.TabIndex = 12;
 			this.cboSaveLeases.SelectedIndexChanged += this.cboSaveLeases_SelectedIndexChanged;
+			// 
+			// chkDHCPPreflightCheck
+			// 
+			this.chkDHCPPreflightCheck.Anchor = AnchorStyles.Left;
+			this.chkDHCPPreflightCheck.AutoSize = true;
+			this.chkDHCPPreflightCheck.Location = new Point(217, 233);
+			this.chkDHCPPreflightCheck.Name = "chkDHCPPreflightCheck";
+			this.chkDHCPPreflightCheck.Size = new Size(15, 14);
+			this.chkDHCPPreflightCheck.TabIndex = 14;
+			this.chkDHCPPreflightCheck.UseVisualStyleBackColor = true;
+			this.chkDHCPPreflightCheck.CheckedChanged += this.chkDHCPPreflightCheck_CheckedChanged;
 			// 
 			// helpProvider1
 			// 
@@ -443,7 +472,7 @@
 			this.AutoScaleDimensions = new SizeF(7F, 15F);
 			this.AutoScaleMode = AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new Size(560, 270);
+			this.ClientSize = new Size(560, 306);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = FormBorderStyle.FixedDialog;
 			this.helpProvider1.SetHelpKeyword(this, "settings-window");
@@ -491,5 +520,6 @@
 		private ComboBox cboHotkey;
 		private CheckBox chkStartAtLogon;
 		private ComboBox cboSaveLeases;
+		private CheckBox chkDHCPPreflightCheck;
 	}
 }

@@ -40,6 +40,8 @@ The ZIP contains a framework-dependent build, so the [.NET 8 Desktop Runtime](ht
 1. [New/Edit Shortcut Window](#newedit-shortcut-window)
 1. [Adapter Busy Dialog](#adapter-busy-dialog)
 1. [Address Conflict Warning](#address-conflict-warning)
+1. [DHCP Server](#dhcp-server)
+    1. [DHCP DISCOVER Preflight Check](#dhcp-discover-preflight-check)
 1. [Settings Window](#settings-window)
 1. [Debug Messages Window](#debug-messages-window)
 1. [Privilege Elevation & UAC Prompt](#privilege-elevation--uac-prompt)
@@ -295,6 +297,20 @@ After a refresh, if the application detects that two or more adapters are sharin
 The dialog has a "do not show again" checkbox; checking it suppresses future conflict warnings for the remainder of the session. Restart the application to re-enable warnings.
 
 The application also performs a pre-apply check before assigning a static IP, refusing to create a conflict in the first place if it can detect one. The post-refresh warning catches conflicts that arise from outside the application or from operations that bypass the pre-apply check.
+
+## DHCP Server
+The application includes a DHCP server that can hand out leases on a chosen network adapter. The DHCP Server window itself is documented in a future revision of this guide; this section currently covers only the pre-flight check that runs when starting the server.
+
+### DHCP DISCOVER Preflight Check
+When you enable the DHCP server, by default the software first probes the network segment for any other DHCP servers before binding. This guards against accidentally bringing up a second DHCP server on a production network, which can cause IP conflicts and unstable client behavior.
+
+The probe sends a single DHCP `DISCOVER` broadcast out the bound adapter and listens for a few seconds for any `OFFER` replies. If any `OFFER` comes back, a dialog appears listing each responding server and the address it offered, and asks whether to start anyway. Choosing **No** aborts cleanly — the adapter is left exactly as it was, with no changes applied. If no `OFFER` arrives during the listen window, the segment is treated as clear and the server start-up continues automatically.
+
+A non-responding probe almost always means no DHCP server is reachable on the segment. It is *technically* possible for a server to be present but happen to be slow, busy, or temporarily not issuing offers — but in practice, "no response" reliably means "no server." The probe is a best-effort safety check, not a hard guarantee, and a small minority of networks may need a longer listen window than the default.
+
+The probe also can't distinguish an authorized DHCP server from a rogue one. It detects whether *anything* on the segment is willing to issue a lease, not whether that something is supposed to be there. If you knowingly want to run a second server on a segment that already has an authorized one (lab work, controlled testing, replacing an existing server in place), the prompt is just a confirmation step to dismiss — or you can disable the pre-flight entirely from the [Settings Window](#settings-window).
+
+The listen-window duration defaults to 3 seconds, which is appropriate for most networks. If a particular network needs more or less, the duration is exposed as the `DHCPPreflightDuration` value (in seconds) in `user.config` — not on the Settings window — and can be edited there.
 
 ## Settings Window
 This window allows changing the functionality of the program.

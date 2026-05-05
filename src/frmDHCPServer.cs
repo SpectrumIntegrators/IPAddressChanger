@@ -384,6 +384,35 @@ public partial class frmDHCPServer : Form {
 		}
 
 		try {
+			// Pre-flight DISCOVER probe: detect any other DHCP server on this segment before
+			// we touch the adapter. Skipped if the user opted out in Settings. Probe failure
+			// (socket errors, etc.) doesn't block the start — we log and proceed.
+			if (Settings.Default.DHCPPreflightCheck) {
+				busy.SetStatus("Checking for other DHCP servers on the network...");
+				List<DHCPServer.DHCPProbeResult> probeResults = [];
+				try {
+					probeResults = await DHCPServer.ProbeForOtherServersAsync(adapterIndex, TimeSpan.FromSeconds(Settings.Default.DHCPPreflightDuration), ct);
+				} catch (OperationCanceledException) {
+					return BailCancelled();
+				} catch (Exception ex) {
+					_debugForm.AddMessage($"Pre-flight DHCP probe failed: {ex.Message} (continuing anyway)");
+				}
+				if (ct.IsCancellationRequested) return BailCancelled();
+				if (probeResults.Count > 0) {
+					string summary = string.Join(Environment.NewLine, probeResults.Select(r => $"  • Server {r.ServerAddress} offered {r.OfferedAddress}"));
+					string msg = $"Detected {probeResults.Count} other DHCP server(s) on this network:\r\n\r\n{summary}\r\n\r\nRunning a second DHCP server on the same segment can cause IP conflicts and unstable client behavior. Start anyway?";
+					_debugForm.AddMessage($"Pre-flight detected {probeResults.Count} other DHCP server(s): {string.Join(", ", probeResults.Select(r => r.ServerAddress))}");
+					DialogResult answer = MessageBox.Show(busy, msg, "Other DHCP Server Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+					if (answer != DialogResult.Yes) {
+						_debugForm.AddMessage("DHCP server start cancelled by user after pre-flight detection");
+						if (!busy.IsDisposed) busy.Close();
+						return false;
+					}
+				} else {
+					_debugForm.AddMessage("Pre-flight probe found no other DHCP servers on the segment");
+				}
+			}
+
 			busy.SetStatus("Checking adapter DHCP state");
 			bool boundAdapterDHCPEnabled = await NetworkManager.GetIPv4DhcpEnabledAsync(adapterIndex);
 			if (ct.IsCancellationRequested) return BailCancelled();

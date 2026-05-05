@@ -6,19 +6,6 @@ UX polish, and docs.
 
 ## Pending tasks
 
-### Pre-flight DISCOVER probe (designed but not built)
-
-Before binding the DHCP server, send a DISCOVER on the bound adapter and listen
-briefly for OFFERs. If anything answers, warn the user (there's already a DHCP
-server on this segment) and let them confirm or abort. Designed as part of the
-early DHCP server work; never implemented. `frmDHCPServerBusy` was made cancel-
-capable specifically with this in mind — same form, different sequence of
-`SetStatus` calls and one cancellable `Task.Delay` waiting for OFFERs.
-
-Add a settings checkbox to opt out of the probe — default on, but a tech who
-knowingly wants to run a second server on a segment (lab work, intentional
-override) shouldn't have to dismiss the prompt every time.
-
 ### Prefix length validation cleanup (proposed, not yet applied)
 
 - Tighten `SetLeaseRange` and form validation to **/8..30** (current is /0..30). Below /8 there's no realistic legitimate use and `GetNextFreeAddress` would iterate millions of addresses linearly. /30 cap is fine as-is.
@@ -92,3 +79,16 @@ remind me again" checkbox. When checked and dismissed, set a settings flag
 from the pre-flight DISCOVER probe — that's a runtime detection of an actual
 conflict; this one is a policy / "are you sure you should be doing this"
 reminder that fires regardless of what's on the segment.~~
+
+### Pre-flight DISCOVER probe (designed but not built)
+
+~~Before binding the DHCP server, send a DISCOVER on the bound adapter and listen
+briefly for OFFERs. If anything answers, warn the user (there's already a DHCP
+server on this segment) and let them confirm or abort. Designed as part of the
+early DHCP server work; never implemented. `frmDHCPServerBusy` was made cancel-
+capable specifically with this in mind — same form, different sequence of
+`SetStatus` calls and one cancellable `Task.Delay` waiting for OFFERs.~~
+
+~~Add a settings checkbox to opt out of the probe — default on, but a tech who
+knowingly wants to run a second server on a segment (lab work, intentional
+override) shouldn't have to dismiss the prompt every time.~~

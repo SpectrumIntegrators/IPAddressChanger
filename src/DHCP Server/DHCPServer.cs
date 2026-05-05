@@ -277,6 +277,85 @@ public class DHCPServer : IDisposable {
 	/// <exception cref="InvalidOperationException">The server is currently running.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">The specified IPAddress does not represent an IPv4 address, or the prefix length is invalid.</exception>
 	/// <summary>
+	/// Result row from <see cref="ProbeForOtherServersAsync"/>: a DHCP OFFER we received in
+	/// response to our probe DISCOVER.
+	/// </summary>
+	public record DHCPProbeResult(IPAddress ServerAddress, IPAddress OfferedAddress);
+
+	/// <summary>
+	/// Sends a single DHCPDISCOVER on the specified adapter and listens briefly for OFFERs.
+	/// Used as a pre-flight check before binding our own server on a network: if anything answers,
+	/// the user gets a chance to abort rather than starting a second DHCP server on the segment.
+	/// </summary>
+	/// <remarks>
+	/// Uses a random Xid and a locally-administered probe MAC so responses can be unambiguously
+	/// matched and we don't impersonate any real device. Binds with SO_REUSEADDR so we coexist
+	/// with the Windows DHCP client if it's still active on the adapter, and uses IP_UNICAST_IF
+	/// to force outbound traffic to the target adapter regardless of the routing table.
+	/// </remarks>
+	public static async Task<List<DHCPProbeResult>> ProbeForOtherServersAsync(uint adapterIndex, TimeSpan listenDuration, CancellationToken ct) {
+		// IP_UNICAST_IF (Windows) — outbound interface for unicast/broadcast. Index in network order.
+		const int IP_UNICAST_IF = 31;
+
+		using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+		socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
+		socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+		socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
+		socket.SetSocketOption(SocketOptionLevel.IP, (SocketOptionName)IP_UNICAST_IF, IPAddress.HostToNetworkOrder((int)adapterIndex));
+		socket.Bind(new IPEndPoint(IPAddress.Any, 68));
+
+		// Build a DISCOVER with random Xid and a locally-administered MAC. BroadcastFlag set so
+		// the responding server replies to 255.255.255.255:68 (we don't have an IP yet).
+		byte[] xidBytes = new byte[4];
+		Random.Shared.NextBytes(xidBytes);
+		uint probeXid = BinaryPrimitives.ReadUInt32BigEndian(xidBytes);
+		byte[] probeMac = new byte[6];
+		Random.Shared.NextBytes(probeMac);
+		probeMac[0] = (byte)((probeMac[0] & 0xFE) | 0x02); // locally-administered, unicast
+
+		var probe = new DHCPPacket {
+			Op = DHCPPacket.OP_REQUEST,
+			HType = DHCPPacket.HTYPE_ETHERNET,
+			HLen = 6,
+			Hops = 0,
+			Xid = probeXid,
+			Secs = 0,
+			Flags = 0x8000,
+		};
+		Array.Copy(probeMac, 0, probe.CHAddr, 0, 6);
+		probe.SetMessageType(DHCPMessageTypes.DHCPDISCOVER);
+
+		await socket.SendToAsync(probe.Build(), new IPEndPoint(IPAddress.Broadcast, 67), ct);
+
+		// Listen for the configured duration, filtering on adapter index + Xid + OFFER.
+		var results = new List<DHCPProbeResult>();
+		var seenServers = new HashSet<IPAddress>();
+		using var listenCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		listenCts.CancelAfter(listenDuration);
+		var buffer = new byte[2048];
+		var dummyRemote = (EndPoint)new IPEndPoint(IPAddress.Any, 0);
+		try {
+			while (true) {
+				var rx = await socket.ReceiveMessageFromAsync(buffer, SocketFlags.None, dummyRemote, listenCts.Token);
+				if (rx.PacketInformation.Interface != adapterIndex) continue;
+				var response = DHCPPacket.Parse(buffer, rx.ReceivedBytes);
+				if (response is null) continue;
+				if (response.Op != DHCPPacket.OP_REPLY) continue;
+				if (response.Xid != probeXid) continue;
+				if (response.MessageType != DHCPMessageTypes.DHCPOFFER) continue;
+				IPAddress serverIp = response.ServerIdentifier ?? response.SIAddr;
+				if (seenServers.Add(serverIp)) {
+					results.Add(new DHCPProbeResult(serverIp, response.YIAddr));
+				}
+			}
+		} catch (OperationCanceledException) when (!ct.IsCancellationRequested) {
+			// listen window closed normally — fall through with whatever we collected
+		}
+		ct.ThrowIfCancellationRequested();
+		return results;
+	}
+
+	/// <summary>
 	/// Computes the allocatable host-address range for a given server address and prefix length.
 	/// Returns (start, end) covering every host address in the subnet excluding the network and
 	/// broadcast addresses. Returns null if the inputs don't form a usable IPv4 range (non-IPv4
