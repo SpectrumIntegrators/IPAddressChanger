@@ -23,7 +23,9 @@ public class DHCPLease(string macAddress, IPAddress ipAddress, string hostname, 
 	/// </summary>
 	public DateTime? Assigned { get; private set; } = assigned;
 	/// <summary>
-	/// The time the lease will expire; not set for manual reservations (note that we don't expire the lease, but this tells the device to request a new address at or before that time)
+	/// The time the lease will expire; not set for manual reservations. The server doesn't actually
+	/// expire leases (sticky-lease design), but this tells the device when to renew, and the server
+	/// refreshes this value each time it ACKs a renewal REQUEST.
 	/// </summary>
-	public DateTime? Expires { get; private set; } = expires;
+	public DateTime? Expires { get; internal set; } = expires;
 }

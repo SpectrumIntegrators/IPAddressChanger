@@ -289,7 +289,7 @@ namespace IPAddressChanger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("7")]
         public int DHCPPreflightDuration {
             get {
                 return ((int)(this["DHCPPreflightDuration"]));
@@ -320,6 +320,18 @@ namespace IPAddressChanger.Properties {
             }
             set {
                 this["DHCPPrefixMaxLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        public int DHCPMaxBindAttempts {
+            get {
+                return ((int)(this["DHCPMaxBindAttempts"]));
+            }
+            set {
+                this["DHCPMaxBindAttempts"] = value;
             }
         }
     }

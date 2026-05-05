@@ -5,3 +5,5 @@
 **/Debug
 /releases
 **/.idea
+**/.claude
+CLAUDE.md

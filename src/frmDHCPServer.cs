@@ -184,6 +184,18 @@ public partial class frmDHCPServer : Form {
 		return DHCPServer.TryGetHostRange(tentativeAddress, tentativePrefix);
 	}
 
+	// Translates a MSFT_NetIPAddress.AddressState value to a human-readable label for log
+	// messages. 255 is our sentinel for "address not found in the adapter's address list."
+	private static string DescribeAddressState(byte state) => state switch {
+		IPAddressInfo.ADDRESS_STATE_INVALID => "Invalid (0)",
+		IPAddressInfo.ADDRESS_STATE_TENTATIVE => "Tentative (1)",
+		IPAddressInfo.ADDRESS_STATE_DUPLICATE => "Duplicate (2)",
+		IPAddressInfo.ADDRESS_STATE_DEPRECATED => "Deprecated (3)",
+		IPAddressInfo.ADDRESS_STATE_PREFERRED => "Preferred (4)",
+		255 => "not present on adapter",
+		_ => $"Unknown ({state})"
+	};
+
 	private void DeleteSelectedLeases() {
 		if (lsvDHCPLeases.SelectedItems.Count == 0) {
 			return;
@@ -319,6 +331,11 @@ public partial class frmDHCPServer : Form {
 		} else {
 			var _ = await DisableDHCPServer();
 		}
+		// Sync the checkbox to the server's actual state. EnableDHCPServer returns false when
+		// the user cancels via the pre-flight prompt or any other start-time failure, but the
+		// click handler had already toggled the checkbox visually — without this re-sync, the
+		// checkbox stays checked even though the server didn't start.
+		chkEnableDHCPServer.Checked = _dhcpServer.Running;
 		return;
 	EnableDHCPServerBailout:
 		chkEnableDHCPServer.Checked = false;
@@ -330,6 +347,7 @@ public partial class frmDHCPServer : Form {
 			t.Enabled = !chkEnableDHCPServer.Checked;
 		}
 		txtPrefixLength.Enabled = !chkEnableDHCPServer.Checked;
+		cmdDHCPProbe.Enabled = !chkEnableDHCPServer.Checked && (cboAdapters.SelectedIndex >= 0);
 	}
 
 	private void frmDHCPServer_FormClosing(object sender, FormClosingEventArgs e) {
@@ -408,10 +426,11 @@ public partial class frmDHCPServer : Form {
 					_debugForm.AddMessage($"Pre-flight detected {probeResults.Count} other DHCP server(s): {string.Join(", ", probeResults.Select(r => r.ServerAddress))}");
 					DialogResult answer = MessageBox.Show(busy, msg, "Other DHCP Server Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 					if (answer != DialogResult.Yes) {
-						_debugForm.AddMessage("DHCP server start cancelled by user after pre-flight detection");
+						_debugForm.AddMessage("User chose No on pre-flight prompt; DHCP server start cancelled");
 						if (!busy.IsDisposed) busy.Close();
 						return false;
 					}
+					_debugForm.AddMessage("User chose Yes on pre-flight prompt; continuing DHCP server start despite detected server(s)");
 				} else {
 					_debugForm.AddMessage("Pre-flight probe found no other DHCP servers on the segment");
 				}
@@ -498,7 +517,7 @@ public partial class frmDHCPServer : Form {
 			// address — empirically there's a 2–3 s gap between "address visible in management"
 			// and "Bind() works". Poll the bind directly instead of polling a proxy signal.
 			busy.SetStatus("Starting DHCP listener");
-			const int maxBindAttempts = 40; // ~10 s at 250 ms
+			int maxBindAttempts = Settings.Default.DHCPMaxBindAttempts; // 250 ms each, so default 40 ≈ 10 s
 			SocketException? lastBindEx = null;
 			for (int attempt = 1; attempt <= maxBindAttempts; attempt++) {
 				try {
@@ -508,7 +527,7 @@ public partial class frmDHCPServer : Form {
 				} catch (SocketException sex) when (sex.SocketErrorCode == SocketError.AddressNotAvailable) {
 					lastBindEx = sex;
 					if (attempt == 1) _debugForm.AddMessage("Stack not ready for bind, retrying...");
-					busy.SetStatus($"Waiting for stack to accept bind — attempt {attempt}, {maxBindAttempts - attempt} remaining");
+					busy.SetStatus($"Waiting for stack to accept bind — attempt {attempt} ({maxBindAttempts - attempt} remaining)");
 					try {
 						await Task.Delay(250, ct);
 					} catch (OperationCanceledException) {
@@ -522,9 +541,38 @@ public partial class frmDHCPServer : Form {
 				}
 			}
 			if (lastBindEx is not null) {
+				// Repeated WSAEADDRNOTAVAIL after the address was successfully added almost always
+				// means Duplicate Address Detection (or its tentative-state cousin) prevented the
+				// address from going into a usable state. Surface that explicitly rather than
+				// letting the user see "address not valid in its context".
+				byte foundState = 255; // 255 = "address not found in adapter's address list"
+				try {
+					List<IPAddressInfo> postBindAddresses = await NetworkManager.GetIPAddressesAsync(adapterIndex);
+					foreach (IPAddressInfo addr in postBindAddresses) {
+						if (addr.AddressFamily != 2) continue;
+						if (addr.IPAddress != desiredAddress) continue;
+						foundState = addr.AddressState;
+						break;
+					}
+				} catch (Exception ex) {
+					_debugForm.AddMessage($"Could not query address state to diagnose bind failure: {ex.Message}");
+				}
+				_debugForm.AddMessage($"Post-bind address state for {desiredAddress}: {DescribeAddressState(foundState)}");
 				busy.Close();
-				MessageBox.Show($"DHCP server could not bind to {desiredAddress}:67 — {lastBindEx.Message}", "Error Starting DHCP Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				_debugForm.AddMessage($"DHCP server bind failed after {maxBindAttempts} attempts: {lastBindEx.Message}");
+				// Anything other than Preferred (4) means the OS won't bind. Treat all of those as
+				// a probable address conflict — Tentative (DAD still running and not converging),
+				// Duplicate (DAD found a conflict), Invalid (state cleared after failure), or
+				// Deprecated. The most common cause of any of these in this flow is another device
+				// on the network already having the IP.
+				bool addressNotPreferred = foundState != IPAddressInfo.ADDRESS_STATE_PREFERRED && foundState != 255;
+				if (addressNotPreferred) {
+					string msg = $"Cannot start the DHCP server: another device on the network appears to have the IP address {desiredAddress}.\r\n\r\nWindows refused to use this address (state: {DescribeAddressState(foundState)}) — typically because another device on the segment replied to an ARP probe claiming the same address. Either choose a different server IP, or take the conflicting device off the network.";
+					MessageBox.Show(msg, "IP Address Conflict", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					_debugForm.AddMessage($"DHCP server start aborted: {desiredAddress} ended up in {DescribeAddressState(foundState)} state (likely conflict with another device on the segment)");
+				} else {
+					MessageBox.Show($"DHCP server could not bind to {desiredAddress}:67 — {lastBindEx.Message}", "Error Starting DHCP Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					_debugForm.AddMessage($"DHCP server bind failed after {maxBindAttempts} attempts: {lastBindEx.Message}");
+				}
 				return false;
 			}
 
@@ -644,5 +692,51 @@ public partial class frmDHCPServer : Form {
 	private void lsvDHCPLeases_DoubleClick(object sender, EventArgs e) {
 		if (lsvDHCPLeases.SelectedItems.Count == 0) { return; }
 		EditSelectedLease();
+	}
+
+	private void cboAdapters_SelectedIndexChanged(object sender, EventArgs e) {
+		cmdDHCPProbe.Enabled = !chkEnableDHCPServer.Checked && (cboAdapters.SelectedIndex >= 0);
+	}
+
+	private async void cmdDHCPProbe_Click(object sender, EventArgs e) {
+		if (cboAdapters.SelectedItem is not AdapterInfo selectedAdapter) {
+			MessageBox.Show("Select an adapter to probe", "Select an Adapter", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		// Always run the probe regardless of Settings.Default.DHCPPreflightCheck — this is the
+		// manual diagnosis button. Duration still tracks the same setting, since the right
+		// listen window doesn't change between automatic and manual probes.
+		TimeSpan duration = TimeSpan.FromSeconds(Settings.Default.DHCPPreflightDuration);
+		_debugForm.AddMessage($"Manual DHCP probe on {selectedAdapter.Name} (window {duration.TotalSeconds:0.#}s)");
+
+		using var busy = new frmDHCPServerBusy($"Probing for DHCP servers on {selectedAdapter.Name}...");
+		busy.Show(this);
+		var ct = busy.CancellationToken;
+
+		List<DHCPServer.DHCPProbeResult> probeResults;
+		try {
+			probeResults = await DHCPServer.ProbeForOtherServersAsync(selectedAdapter.Index, duration, ct);
+		} catch (OperationCanceledException) {
+			if (!busy.IsDisposed) busy.Close();
+			_debugForm.AddMessage("Manual DHCP probe cancelled by user");
+			return;
+		} catch (Exception ex) {
+			if (!busy.IsDisposed) busy.Close();
+			_debugForm.AddMessage($"Manual DHCP probe failed: {ex.Message}");
+			MessageBox.Show($"Error probing for DHCP servers: {ex.Message}", "Probe Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+
+		if (!busy.IsDisposed) busy.Close();
+
+		if (probeResults.Count == 0) {
+			_debugForm.AddMessage($"Manual DHCP probe on {selectedAdapter.Name}: no other DHCP servers detected");
+			MessageBox.Show($"No other DHCP servers detected on {selectedAdapter.Name}.", "DHCP Probe Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		} else {
+			string summary = string.Join(Environment.NewLine, probeResults.Select(r => $"  • Server {r.ServerAddress} offered {r.OfferedAddress}"));
+			_debugForm.AddMessage($"Manual DHCP probe on {selectedAdapter.Name}: detected {probeResults.Count} other DHCP server(s): {string.Join(", ", probeResults.Select(r => r.ServerAddress))}");
+			MessageBox.Show($"Detected {probeResults.Count} other DHCP server(s) on {selectedAdapter.Name}:\r\n\r\n{summary}", "DHCP Probe Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
 	}
 }

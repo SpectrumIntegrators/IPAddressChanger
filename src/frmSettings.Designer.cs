@@ -191,7 +191,7 @@
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel2.Size = new Size(556, 32);
-			this.tableLayoutPanel2.TabIndex = 0;
+			this.tableLayoutPanel2.TabIndex = 1;
 			// 
 			// cmdCancel
 			// 
@@ -200,7 +200,7 @@
 			this.cmdCancel.Margin = new Padding(2);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new Size(78, 24);
-			this.cmdCancel.TabIndex = 0;
+			this.cmdCancel.TabIndex = 12;
 			this.cmdCancel.Text = "&Cancel";
 			this.cmdCancel.UseVisualStyleBackColor = true;
 			this.cmdCancel.Click += this.cmdCancel_Click;
@@ -213,7 +213,7 @@
 			this.cmdOK.Margin = new Padding(2);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new Size(78, 24);
-			this.cmdOK.TabIndex = 3;
+			this.cmdOK.TabIndex = 13;
 			this.cmdOK.Text = "&OK";
 			this.cmdOK.UseVisualStyleBackColor = true;
 			this.cmdOK.Click += this.cmdOK_Click;
@@ -254,7 +254,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel3.Size = new Size(556, 266);
-			this.tableLayoutPanel3.TabIndex = 1;
+			this.tableLayoutPanel3.TabIndex = 0;
 			// 
 			// chkHideWhenMinimized
 			// 
@@ -267,7 +267,7 @@
 			this.chkHideWhenMinimized.Name = "chkHideWhenMinimized";
 			this.helpProvider1.SetShowHelp(this.chkHideWhenMinimized, true);
 			this.chkHideWhenMinimized.Size = new Size(15, 14);
-			this.chkHideWhenMinimized.TabIndex = 1;
+			this.chkHideWhenMinimized.TabIndex = 0;
 			this.chkHideWhenMinimized.UseVisualStyleBackColor = true;
 			this.chkHideWhenMinimized.CheckedChanged += this.chkHideWhenMinimized_CheckedChanged;
 			// 
@@ -298,7 +298,7 @@
 			this.chkStartMinimized.Name = "chkStartMinimized";
 			this.helpProvider1.SetShowHelp(this.chkStartMinimized, true);
 			this.chkStartMinimized.Size = new Size(15, 14);
-			this.chkStartMinimized.TabIndex = 4;
+			this.chkStartMinimized.TabIndex = 1;
 			this.chkStartMinimized.UseVisualStyleBackColor = true;
 			this.chkStartMinimized.CheckedChanged += this.chkStartMinimized_CheckedChanged;
 			// 
@@ -327,7 +327,7 @@
 			this.cmdControlPanelBrowse.Name = "cmdControlPanelBrowse";
 			this.helpProvider1.SetShowHelp(this.cmdControlPanelBrowse, true);
 			this.cmdControlPanelBrowse.Size = new Size(26, 26);
-			this.cmdControlPanelBrowse.TabIndex = 0;
+			this.cmdControlPanelBrowse.TabIndex = 4;
 			this.cmdControlPanelBrowse.Text = "...";
 			this.cmdControlPanelBrowse.UseVisualStyleBackColor = true;
 			this.cmdControlPanelBrowse.Click += this.cmdControlPanelBrowse_Click;
@@ -341,7 +341,7 @@
 			this.txtControlPanelFile.Name = "txtControlPanelFile";
 			this.helpProvider1.SetShowHelp(this.txtControlPanelFile, true);
 			this.txtControlPanelFile.Size = new Size(304, 23);
-			this.txtControlPanelFile.TabIndex = 1;
+			this.txtControlPanelFile.TabIndex = 3;
 			this.txtControlPanelFile.TextChanged += this.txtControlPanelFile_TextChanged;
 			// 
 			// tableLayoutPanel5
@@ -374,7 +374,7 @@
 			this.chkCtrl.Name = "chkCtrl";
 			this.helpProvider1.SetShowHelp(this.chkCtrl, true);
 			this.chkCtrl.Size = new Size(45, 19);
-			this.chkCtrl.TabIndex = 0;
+			this.chkCtrl.TabIndex = 5;
 			this.chkCtrl.Text = "Ctrl";
 			this.chkCtrl.UseVisualStyleBackColor = true;
 			this.chkCtrl.CheckedChanged += this.chkCtrl_CheckedChanged;
@@ -389,7 +389,7 @@
 			this.chkAlt.Name = "chkAlt";
 			this.helpProvider1.SetShowHelp(this.chkAlt, true);
 			this.chkAlt.Size = new Size(41, 19);
-			this.chkAlt.TabIndex = 1;
+			this.chkAlt.TabIndex = 6;
 			this.chkAlt.Text = "Alt";
 			this.chkAlt.UseVisualStyleBackColor = true;
 			this.chkAlt.CheckedChanged += this.chkAlt_CheckedChanged;
@@ -404,7 +404,7 @@
 			this.chkShift.Name = "chkShift";
 			this.helpProvider1.SetShowHelp(this.chkShift, true);
 			this.chkShift.Size = new Size(50, 19);
-			this.chkShift.TabIndex = 2;
+			this.chkShift.TabIndex = 7;
 			this.chkShift.Text = "Shift";
 			this.chkShift.UseVisualStyleBackColor = true;
 			this.chkShift.CheckedChanged += this.chkShift_CheckedChanged;
@@ -421,7 +421,7 @@
 			this.cboHotkey.Name = "cboHotkey";
 			this.helpProvider1.SetShowHelp(this.cboHotkey, true);
 			this.cboHotkey.Size = new Size(121, 23);
-			this.cboHotkey.TabIndex = 3;
+			this.cboHotkey.TabIndex = 8;
 			this.cboHotkey.SelectedIndexChanged += this.cboHotkey_SelectedIndexChanged;
 			// 
 			// chkStartAtLogon
@@ -434,7 +434,7 @@
 			this.chkStartAtLogon.Name = "chkStartAtLogon";
 			this.helpProvider1.SetShowHelp(this.chkStartAtLogon, true);
 			this.chkStartAtLogon.Size = new Size(15, 14);
-			this.chkStartAtLogon.TabIndex = 10;
+			this.chkStartAtLogon.TabIndex = 9;
 			this.chkStartAtLogon.UseVisualStyleBackColor = true;
 			this.chkStartAtLogon.CheckedChanged += this.chkStartAtLogon_CheckedChanged;
 			// 
@@ -448,7 +448,7 @@
 			this.cboSaveLeases.Margin = new Padding(2);
 			this.cboSaveLeases.Name = "cboSaveLeases";
 			this.cboSaveLeases.Size = new Size(302, 23);
-			this.cboSaveLeases.TabIndex = 12;
+			this.cboSaveLeases.TabIndex = 10;
 			this.cboSaveLeases.SelectedIndexChanged += this.cboSaveLeases_SelectedIndexChanged;
 			// 
 			// chkDHCPPreflightCheck
@@ -458,7 +458,7 @@
 			this.chkDHCPPreflightCheck.Location = new Point(217, 233);
 			this.chkDHCPPreflightCheck.Name = "chkDHCPPreflightCheck";
 			this.chkDHCPPreflightCheck.Size = new Size(15, 14);
-			this.chkDHCPPreflightCheck.TabIndex = 14;
+			this.chkDHCPPreflightCheck.TabIndex = 11;
 			this.chkDHCPPreflightCheck.UseVisualStyleBackColor = true;
 			this.chkDHCPPreflightCheck.CheckedChanged += this.chkDHCPPreflightCheck_CheckedChanged;
 			// 

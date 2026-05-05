@@ -63,6 +63,7 @@
 			this.helpProvider1.SetShowHelp(this.toolStrip1, true);
 			this.toolStrip1.Size = new Size(1010, 25);
 			this.toolStrip1.TabIndex = 1;
+			this.toolStrip1.TabStop = true;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// tsbClear

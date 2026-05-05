@@ -91,7 +91,7 @@ partial class frmAddDHCPReservation {
 		this.tableLayoutPanel2.RowCount = 1;
 		this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 		this.tableLayoutPanel2.Size = new Size(200, 34);
-		this.tableLayoutPanel2.TabIndex = 0;
+		this.tableLayoutPanel2.TabIndex = 2;
 		// 
 		// cmdOK
 		// 

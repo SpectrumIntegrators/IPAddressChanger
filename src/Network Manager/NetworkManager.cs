@@ -50,6 +50,7 @@ internal static class NetworkManager {
 					PrefixLength = p["PrefixLength"]?.Value as byte? ?? 0,
 					PrefixOrigin = p["PrefixOrigin"]?.Value as ushort? ?? 0,
 					SuffixOrigin = p["SuffixOrigin"]?.Value as ushort? ?? 0,
+					AddressState = ToByteOrZero(p["AddressState"]?.Value),
 				});
 			}
 		}
@@ -74,6 +75,7 @@ internal static class NetworkManager {
 					PrefixLength = p["PrefixLength"]?.Value as byte? ?? 0,
 					PrefixOrigin = p["PrefixOrigin"]?.Value as ushort? ?? 0,
 					SuffixOrigin = p["SuffixOrigin"]?.Value as ushort? ?? 0,
+					AddressState = ToByteOrZero(p["AddressState"]?.Value),
 				};
 				if (!map.ContainsKey(idx)) map[idx] = new List<IPAddressInfo>();
 				map[idx].Add(info);
@@ -194,5 +196,15 @@ internal static class NetworkManager {
 			values.Add($"[{p.CimType}] {p.Name} = {p.Value ?? "null"}");
 		}
 		return string.Join("; ", values);
+	}
+
+	// CIM property values can come back as different integer widths depending on the provider's
+	// declared type (uint8 → byte, uint16 → ushort, uint32 → uint). The "as byte?" pattern fails
+	// silently with null on a type mismatch and we lose the value. This is permissive across all
+	// integer types; bad values fall through to 0.
+	private static byte ToByteOrZero(object? v) {
+		if (v is null) return 0;
+		try { return Convert.ToByte(v); }
+		catch { return 0; }
 	}
 }

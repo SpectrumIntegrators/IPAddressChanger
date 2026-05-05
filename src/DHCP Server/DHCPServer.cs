@@ -286,11 +286,16 @@ public class DHCPServer : IDisposable {
 	public record DHCPProbeResult(IPAddress ServerAddress, IPAddress OfferedAddress);
 
 	/// <summary>
-	/// Sends a single DHCPDISCOVER on the specified adapter and listens briefly for OFFERs.
+	/// Sends DHCPDISCOVER probes on the specified adapter and listens for OFFERs in response.
 	/// Used as a pre-flight check before binding our own server on a network: if anything answers,
 	/// the user gets a chance to abort rather than starting a second DHCP server on the segment.
 	/// </summary>
 	/// <remarks>
+	/// Up to PROBE_COUNT DISCOVERs are sent at evenly-spaced intervals across the listen window —
+	/// some embedded DHCP servers (Crestron control gear, etc.) are slow to respond and may miss
+	/// a single probe. The send loop aborts as soon as one response arrives, since one detected
+	/// server is enough to prompt the user.
+	///
 	/// Uses a random Xid and a locally-administered probe MAC so responses can be unambiguously
 	/// matched and we don't impersonate any real device. Binds with SO_REUSEADDR so we coexist
 	/// with the Windows DHCP client if it's still active on the adapter, and uses IP_UNICAST_IF
@@ -299,6 +304,7 @@ public class DHCPServer : IDisposable {
 	public static async Task<List<DHCPProbeResult>> ProbeForOtherServersAsync(uint adapterIndex, TimeSpan listenDuration, CancellationToken ct) {
 		// IP_UNICAST_IF (Windows) — outbound interface for unicast/broadcast. Index in network order.
 		const int IP_UNICAST_IF = 31;
+		const int PROBE_COUNT = 3;
 
 		using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 		socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
@@ -327,14 +333,31 @@ public class DHCPServer : IDisposable {
 		};
 		Array.Copy(probeMac, 0, probe.CHAddr, 0, 6);
 		probe.SetMessageType(DHCPMessageTypes.DHCPDISCOVER);
+		byte[] probeBytes = probe.Build();
+		var broadcastEndpoint = new IPEndPoint(IPAddress.Broadcast, 67);
 
-		await socket.SendToAsync(probe.Build(), new IPEndPoint(IPAddress.Broadcast, 67), ct);
-
-		// Listen for the configured duration, filtering on adapter index + Xid + OFFER.
+		// Send DISCOVERs at evenly-spaced intervals in the background. The send loop watches
+		// listenCts so it stops promptly when the receive loop cancels (after first response).
 		var results = new List<DHCPProbeResult>();
 		var seenServers = new HashSet<IPAddress>();
 		using var listenCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 		listenCts.CancelAfter(listenDuration);
+		var sendInterval = TimeSpan.FromMilliseconds(listenDuration.TotalMilliseconds / PROBE_COUNT);
+		var sendTask = Task.Run(async () => {
+			for (int i = 0; i < PROBE_COUNT; i++) {
+				try {
+					await socket.SendToAsync(probeBytes, SocketFlags.None, broadcastEndpoint, listenCts.Token);
+					if (i + 1 < PROBE_COUNT) {
+						await Task.Delay(sendInterval, listenCts.Token);
+					}
+				} catch (OperationCanceledException) {
+					return;
+				}
+			}
+		}, listenCts.Token);
+
+		// Receive loop: filter on adapter index + Xid + OFFER. First match cancels listenCts so
+		// the send loop also stops — one OFFER is enough to surface the prompt to the user.
 		var buffer = new byte[2048];
 		var dummyRemote = (EndPoint)new IPEndPoint(IPAddress.Any, 0);
 		try {
@@ -349,11 +372,16 @@ public class DHCPServer : IDisposable {
 				IPAddress serverIp = response.ServerIdentifier ?? response.SIAddr;
 				if (seenServers.Add(serverIp)) {
 					results.Add(new DHCPProbeResult(serverIp, response.YIAddr));
+					listenCts.Cancel();
+					break;
 				}
 			}
 		} catch (OperationCanceledException) when (!ct.IsCancellationRequested) {
 			// listen window closed normally — fall through with whatever we collected
 		}
+
+		try { await sendTask; } catch { /* sender raced against cancel; expected */ }
+
 		ct.ThrowIfCancellationRequested();
 		return results;
 	}
@@ -682,7 +710,7 @@ public class DHCPServer : IDisposable {
 
 	private Task HandlePacketAsync(DHCPPacket packet) {
 		IPAddress clientAddress = packet.CIAddr.Equals(IPAddress.Any) ? packet.YIAddr : packet.CIAddr;
-		DeviceCommunication?.Invoke(this, new DHCPMessageEventArgs(packet.MacAddress, clientAddress, packet.MessageType!, DateTime.Now, DHCPMessageDirection.Received));
+		DeviceCommunication?.Invoke(this, new DHCPMessageEventArgs(packet.MacAddress, clientAddress, packet.MessageType!, packet.Xid, DateTime.Now, DHCPMessageDirection.Received));
 
 		var msg = packet.MessageType!;
 		if (msg == DHCPMessageTypes.DHCPDISCOVER) return HandleDiscoverAsync(packet);
@@ -704,6 +732,7 @@ public class DHCPServer : IDisposable {
 		DHCPLease? newLease = null;
 		DHCPLease? hostnameUpdatedLease = null;
 
+		string xidTag = $"xid 0x{packet.Xid:x8}";
 		lock (_leasesLock) {
 			if (_dhcpLeases.TryGetValue(mac, out DHCPLease? existing) && existing is not null) {
 				// MAC is already known — re-offer the same address (sticky leases per design).
@@ -714,7 +743,7 @@ public class DHCPServer : IDisposable {
 			} else {
 				IPAddress? candidate = GetNextFreeAddress();
 				if (candidate is null) {
-					FireLog($"DISCOVER from {mac}: pool exhausted, can't offer");
+					FireLog($"DISCOVER from {mac} ({xidTag}): pool exhausted, can't offer");
 					return;
 				}
 				offerAddress = candidate;
@@ -725,13 +754,13 @@ public class DHCPServer : IDisposable {
 		}
 
 		if (newLease is not null) {
-			FireLog($"DISCOVER from {mac}: new device, offering {offerAddress}");
+			FireLog($"DISCOVER from {mac} ({xidTag}): new device, offering {offerAddress}");
 			LeaseAssigned?.Invoke(this, new LeaseEventArgs(newLease));
 		} else if (hostnameUpdatedLease is not null) {
-			FireLog($"DISCOVER from {mac}: known device, re-offering {offerAddress} (hostname updated to '{hostnameUpdatedLease.Hostname}')");
+			FireLog($"DISCOVER from {mac} ({xidTag}): known device, re-offering {offerAddress} (hostname updated to '{hostnameUpdatedLease.Hostname}')");
 			LeaseAssigned?.Invoke(this, new LeaseEventArgs(hostnameUpdatedLease));
 		} else {
-			FireLog($"DISCOVER from {mac}: known device, re-offering {offerAddress}");
+			FireLog($"DISCOVER from {mac} ({xidTag}): known device, re-offering {offerAddress}");
 		}
 
 		var offer = BuildReply(packet, DHCPMessageTypes.DHCPOFFER, offerAddress!);
@@ -753,12 +782,40 @@ public class DHCPServer : IDisposable {
 	/// </summary>
 	private async Task HandleRequestAsync(DHCPPacket packet) {
 		string mac = packet.MacAddress;
-		IPAddress? ourAddress = null;
+		string xidTag = $"xid 0x{packet.Xid:x8}";
+
+		// RFC 2131 §4.3.2: a SELECTING-state REQUEST includes a server-identifier option naming
+		// the server whose OFFER the client is accepting; other servers MUST silently ignore.
+		// REQUESTs without a server-id (INIT-REBOOT / RENEWING / REBINDING) drop through.
+		if (packet.ServerIdentifier is not null && Address is not null && !packet.ServerIdentifier.Equals(Address)) {
+			FireLog($"REQUEST from {mac} ({xidTag}): targeted at server {packet.ServerIdentifier}, not us; ignoring");
+			return;
+		}
+
+		IPAddress? requested = packet.RequestedAddress ?? (packet.CIAddr.Equals(IPAddress.Any) ? null : packet.CIAddr);
+
+		// RFC 2131 §4.3.2: only servers with authority over the requested IP should respond to
+		// an INIT-REBOOT/RENEWING/REBINDING REQUEST. If the requested IP is outside our scope,
+		// the client is asking some other DHCP server about a cached address from a different
+		// network (e.g. a stale lease from a previous deployment) and our broadcast wire just
+		// happens to carry it. Stay silent — NAKing here would falsely tell the client that
+		// WE have authority and the address is bad, breaking its negotiation with the real server.
+		if (requested is not null && RangeStart is not null && RangeEnd is not null) {
+			uint reqInt = BinaryPrimitives.ReadUInt32BigEndian(requested.GetAddressBytes());
+			uint startInt = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
+			uint endInt = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+			if (reqInt < startInt || reqInt > endInt) {
+				FireLog($"REQUEST from {mac} ({xidTag}) for {requested}: outside our scope ({RangeStart}-{RangeEnd}); ignoring");
+				return;
+			}
+		}
+
+		DHCPLease? boundLease = null;
 		DHCPLease? hostnameUpdatedLease = null;
 
 		lock (_leasesLock) {
 			if (_dhcpLeases.TryGetValue(mac, out DHCPLease? lease) && lease is not null) {
-				ourAddress = lease.IPAddress;
+				boundLease = lease;
 				if (TryUpdateHostname(lease, packet.Hostname)) {
 					hostnameUpdatedLease = lease;
 				}
@@ -766,29 +823,34 @@ public class DHCPServer : IDisposable {
 		}
 
 		if (hostnameUpdatedLease is not null) {
-			FireLog($"REQUEST from {mac}: hostname updated to '{hostnameUpdatedLease.Hostname}'");
+			FireLog($"REQUEST from {mac} ({xidTag}): hostname updated to '{hostnameUpdatedLease.Hostname}'");
 			LeaseAssigned?.Invoke(this, new LeaseEventArgs(hostnameUpdatedLease));
 		}
 
-		IPAddress? requested = packet.RequestedAddress ?? (packet.CIAddr.Equals(IPAddress.Any) ? null : packet.CIAddr);
-
-		if (ourAddress is null) {
-			// Client requesting from a server that has no record — NAK to make them re-DISCOVER.
-			FireLog($"REQUEST from {mac} for {requested?.ToString() ?? "<no address>"}: no record for this MAC, sending NAK");
-			var nak = BuildReply(packet, DHCPMessageTypes.DHCPNAK, IPAddress.Any);
-			await SendPacketAsync(nak, packet);
+		if (boundLease is null) {
+			// RFC 2131 §4.3.2: server with no record of the client MUST remain silent. Don't NAK
+			// here — the client may be talking to a different server we just don't know about,
+			// and a NAK from us would falsely break that conversation.
+			FireLog($"REQUEST from {mac} ({xidTag}) for {requested?.ToString() ?? "<no address>"}: no record for this MAC; ignoring");
 			return;
 		}
+
+		IPAddress ourAddress = boundLease.IPAddress;
 
 		if (requested is not null && !requested.Equals(ourAddress)) {
-			// Client wants a different IP than we'd give them — refuse.
-			FireLog($"REQUEST from {mac} for {requested}: doesn't match our record ({ourAddress}), sending NAK");
+			// Client wants a different IP than we'd give them — NAK to make them re-DISCOVER.
+			FireLog($"REQUEST from {mac} ({xidTag}) for {requested}: doesn't match our record ({ourAddress}), sending NAK");
 			var nak = BuildReply(packet, DHCPMessageTypes.DHCPNAK, IPAddress.Any);
 			await SendPacketAsync(nak, packet);
 			return;
 		}
 
-		FireLog($"REQUEST from {mac} for {ourAddress}: confirmed, sending ACK");
+		// Renewal accepted — refresh the lease's Expires so the listview reflects the renewal,
+		// and fire LeaseAssigned (whose handler is idempotent) so the row updates in place.
+		boundLease.Expires = DateTime.Now.AddSeconds(LEASE_SECONDS);
+		LeaseAssigned?.Invoke(this, new LeaseEventArgs(boundLease));
+
+		FireLog($"REQUEST from {mac} ({xidTag}) for {ourAddress}: confirmed, sending ACK");
 		var ack = BuildReply(packet, DHCPMessageTypes.DHCPACK, ourAddress);
 		await SendPacketAsync(ack, packet);
 	}
@@ -810,6 +872,15 @@ public class DHCPServer : IDisposable {
 	/// </summary>
 	private Task HandleDeclineAsync(DHCPPacket packet) {
 		string mac = packet.MacAddress;
+		string xidTag = $"xid 0x{packet.Xid:x8}";
+
+		// RFC 2131 §4.4.4: DECLINE is also targeted at a specific server via server-identifier.
+		// Other servers MUST ignore — otherwise we'd remove a lease that another server issued.
+		if (packet.ServerIdentifier is not null && Address is not null && !packet.ServerIdentifier.Equals(Address)) {
+			FireLog($"DECLINE from {mac} ({xidTag}): targeted at server {packet.ServerIdentifier}, not us; ignoring");
+			return Task.CompletedTask;
+		}
+
 		IPAddress? declined = packet.RequestedAddress;
 
 		lock (_leasesLock) {
@@ -889,6 +960,7 @@ public class DHCPServer : IDisposable {
 				originalRequest.MacAddress,
 				reply.YIAddr,
 				reply.MessageType!,
+				reply.Xid,
 				DateTime.Now,
 				DHCPMessageDirection.Sent));
 		} catch (Exception ex) {

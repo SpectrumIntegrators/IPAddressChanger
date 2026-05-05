@@ -64,6 +64,7 @@ partial class frmDHCPServer
 		this.label2 = new Label();
 		this.lblEnableDHCPServer = new Label();
 		this.chkEnableDHCPServer = new CheckBox();
+		this.cmdDHCPProbe = new Button();
 		tableLayoutPanel1 = new TableLayoutPanel();
 		columnHeader1 = new ColumnHeader();
 		columnHeader2 = new ColumnHeader();
@@ -220,15 +221,17 @@ partial class frmDHCPServer
 		// 
 		// tableLayoutPanel2
 		// 
-		tableLayoutPanel2.ColumnCount = 2;
+		tableLayoutPanel2.ColumnCount = 3;
 		tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
 		tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+		tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 109F));
 		tableLayoutPanel2.Controls.Add(label1, 0, 0);
 		tableLayoutPanel2.Controls.Add(this.cboAdapters, 1, 0);
 		tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 1, 1);
 		tableLayoutPanel2.Controls.Add(this.label2, 0, 1);
 		tableLayoutPanel2.Controls.Add(this.lblEnableDHCPServer, 0, 2);
 		tableLayoutPanel2.Controls.Add(this.chkEnableDHCPServer, 1, 2);
+		tableLayoutPanel2.Controls.Add(this.cmdDHCPProbe, 2, 0);
 		tableLayoutPanel2.Dock = DockStyle.Fill;
 		tableLayoutPanel2.Location = new Point(3, 3);
 		tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -256,8 +259,9 @@ partial class frmDHCPServer
 		this.cboAdapters.FormattingEnabled = true;
 		this.cboAdapters.Location = new Point(83, 3);
 		this.cboAdapters.Name = "cboAdapters";
-		this.cboAdapters.Size = new Size(708, 23);
+		this.cboAdapters.Size = new Size(599, 23);
 		this.cboAdapters.TabIndex = 0;
+		this.cboAdapters.SelectedIndexChanged += this.cboAdapters_SelectedIndexChanged;
 		// 
 		// tableLayoutPanel3
 		// 
@@ -413,6 +417,18 @@ partial class frmDHCPServer
 		this.chkEnableDHCPServer.CheckedChanged += this.chkEnableDHCPServer_CheckedChanged;
 		this.chkEnableDHCPServer.Click += this.chkEnableDHCPServer_Click;
 		// 
+		// cmdDHCPProbe
+		// 
+		this.cmdDHCPProbe.Dock = DockStyle.Fill;
+		this.cmdDHCPProbe.Enabled = false;
+		this.cmdDHCPProbe.Location = new Point(688, 3);
+		this.cmdDHCPProbe.Name = "cmdDHCPProbe";
+		this.cmdDHCPProbe.Size = new Size(103, 26);
+		this.cmdDHCPProbe.TabIndex = 7;
+		this.cmdDHCPProbe.Text = "Probe";
+		this.cmdDHCPProbe.UseVisualStyleBackColor = true;
+		this.cmdDHCPProbe.Click += this.cmdDHCPProbe_Click;
+		// 
 		// frmDHCPServer
 		// 
 		this.AutoScaleDimensions = new SizeF(7F, 15F);
@@ -461,4 +477,5 @@ partial class frmDHCPServer
 	private ToolStripSeparator toolStripMenuItem1;
 	private ToolStripMenuItem tsmiDeleteLease;
 	private ToolStripButton tsbEditLease;
+	private Button cmdDHCPProbe;
 }

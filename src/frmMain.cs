@@ -68,14 +68,36 @@ namespace IPAddressChanger {
 				Settings.Default.UpgradeRequired = false;
 				Settings.Default.Save();
 			}
+			EnsureHiddenSettingsPersisted();
 			LoadSettings();
 			dhcpServer.DeviceCommunication += this.DhcpServer_DeviceCommunication;
 			dhcpServer.Log += this.DhcpServer_Log;
 			dhcpServer.ServerFaulted += this.DhcpServer_ServerFaulted;
 		}
 
+		// .NET's user-scoped settings only get serialized to user.config when modified from the
+		// default. For tunables that are only exposed via user.config (no UI), that means the
+		// keys don't exist in the file until someone has changed them — but to change one, the
+		// tech first has to know what to type. Force-write these so the entries appear with
+		// their current values and can be edited in place.
+		private static void EnsureHiddenSettingsPersisted() {
+			string[] hiddenSettings = ["DHCPPreflightDuration", "DHCPPrefixMinLength", "DHCPPrefixMaxLength", "DHCPMaxBindAttempts"];
+			bool anyDirtied = false;
+			foreach (string name in hiddenSettings) {
+				SettingsPropertyValue? pv = Settings.Default.PropertyValues[name];
+				if (pv is null) continue;
+				// UsingDefaultValue is true when the value came from the app defaults rather than
+				// from user.config. Dirty it so the next Save() writes the (default) value out.
+				if (pv.UsingDefaultValue) {
+					pv.IsDirty = true;
+					anyDirtied = true;
+				}
+			}
+			if (anyDirtied) Settings.Default.Save();
+		}
+
 		private void DhcpServer_DeviceCommunication(object? sender, DHCPMessageEventArgs e) {
-			debugForm.AddMessage($"DHCP {e.DirectionLabel} [{e.MACAddress}]: {e.Message}");
+			debugForm.AddMessage($"DHCP {e.DirectionLabel} [{e.MACAddress}] (xid 0x{e.Xid:x8}): {e.Message}");
 		}
 
 		private void DhcpServer_ServerFaulted(object? sender, string reason) {
@@ -456,11 +478,8 @@ namespace IPAddressChanger {
 					// Don't save the state if it's minimized
 					Settings.Default.WindowState = (int)this.WindowState;
 				}
-				if (this.WindowState == FormWindowState.Normal) {
-					// only save the size if it's not maximized or minimized
-					Settings.Default.WindowWidth = this.Width;
-					Settings.Default.WindowHeight = this.Height;
-				}
+				Settings.Default.WindowWidth = this.RestoreBounds.Width;
+				Settings.Default.WindowHeight = this.RestoreBounds.Height;
 				Settings.Default.SplitterWidth = splitContainer1.SplitterDistance;
 				Settings.Default.SplitterHeight = splitContainer2.SplitterDistance;
 				Settings.Default.HideOfflineAdapters = tsbOnlineOnly.Checked;
@@ -883,12 +902,19 @@ namespace IPAddressChanger {
 				settingsForm = new frmSettings(this);
 				settingsForm.Show(this);
 			} else {
-				settingsForm.Show(this);
+				settingsForm.Activate();
 			}
 		}
 
 		private void tsbDebug_Click(object sender, EventArgs e) {
-			debugForm.Show(this);
+			if (!debugForm.Visible) {
+				debugForm.Show(this);
+				return;
+			}
+			if (debugForm.WindowState == FormWindowState.Minimized) {
+				debugForm.WindowState = FormWindowState.Normal;
+			}
+			debugForm.Activate();
 		}
 
 		private void tsbControlPanel_Click(object sender, EventArgs e) {

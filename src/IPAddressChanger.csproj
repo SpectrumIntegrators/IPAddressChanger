@@ -15,6 +15,10 @@
     <FileVersion>1.2.0.0</FileVersion>
     <Copyright>GNU GPLv3</Copyright>
     <Description>This application allows changing IP address settings for network adapters from a quick list of user-defined configurations.</Description>
+    <PackageProjectUrl>https://github.com/SpectrumIntegrators/IPAddressChanger</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Authors>Jonathan Dean</Authors>
+    <Company>Spectrum Integrators</Company>
   </PropertyGroup>
 
   <ItemGroup>
@@ -80,6 +84,13 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

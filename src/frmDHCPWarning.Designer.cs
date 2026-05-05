@@ -42,6 +42,7 @@ partial class frmDHCPWarning {
 		// 
 		label1.AutoSize = true;
 		label1.Dock = DockStyle.Fill;
+		label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
 		label1.Location = new Point(71, 0);
 		label1.Name = "label1";
 		label1.Size = new Size(364, 96);
