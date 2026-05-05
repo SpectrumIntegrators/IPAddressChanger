@@ -69,7 +69,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DHCPPreflightDuration" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">7</Value>
+      <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="DHCPPrefixMinLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8</Value>
