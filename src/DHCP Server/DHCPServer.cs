@@ -23,9 +23,12 @@ public class DHCPServer : IDisposable {
 	// different network don't hold a stale lease for too long; long enough to avoid renewal chatter.
 	private const uint LEASE_SECONDS = 15 * 60;
 
-	// Allowable prefix-length range for the DHCP scope. /31 has no usable hosts and /32 is a
-	// single host, so we cap at /30 to guarantee room for a network address, the server, at
-	// least one client, and a broadcast.
+	// Protocol/math limits for the DHCP scope's prefix length. /31 has no usable hosts and
+	// /32 is a single host, so we cap at /30 to guarantee room for a network address, the
+	// server, at least one client, and a broadcast. /0 is the lowest the IPv4 prefix-length
+	// field can express. These are NOT the user-facing policy limits — those live in the
+	// DHCPPrefixMinLength / DHCPPrefixMaxLength settings (defaults 8 and 30) and are enforced
+	// at the form layer; the server only enforces the wider protocol bounds as defense in depth.
 	public const int MIN_PREFIX_LENGTH = 0;
 	public const int MAX_PREFIX_LENGTH = 30;
 

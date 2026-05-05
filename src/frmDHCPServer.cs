@@ -232,8 +232,12 @@ public partial class frmDHCPServer : Form {
 				goto EnableDHCPServerBailout;
 			}
 
-			if (!int.TryParse(txtPrefixLength.Text, out prefixLength) || prefixLength < DHCPServer.MIN_PREFIX_LENGTH || prefixLength > DHCPServer.MAX_PREFIX_LENGTH) {
-				MessageBox.Show($"Prefix length must be a number between {DHCPServer.MIN_PREFIX_LENGTH} and {DHCPServer.MAX_PREFIX_LENGTH}", "Invalid Prefix Length", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			// Policy bounds come from settings (defaults 8/30), clamped to the server's protocol
+			// limits so a typo in user.config can't push us outside the math/protocol range.
+			int minPrefix = Math.Max(DHCPServer.MIN_PREFIX_LENGTH, Settings.Default.DHCPPrefixMinLength);
+			int maxPrefix = Math.Min(DHCPServer.MAX_PREFIX_LENGTH, Settings.Default.DHCPPrefixMaxLength);
+			if (!int.TryParse(txtPrefixLength.Text, out prefixLength) || prefixLength < minPrefix || prefixLength > maxPrefix) {
+				MessageBox.Show($"Prefix length must be a number between {minPrefix} and {maxPrefix}", "Invalid Prefix Length", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				goto EnableDHCPServerBailout;
 			}
 

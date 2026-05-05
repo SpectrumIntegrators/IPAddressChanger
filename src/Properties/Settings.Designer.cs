@@ -289,13 +289,37 @@ namespace IPAddressChanger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
         public int DHCPPreflightDuration {
             get {
                 return ((int)(this["DHCPPreflightDuration"]));
             }
             set {
                 this["DHCPPreflightDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int DHCPPrefixMinLength {
+            get {
+                return ((int)(this["DHCPPrefixMinLength"]));
+            }
+            set {
+                this["DHCPPrefixMinLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int DHCPPrefixMaxLength {
+            get {
+                return ((int)(this["DHCPPrefixMaxLength"]));
+            }
+            set {
+                this["DHCPPrefixMaxLength"] = value;
             }
         }
     }

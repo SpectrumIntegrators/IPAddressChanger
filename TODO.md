@@ -6,20 +6,6 @@ UX polish, and docs.
 
 ## Pending tasks
 
-### Prefix length validation cleanup (proposed, not yet applied)
-
-- Tighten `SetLeaseRange` and form validation to **/8..30** (current is /0..30). Below /8 there's no realistic legitimate use and `GetNextFreeAddress` would iterate millions of addresses linearly. /30 cap is fine as-is.
-- Three string/doc fixes that still reference 32: - `frmDHCPServer.Designer.cs:280` placeholder text `"32"` → suggest `"24"` or `"30"`. - `DHCPServer.cs` XML doc on `SetLeaseRange` says `"0–32"`. - `DHCPServer.cs` comment claims `/0 and /31 and /32 don't make sense` but   `/0` is currently allowed by the code; comment is wrong.
-
-User opinion needed: "/8 lower bound — go ahead, or wider?"
-
-Verify before working this item: the `MIN_PREFIX_LENGTH`/`MAX_PREFIX_LENGTH`
-constants refactor likely already cleaned up the inline `/0 and /31 and /32` comment
-(that block was replaced). The Designer placeholder `"32"` and the `SetLeaseRange`
-XML doc reference to `"0–32"` may also have been fixed in passing — re-check each
-of the three sub-items and strike the ones already addressed before tightening
-the bound to /8.
-
 ### Help anchor review (all forms)
 
 Walk every form and confirm the F1 / `helpProvider.SetHelpKeyword` anchors point
@@ -92,3 +78,17 @@ capable specifically with this in mind — same form, different sequence of
 ~~Add a settings checkbox to opt out of the probe — default on, but a tech who
 knowingly wants to run a second server on a segment (lab work, intentional
 override) shouldn't have to dismiss the prompt every time.~~
+
+### Prefix length validation cleanup (proposed, not yet applied)
+
+- ~~Tighten `SetLeaseRange` and form validation to **/8..30** (current is /0..30). Below /8 there's no realistic legitimate use and `GetNextFreeAddress` would iterate millions of addresses linearly. /30 cap is fine as-is.~~
+- ~~Three string/doc fixes that still reference 32: - `frmDHCPServer.Designer.cs:280` placeholder text `"32"` → suggest `"24"` or `"30"`. - `DHCPServer.cs` XML doc on `SetLeaseRange` says `"0–32"`. - `DHCPServer.cs` comment claims `/0 and /31 and /32 don't make sense` but   `/0` is currently allowed by the code; comment is wrong.~~
+
+~~User opinion needed: "/8 lower bound — go ahead, or wider?"~~
+
+~~Verify before working this item: the `MIN_PREFIX_LENGTH`/`MAX_PREFIX_LENGTH`
+constants refactor likely already cleaned up the inline `/0 and /31 and /32` comment
+(that block was replaced). The Designer placeholder `"32"` and the `SetLeaseRange`
+XML doc reference to `"0–32"` may also have been fixed in passing — re-check each
+of the three sub-items and strike the ones already addressed before tightening
+the bound to /8.~~
