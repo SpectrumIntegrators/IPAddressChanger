@@ -262,5 +262,17 @@ namespace IPAddressChanger.Properties {
                 this["SaveDHCPLeases"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SuppressDHCPWarning {
+            get {
+                return ((bool)(this["SuppressDHCPWarning"]));
+            }
+            set {
+                this["SuppressDHCPWarning"] = value;
+            }
+        }
     }
 }

@@ -82,3 +82,13 @@ Major scaffolding that's landed:
 - `DHCPMessageEventArgs` carries a `Direction` (TX/RX); `DeviceCommunication` fires after sends too. `frmMain` debug log shows `DHCP TX/RX [MAC]: TYPE`. Lease-list "Last Communication" cell shows `TX: DHCPACK` / `RX: DHCPREQUEST`.
 - `frmMain` subscribes to the new `DHCPServer.Log` event and pipes narration lines to the debug form, prefixed `DHCP:`.
 - `frmDHCPServer_Load` repopulates address octet textboxes and prefix length from `_dhcpServer.Address` / `_dhcpServer.PrefixLength` on form reopen.
+
+### First-use DHCP warning dialog
+~~The first time a user enables the DHCP server, show a warning dialog explaining
+the risks (unauthorized DHCP servers can disrupt other devices on the network,
+can cause IP conflicts, may run afoul of network policy, etc.) with a "Don't
+remind me again" checkbox. When checked and dismissed, set a settings flag
+(e.g. `DHCPWarningAcknowledged`) so subsequent uses skip the dialog. Distinct
+from the pre-flight DISCOVER probe — that's a runtime detection of an actual
+conflict; this one is a policy / "are you sure you should be doing this"
+reminder that fires regardless of what's on the segment.~~

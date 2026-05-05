@@ -1,6 +1,6 @@
 ﻿namespace IPAddressChanger;
 
-partial class frmAddressConflictWarning {
+partial class frmDHCPWarning {
 	/// <summary>
 	/// Required designer variable.
 	/// </summary>
@@ -24,17 +24,30 @@ partial class frmAddressConflictWarning {
 	/// the contents of this method with the code editor.
 	/// </summary>
 	private void InitializeComponent() {
+		Label label1;
+		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDHCPWarning));
 		this.helpProvider1 = new HelpProvider();
 		this.tableLayoutPanel1 = new TableLayoutPanel();
 		this.cmdClose = new Button();
 		this.tableLayoutPanel2 = new TableLayoutPanel();
-		this.txtConflictWarning = new TextBox();
 		this.pictureBox1 = new PictureBox();
 		this.chkSuppressMessages = new CheckBox();
+		label1 = new Label();
 		this.tableLayoutPanel1.SuspendLayout();
 		this.tableLayoutPanel2.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
 		this.SuspendLayout();
+		// 
+		// label1
+		// 
+		label1.AutoSize = true;
+		label1.Dock = DockStyle.Fill;
+		label1.Location = new Point(71, 0);
+		label1.Name = "label1";
+		label1.Size = new Size(364, 96);
+		label1.TabIndex = 2;
+		label1.Text = resources.GetString("label1.Text");
+		label1.TextAlign = ContentAlignment.MiddleCenter;
 		// 
 		// helpProvider1
 		// 
@@ -56,7 +69,7 @@ partial class frmAddressConflictWarning {
 		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 30.9352512F));
 		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
 		this.tableLayoutPanel1.Size = new Size(444, 173);
-		this.tableLayoutPanel1.TabIndex = 2;
+		this.tableLayoutPanel1.TabIndex = 3;
 		// 
 		// cmdClose
 		// 
@@ -74,8 +87,8 @@ partial class frmAddressConflictWarning {
 		this.tableLayoutPanel2.ColumnCount = 2;
 		this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15.5251141F));
 		this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 84.474884F));
-		this.tableLayoutPanel2.Controls.Add(this.txtConflictWarning, 1, 0);
 		this.tableLayoutPanel2.Controls.Add(this.pictureBox1, 0, 0);
+		this.tableLayoutPanel2.Controls.Add(label1, 1, 0);
 		this.tableLayoutPanel2.Dock = DockStyle.Fill;
 		this.tableLayoutPanel2.Location = new Point(3, 3);
 		this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -83,17 +96,6 @@ partial class frmAddressConflictWarning {
 		this.tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 		this.tableLayoutPanel2.Size = new Size(438, 96);
 		this.tableLayoutPanel2.TabIndex = 3;
-		// 
-		// txtConflictWarning
-		// 
-		this.txtConflictWarning.BorderStyle = BorderStyle.None;
-		this.txtConflictWarning.Dock = DockStyle.Fill;
-		this.txtConflictWarning.Location = new Point(71, 3);
-		this.txtConflictWarning.Multiline = true;
-		this.txtConflictWarning.Name = "txtConflictWarning";
-		this.txtConflictWarning.ReadOnly = true;
-		this.txtConflictWarning.Size = new Size(364, 90);
-		this.txtConflictWarning.TabIndex = 0;
 		// 
 		// pictureBox1
 		// 
@@ -111,32 +113,24 @@ partial class frmAddressConflictWarning {
 		this.chkSuppressMessages.AutoSize = true;
 		this.chkSuppressMessages.Location = new Point(3, 151);
 		this.chkSuppressMessages.Name = "chkSuppressMessages";
-		this.chkSuppressMessages.Size = new Size(249, 19);
+		this.chkSuppressMessages.Size = new Size(186, 19);
 		this.chkSuppressMessages.TabIndex = 4;
-		this.chkSuppressMessages.Text = "Don't show this warning again this session";
+		this.chkSuppressMessages.Text = "Don't show this warning again";
 		this.chkSuppressMessages.UseVisualStyleBackColor = true;
+		this.chkSuppressMessages.CheckedChanged += this.chkSuppressMessages_CheckedChanged;
 		// 
-		// frmAddressConflictWarning
+		// frmDHCPWarning
 		// 
-		this.AcceptButton = this.cmdClose;
 		this.AutoScaleDimensions = new SizeF(7F, 15F);
 		this.AutoScaleMode = AutoScaleMode.Font;
-		this.CancelButton = this.cmdClose;
 		this.ClientSize = new Size(444, 173);
 		this.Controls.Add(this.tableLayoutPanel1);
 		this.FormBorderStyle = FormBorderStyle.FixedDialog;
-		this.helpProvider1.SetHelpKeyword(this, "address-conflict-warning");
-		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
 		this.MaximizeBox = false;
 		this.MinimizeBox = false;
-		this.Name = "frmAddressConflictWarning";
-		this.helpProvider1.SetShowHelp(this, true);
-		this.ShowIcon = false;
-		this.ShowInTaskbar = false;
-		this.SizeGripStyle = SizeGripStyle.Hide;
+		this.Name = "frmDHCPWarning";
 		this.StartPosition = FormStartPosition.CenterParent;
-		this.Text = "Address Conflict";
-		this.FormClosing += this.frmAddressConflictWarning_FormClosing;
+		this.Text = "Warning";
 		this.tableLayoutPanel1.ResumeLayout(false);
 		this.tableLayoutPanel1.PerformLayout();
 		this.tableLayoutPanel2.ResumeLayout(false);
@@ -147,11 +141,10 @@ partial class frmAddressConflictWarning {
 
 	#endregion
 
+	private HelpProvider helpProvider1;
 	private TableLayoutPanel tableLayoutPanel1;
 	private Button cmdClose;
 	private TableLayoutPanel tableLayoutPanel2;
-	private TextBox txtConflictWarning;
 	private PictureBox pictureBox1;
 	private CheckBox chkSuppressMessages;
-	private HelpProvider helpProvider1;
 }

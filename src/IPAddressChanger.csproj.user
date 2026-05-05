@@ -16,6 +16,9 @@
     <Compile Update="frmDHCPServerBusy.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="frmDHCPWarning.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="frmEditShortcut.cs">
       <SubType>Form</SubType>
     </Compile>

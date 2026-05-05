@@ -37,6 +37,7 @@ namespace IPAddressChanger {
 		private frmAddressConflictWarning? addressConflictWarningDialog;
 		private bool suppressFutureAddressConflictWarnings = false; // If true, warnings about address conflicts will not be shown for the rest of this session
 		internal DHCPServer dhcpServer = new(); // The DHCP server (always exists, isn't runing by default)
+		private bool dhcpWarningShownThisSession = false; // we only want to show the DHCP warning once per session
 
 		internal static partial class IPValidator {
 			[GeneratedRegex(@"(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)/(?:3[0-2]|[12]?\d)$)|(?:^DHCP$)")]
@@ -1243,6 +1244,11 @@ namespace IPAddressChanger {
 			if (dhcpServerForm != null) {
 				dhcpServerForm.Activate();
 				return;
+			}
+			if (!Settings.Default.SuppressDHCPWarning && !dhcpWarningShownThisSession) {
+				dhcpWarningShownThisSession = true;
+				using frmDHCPWarning x = new();
+				x.ShowDialog(this);
 			}
 			dhcpServerForm = new(dhcpServer, debugForm);
 			dhcpServerForm.FormClosed += (s, e) => { dhcpServerForm = null; };
