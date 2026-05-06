@@ -38,12 +38,13 @@ namespace IPAddressChanger {
 		private bool suppressFutureAddressConflictWarnings = false; // If true, warnings about address conflicts will not be shown for the rest of this session
 		internal DHCPServer dhcpServer = new(); // The DHCP server (always exists, isn't runing by default)
 		private bool dhcpWarningShownThisSession = false; // we only want to show the DHCP warning once per session
-
-
-
+		private Stopwatch? startupStopwatch = new(); // stopwatch for profiling program start
+		private Stopwatch refreshAdaptersStopwatch = new(); // stopwatch for profiling network adapters refresh
+		private Stopwatch refreshAdapterDetailsStopwatch = new(); // Stopwatch for profiling adapter details refresh
 
 
 		public frmMain() {
+			startupStopwatch.Start();
 			InitializeComponent();
 			debugForm.AddMessage($"Starting {Application.ProductName} version {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
 			// ImageList contents loaded programmatically rather than persisted by the designer,
@@ -253,6 +254,7 @@ namespace IPAddressChanger {
 				debugForm.AddMessage("Skipping GetAdapters: another network operation is in progress");
 				return;
 			}
+			refreshAdaptersStopwatch.Restart();
 			isBusy = true;
 			SetStatus("Getting adapters...", true);
 			debugForm.AddMessage("Getting adapters");
@@ -290,11 +292,12 @@ namespace IPAddressChanger {
 			if (lsvAdapters.Items.Count > 0) {
 				lsvAdapters.SelectedIndices.Add(0);
 			}
+			refreshAdaptersStopwatch.Stop();
 			if (!thereWereErrors) {
-				debugForm.AddMessage("Done getting adapters");
+				debugForm.AddMessage($"Done getting adapters ({refreshAdaptersStopwatch.ElapsedMilliseconds}ms)");
 				SetStatus("Done", false);
 			} else {
-				debugForm.AddMessage("Done getting adapters, but there were errors");
+				debugForm.AddMessage($"Done getting adapters, but there were errors ({refreshAdaptersStopwatch.ElapsedMilliseconds}ms)");
 				SetStatus("Done but there were errors", false);
 			}
 			isBusy = false;
@@ -302,6 +305,7 @@ namespace IPAddressChanger {
 
 		private async void ShowAdapterInfo(AdapterInfo adapter) {
 			if (isClosing) return;
+			refreshAdapterDetailsStopwatch.Restart();
 			debugForm.AddMessage("Getting adapter details");
 			SetStatus("Getting adapter details...", true);
 			lsvAddresses.Items.Clear();
@@ -348,7 +352,8 @@ namespace IPAddressChanger {
 			} else {
 				lsvAddresses.Items.Add("Adapter disabled");
 			}
-			debugForm.AddMessage("Done getting adapter details");
+			refreshAdapterDetailsStopwatch.Stop();
+			debugForm.AddMessage($"Done getting adapter details ({refreshAdapterDetailsStopwatch.ElapsedMilliseconds}ms)");
 			SetStatus("Done", false);
 		}
 
@@ -781,7 +786,9 @@ namespace IPAddressChanger {
 				}
 			}
 			notifyIcon1.Visible = true;
-			debugForm.AddMessage("Main form loaded, application ready");
+			startupStopwatch?.Stop();
+			debugForm.AddMessage($"Main form loaded, application ready (startup took {startupStopwatch?.ElapsedMilliseconds} milliseconds)");
+			startupStopwatch = null;
 		}
 
 		private void tsbRefresh_Click(object sender, EventArgs e) {
