@@ -329,6 +329,17 @@ The window is divided into a configuration area (adapter selection, server IP, p
 
 The first time the DHCP Server window is opened in a session, a warning appears explaining that running a DHCP server affects other devices on the network and should be done deliberately. The dialog has a "suppress" checkbox; when checked, the warning is permanently dismissed across launches. The warning is also limited to once per session — opening and closing the DHCP Server window multiple times in one run won't show it repeatedly.
 
+### Windows Defender Firewall
+The first time you start the DHCP server, you will probably see a Windows firewall warning. This is because the server is trying to listen for incoming messages on port 67, and Windows Defender wants to make sure incoming data is allowed by the user. You should click Show more and make sure both Public networks and Private networks are checked, and then click Allow.
+
+![Windows Defender Firewall Warning](./images/firewallwarning.jpg)
+![Windows Defender Firewall Warning Expanded](./images/firewallwarningexpanded.jpg)
+
+If you don't see the firewall warning and the DHCP server isn't working, chances are that when it did appear you or someone else chose to disallow the incoming connections and that decision was remembered. Open the [Windows Defender Firewall with Advanced Security](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/tools) (Run: `wf.msc`), select Inbound Rules, and find IPAddressChanger. If it shows a red "no" icon, double-click it and change Action to "Allow the connection" and click OK. Do this for both public and private networks, if listed.
+
+![Windows Defender Firewall with Advanced Security Incoming Connections](./images/firewalldhcpserverblocked.png)
+![Windows Defender Firewall Connection Settings](./images/firewalldhcpserversettings.png)
+
 ### Adapter Selection
 The **Adapter** dropdown lists all enabled, connected network adapters and chooses which adapter the DHCP server will bind to. The choice is intentionally **not** saved across launches; you'll need to pick the adapter every time you open the window. Two reasons: USB-Ethernet adapters often come and go (a saved choice would frequently be wrong), and forcing the user to pick the adapter every time is a deliberate guardrail against accidentally binding the DHCP server to the wrong network on different sites.
 
@@ -568,7 +579,7 @@ The software isn't digitally signed, so the UAC prompt shows "unknown publisher.
 If you downloaded this file from the Internet, there's a good chance you'll see the Windows SmartScreen warning saying "Windows has protected your PC." This is because the application isn't digitally signed and known to be safe by Microsoft. The path to fixing this is too long and expensive for an in-house tool, so you'll just have to "trust me, bro."
 
 ## Reporting Bugs
-The fastest way to send feedback is the [Feedback](#feedback) toolbar button on the main window — it opens a browser to the bug report form.
+The fastest way to send feedback is the [Feedback](#feedback) toolbar button on the main window to open a browser to the bug report form. The form is at https://forms.zoho.com/spectrumintegrators/form/IPAddressChangerFeedback to go there directly.
 
 If you can include the stack trace and the debug log when something goes wrong, the bug becomes a *lot* easier to fix.
 
@@ -586,7 +597,7 @@ After clicking "Details", you'll get the expanded view with the full stack trace
 Select all of that text and copy it into the bug report. The "Exception Text" section at the top is the most useful part (it points at the exact line of code that failed), but the rest of it helps too — please send the whole thing.
 
 ### The debug log
-The [Debug Messages Window](#debug-messages-window) records what the program is doing as it runs — adapter operations, DHCP server traffic, errors. If a bug is reproducible, open the debug window before you reproduce it, then use the "Copy Selected" or "Save" toolbar button afterward and attach the log to your bug report. The combination of stack trace + debug log is usually enough to pinpoint the issue.
+The [Debug Messages Window](#debug-messages-window) records what the program is doing as it runs — adapter operations, DHCP server traffic, errors. If a bug is reproducible, open the debug window before you reproduce it, then use the "Copy Selected" or "Save" toolbar button afterward and attach the log to your [bug report](#reporting-bugs). The combination of stack trace + debug log is usually enough to pinpoint the issue.
 
 ### A note on privacy
 The "Loaded Assemblies" section of the unhandled-exception details includes full file paths to assemblies on your system, which can include your Windows username (e.g., `C:\Users\YourName\...`). That's normally harmless, but if you'd rather not share it, feel free to redact those paths before sending — just leave the "Exception Text" / stack trace section intact since that's where the diagnostic value is.
@@ -624,7 +635,7 @@ If you find a bug, [use the bug report feature](#reporting-bugs). But there are 
 * IPv6 - the software is generally aimed at IPv4 (and dotted-decimal addresses specifically), though it is possible to create IPv6 shortcuts
 
 ## AI Disclosure
-This project was completed before AI coding agents were a thing, but recent revisions have used the aid of an agent for refactorings and documentation. (Release [1.0.5.1](https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1) was the last non-AI-assisted release.)
+This project was completed before AI coding agents were a thing, but recent revisions have used the aid of an agent for refactorings and documentation. (Release [1.0.5.1](https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1) was the last non-AI-assisted release.) It's still human-developed with all of the code reviewed by a human and much of it continues to be written by a human.
 
 ## Copyright
 	IP Address Changer - Windows GUI application to quickly change network address settings.
