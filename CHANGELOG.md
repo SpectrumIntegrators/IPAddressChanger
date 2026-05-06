@@ -2,11 +2,15 @@
 
 All notable changes to this project are documented in this file. The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The application's `AssemblyVersion` and `FileVersion` use the four-segment `Major.Minor.Patch.Build` scheme (Microsoft's convention for binary identity), but this changelog uses the three-segment `Major.Minor.Patch` form — the build segment exists to identify rebuilds and is not changelog-worthy on its own.
 
-## [1.2.0]
+## [1.2.0.0] - 2026-05-06
 - Added DHCP server
+  - Minimally RFC 2131 compliant DHCP server
+  - Customizable network address and subnet size
+  - Reservations by MAC address
+  - Checks for other DHCP servers before activating
 - Added debug log auto scrolling
 
-## [1.1.1] - 2026-04-30
+## 1.1.1.0 - 2026-04-30 (unreleased)
 
 ### Changed
 - Restored compact section headings ("Adapters" / "Shortcuts") to the left of their respective toolbars.
@@ -14,7 +18,7 @@ All notable changes to this project are documented in this file. The format is l
 - Fixed null reference build warnings.
 - Updated in-app help references so F1 works from anywhere.
 
-## [1.1.0] - 2026-04-29
+## [1.1.0.0] - 2026-04-29
 
 A substantial overhaul of the underlying networking layer and the per-operation UX. The application no longer depends on PowerShell or any third-party JSON library, and operations on different adapters can now run concurrently without freezing the UI.
 
@@ -84,7 +88,7 @@ Initial release.
 - Debug message log with copy / save / clear.
 - Configurable network adapters control-panel launcher path.
 
-[1.1.1]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.1.1
+[1.2.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.2.0
 [1.1.0]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.1.0.0
 [1.0.5]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.5.1
 [1.0.4]: https://github.com/SpectrumIntegrators/IPAddressChanger/releases/tag/v1.0.4.0
