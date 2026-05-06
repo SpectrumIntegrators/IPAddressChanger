@@ -17,7 +17,7 @@ This application is distributed as a ZIP archive, there is no installer. To inst
 3. Run `IPAddressChanger.exe`. You'll be prompted by UAC because the application needs administrator rights to change network settings.
 4. (Optional) Right-click `IPAddressChanger.exe` and choose *Pin to Start* or *Create shortcut* if you want quick access.
 
-To **uninstall**, simply delete the folder. If you previously enabled the [Start at log on](#start-at-log-on) setting, disable it inside the application before deleting so the Task Scheduler entry is removed cleanly. User settings (saved shortcuts, window size, hotkey, etc.) live under `%LOCALAPPDATA%\IPAddressChanger` and can be deleted separately if you want to wipe state too. (Also see [Resetting the Settings](#resetting-the-settings).)
+To **uninstall**, simply delete the folder. If you previously enabled the [Start at log on](#start-at-log-on) setting, disable it inside the application before deleting so the Task Scheduler entry is removed cleanly. User settings (saved shortcuts, window size, hotkey, etc.) live under `%LOCALAPPDATA%\Spectrum_Integrators` and can be deleted separately if you want to wipe state too. (Also see [Resetting the Settings](#resetting-the-settings).)
 
 The ZIP contains a framework-dependent build, so the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) must be installed on the target system. If it isn't, Windows will prompt you to download it the first time you launch the application.
 
@@ -214,7 +214,7 @@ The description of the driver that is used to interface with the adapter hardwar
 The unique identifier of this adapter.
 
 #### Renew DHCP Lease
-Releases and renews the DHCP lease on this adapter. Enabled only when the adapter has IPv4 DHCP configured. The renew operation typically completes in well under a second when a DHCP server responds, but may take 30–60 seconds when the network is unreachable or no server replies. While the process is underway, the [Adapter Busy Dialog](#adapter-busy-dialog) is displayed. It can be dismissed while the process continues in the background (additional operation on this adapter will be blocked until the process is complete). DHCP renewal errors will be shown in the [debug window](#debug-messages-window) and also in a popup dialog.
+Releases and renews the DHCP lease on this adapter. Enabled only when the adapter has IPv4 DHCP configured. The renew operation may take some time. While the process is underway, the [Adapter Busy Dialog](#adapter-busy-dialog) is displayed. It can be dismissed while the process continues in the background (additional operation on this adapter will be blocked until the process is complete). DHCP renewal errors will be shown in the [debug window](#debug-messages-window) and also in a popup dialog.
 
 ![DHCP renewal error example](./images/dhcprenewerror.png)
 
@@ -250,17 +250,19 @@ The origin of the host portion of the address.
 ![Adapter Addresses Context Menu](./images/adapteraddressesmenu.png)
 
 ##### New Shortcut with *value*
-Opens the new shortcut dialog pre-filled with the selected address' values (or `DHCP`).
+Opens the new shortcut dialog pre-filled with the selected address (or `DHCP`).
 
 ##### Copy *value*
-Copies the selected addresses' values (or `DHCP`) to the clipboard.
+Copies the selected address value or `DHCP` to the clipboard.
 
 ## Notification Area Icon
 The notification area icon appears in the notification area of the task bar near the clock (you may need to click the expand button to see it). Double-clicking the icon will show the application. Right clicking it will show a quick-access menu.
 
-![Notification Area](./images/notificationmenu.png)
+![Notification Icon](./images/notificationicon.png)
 
 ### Notification Area Icon Menu
+
+![Notification Area](./images/notificationmenu.png)
 
 #### Show
 Shows the application.
@@ -310,9 +312,9 @@ Operations on different adapters run in parallel, and each gets its own busy dia
 ## Address Conflict Warning
 ![Address Conflict Warning](./images/addressconflictwarning.png)
 
-After a refresh, if the application detects that two or more adapters are sharing the same IP address, a warning dialog is shown listing each conflict. Two adapters with the same address on the same machine is always a misconfiguration — Windows picks one and effectively ignores the other for routing purposes — so the warning is intended to surface accidents (e.g. recalling the same static-IP shortcut against two adapters).
+After a refresh, if the application detects that two or more adapters are sharing the same IP address, a warning dialog is shown listing each conflict.
 
-The dialog has a "do not show again" checkbox; checking it suppresses future conflict warnings for the remainder of the session. Restart the application to re-enable warnings.
+The dialog has a "do not show again" checkbox; checking it suppresses future conflict warnings for the remainder of the session.
 
 The application also performs a pre-apply check before assigning a static IP, refusing to create a conflict in the first place if it can detect one. The post-refresh warning catches conflicts that arise from outside the application or from operations that bypass the pre-apply check.
 
@@ -321,13 +323,15 @@ The application includes a DHCP server that can hand out leases on a chosen netw
 
 ![DHCP Server](./images/dhcpserver.png)
 
-The window is divided into a configuration area (adapter selection, server IP, prefix length, Enable checkbox) along the top, and the [lease list](#dhcp-lease-list) below. Settings entered into this window — the IP address and prefix, the lease list — are persisted across launches; the bound adapter is intentionally not.
+The window is divided into a configuration area along the top, and the [lease list](#dhcp-lease-list) below. Settings entered into this window are saved to prevent having to reenter everything each time the application is launched. If the bound adapter is not present, you must select a new adapter.
+
+**Warning:** _Running a DHCP server on a corporate or school network can be very bad! It could cause network issue with other clients, it could cause issues with network hardware like routers, and it could even alert IT/security that there is an intruder. **Make sure that you select an adapter on an isolated network or that you have permission to run a DHCP server on a LAN!**_
 
 ### First-Use Warning
 
 ![First-use DHCP server warning](./images/dhcpserverwarning.png)
 
-The first time the DHCP Server window is opened in a session, a warning appears explaining that running a DHCP server affects other devices on the network and should be done deliberately. The dialog has a "suppress" checkbox; when checked, the warning is permanently dismissed across launches. The warning is also limited to once per session — opening and closing the DHCP Server window multiple times in one run won't show it repeatedly.
+The first time the DHCP Server window is opened in a session, a warning appears explaining that running a DHCP server affects other devices on the network and should be done deliberately.
 
 ### Windows Defender Firewall
 The first time you start the DHCP server, you will probably see a Windows firewall warning. This is because the server is trying to listen for incoming messages on port 67, and Windows Defender wants to make sure incoming data is allowed by the user. You should click Show more and make sure both Public networks and Private networks are checked, and then click Allow.
@@ -341,16 +345,16 @@ If you don't see the firewall warning and the DHCP server isn't working, chances
 ![Windows Defender Firewall Connection Settings](./images/firewalldhcpserversettings.png)
 
 ### Adapter Selection
-The **Adapter** dropdown lists all enabled, connected network adapters and chooses which adapter the DHCP server will bind to. The choice is intentionally **not** saved across launches; you'll need to pick the adapter every time you open the window. Two reasons: USB-Ethernet adapters often come and go (a saved choice would frequently be wrong), and forcing the user to pick the adapter every time is a deliberate guardrail against accidentally binding the DHCP server to the wrong network on different sites.
+The **Adapter** dropdown lists all network adapters and chooses which adapter the DHCP server will bind to. You may select any adapter, but in order to enable the DHCP server the adapter must be enabled and connected. The selected adapter is saved and will be re-selected the next time the application is launched (if the adapter is present).
 
-The **Refresh** button next to the dropdown re-queries the system for the current list of adapters. Useful when you've plugged in a USB-Ethernet adapter (or otherwise changed the adapter inventory) after opening the DHCP Server window — without a refresh, the dropdown still shows the snapshot taken at form open.
+The **Refresh** button next to the dropdown re-queries the system for the current list of adapters.
 
 The dropdown and Refresh button are both disabled while the server is running. To switch adapters, [disable the server](#enable-dhcp-server) first.
 
 ### Address and Prefix Entry
-The four octet textboxes plus the prefix-length textbox specify the IP address the server will bind to and the subnet it serves. They behave as a single logical field for entry: typing `.`, `/`, or `\` advances focus to the next box, so you can enter `10.0.0.1/24`, `10/0/0/1/24`, or whatever feels natural. Pressing Backspace on an empty box jumps back to the previous box and trims a character off the end of its content. Auto-advance after typing a third digit is intentionally **not** done; the user controls the cursor.
+The four octet textboxes plus the prefix-length textbox specify the IP address the server will bind to and the subnet it serves. They behave as a single logical field for entry: typing `.`, `/`, or `\` advances focus to the next box, so you can enter `10.0.0.1/24`, `10/0/0/1/24`, or whatever feels natural. Pressing Backspace on an empty box jumps back to the previous box and trims a character off the end of its content. (Typing a third digit does not automatically advance to the next field, you must press `.` or tab or click the next field.)
 
-If the entered IP is the network address of the subnet (e.g. `10.0.0.0/24`), it is automatically adjusted to the first usable host (`10.0.0.1` in the example) when the server is enabled, with the textboxes updated to reflect the change. The same goes for the broadcast address — it's bumped down by one. Any other host address is kept as-is, so the server doesn't have to live at `.1`.
+If the entered IP is the network address of the subnet (e.g. `10.0.0.0/24`), it is automatically adjusted to the first usable host (`10.0.0.1` in the example) when the server is enabled, with the textboxes updated to reflect the change. The same is true if the broadcast address is entered, it will be automatically adjusted down by one. The DHCP server does not have to be at the first available address in a subnet, you may manually specify any other address.
 
 The IP address and prefix length are saved across launches and re-populated on the next open of the DHCP Server window. Bounds on the prefix length are documented in [Prefix Length Policy](#prefix-length-policy) below.
 
@@ -367,19 +371,19 @@ Each step shows progress in the [DHCP Server Busy Dialog](#dhcp-server-busy-dial
 Unchecking the checkbox stops the listener but does **not** undo the adapter changes. The server's IP remains bound to the adapter, and Windows DHCP client stays disabled. To restore normal DHCP-on-the-adapter behavior, manually re-enable DHCP via Windows network settings, or apply a [shortcut](#shortcuts) that selects DHCP for the adapter.
 
 ### DHCP DISCOVER Preflight Check
-When you enable the DHCP server, by default the software first probes the network segment for any other DHCP servers before binding. This guards against accidentally bringing up a second DHCP server on a production network, which can cause IP conflicts and unstable client behavior.
+When you enable the DHCP server, by default the software first probes the network segment for any other DHCP servers before binding. This guards against accidentally bringing up a second DHCP server on a production network, which can cause IP conflicts and unstable client behavior. Preflight check can be disabled in [settings](#settings).
 
 The probe sends a single DHCP `DISCOVER` broadcast out the bound adapter and listens for a few seconds for any `OFFER` replies. If any `OFFER` comes back, a dialog appears listing each responding server and the address it offered, and asks whether to start anyway:
 
 ![Pre-flight detection warning](./images/dhcppreflightdetected.png)
 
-Choosing **No** aborts cleanly — the adapter is left exactly as it was, with no changes applied. If no `OFFER` arrives during the listen window, the segment is treated as clear and the server start-up continues automatically.
+Choosing **No** aborts cleanly. The adapter is left exactly as it was, with no changes applied. If no `OFFER` arrives during the listen window, the segment is treated as clear and the server start-up continues automatically.
 
-A non-responding probe almost always means no DHCP server is reachable on the segment. It is *technically* possible for a server to be present but happen to be slow, busy, or temporarily not issuing offers — but in practice, "no response" reliably means "no server." The probe is a best-effort safety check, not a hard guarantee, and a small minority of networks may need a longer listen window than the default.
+A non-responding probe almost always means no DHCP server is reachable on the segment. It is possible for a server to be present but happen to be slow, busy, or temporarily not issuing offers, though in practice "no response" reliably means "no server." The probe is a best-effort safety check, not a hard guarantee.
 
 The probe also can't distinguish an authorized DHCP server from a rogue one. It detects whether *anything* on the segment is willing to issue a lease, not whether that something is supposed to be there. If you knowingly want to run a second server on a segment that already has an authorized one (lab work, controlled testing, replacing an existing server in place), the prompt is just a confirmation step to dismiss — or you can disable the pre-flight entirely from the [Settings Window](#settings-window).
 
-The listen-window duration defaults to 5 seconds, which is appropriate for most networks. If a particular network needs more or less, the duration is exposed as the `DHCPPreflightDuration` value (in seconds) in `user.config` — not on the Settings window — and can be edited there.
+The listen-window duration defaults to 5 seconds, which is appropriate for most networks. If a particular network needs more or less, the duration is exposed as the `DHCPPreflightDuration` value (in seconds) in `user.config` (it is not in the Settings window, it must be edited manually).
 
 ### Address Conflict on Server Start
 The DISCOVER pre-flight catches *DHCP* servers on the segment, but it can't catch a non-DHCP device that simply happens to have the configured server IP. As a backstop, Windows runs Duplicate Address Detection (DAD) when the application adds the IP to the adapter — sending an ARP probe and watching for replies. If anything answers, the address goes into a `Duplicate` state and the listener bind fails.
@@ -414,31 +418,31 @@ The **/30 upper bound** is a hard protocol limit. /31 has no usable host address
 
 The **/8 lower bound** is a policy choice rather than a protocol one. Anything wider has no realistic legitimate use as a DHCP scope — a /0 covers all of IPv4 and would force the server to iterate through millions of addresses linearly when looking for an unused one — and is more likely to be a typo than an intentional configuration. Setting the bound at /8 catches the typo case while still allowing the largest reasonable lab and corporate-network scopes.
 
-If you have a legitimate reason to override these bounds (a controlled lab subnet wider than /8, for example), the limits are exposed as `DHCPPrefixMinLength` and `DHCPPrefixMaxLength` in `user.config` — not on the Settings window. Values outside the protocol-level limits (0..30 inclusive) are silently clamped, so you can loosen the policy down to /0 by editing the config, but you can't push the upper bound past /30 — that's a hard math limit the server enforces regardless of what's in the settings file.
+If you have a legitimate reason to override these bounds (a controlled lab subnet wider than /8, for example), the limits are exposed as `DHCPPrefixMinLength` and `DHCPPrefixMaxLength` in `user.config` (not on the Settings window). Values outside the protocol-level limits (0..30 inclusive) are silently clamped, so you can loosen the policy down to /0 by editing the config, but you can't push the upper bound past /30 — that's a hard math limit the server enforces regardless of what's in the settings file.
 
 ### DHCP Lease List
 The lease list shows all current leases (issued by the server to devices that asked for an address) and reservations (manually-added MAC→IP pairs that the server hands out when that MAC requests an address). Each entry has six columns:
 
-- **MAC Address** — the device's hardware address, normalized to upper-case colon-separated form.
-- **IP Address** — the address the device has, or that's reserved for it.
-- **Hostname** — the device's reported hostname, taken from the DHCP request's Option 12. Empty for manual reservations until the device contacts the server, after which the hostname is filled in automatically and persists across reservations even after the device disconnects.
-- **Assigned** — the timestamp when the lease was first issued. Shows `Reserved` for manual reservations.
-- **Expires** — the timestamp when the lease will expire. The client is expected to renew before this — when a renewal request arrives, the timestamp is moved forward; when no renewal arrives, the address is *not* automatically reclaimed (sticky-lease design — see below). Shows `Reserved` for manual reservations.
-- **Last Communication** — the most recent DHCP message exchange, formatted as `TX: DHCPACK`, `RX: DHCPREQUEST`, etc. Empty until the device first communicates after the window was opened.
+- **MAC Address**: the device's hardware address, normalized to upper-case colon-separated form.
+- **IP Address**: the address the device has, or that's reserved for it.
+- **Hostname**: the device's reported hostname, taken from the DHCP request's Option 12. Empty for manual reservations until the device contacts the server, after which the hostname is filled in automatically and persists across reservations even after the device disconnects.
+- **Assigned**: the timestamp when the lease was first issued. Shows `Reserved` for manual reservations.
+- **Expires**: the timestamp when the lease will expire. The client is expected to renew before this. When a renewal request arrives, the timestamp is adjusted. If the client never asks for a renewal, the address is *not* automatically reclaimed. Shows `Reserved` for manual reservations.
+- **Last Communication**: the most recent DHCP message exchange, formatted as `TX: DHCPACK`, `RX: DHCPREQUEST`, etc. Empty until the device first communicates after the window was opened.
 
 Whether the lease list is persisted across launches and how is controlled by the [Save DHCP Leases](#save-dhcp-leases) setting.
 
-**Sticky leases by design.** Leases are not automatically reclaimed when they expire. Once a device gets an IP from this server, the same IP is offered back to it on every subsequent DISCOVER, even months later — this matches how most home-router DHCP servers behave and avoids surprising IP renumbering. To free an address, [delete the entry](#delete-lease) explicitly.
+**Sticky leases by design.** Leases are not automatically reclaimed when they expire. Once a device gets an IP from this server, the same IP is offered back to it on every subsequent DISCOVER. To free an address, [delete the entry](#delete-lease) explicitly.
 
 ### Tool Bar
 
 ![DHCP Lease List Tool Bar](./images/dhcpservertoolbar.png)
 
 #### Add Reservation
-Opens the [Add/Edit DHCP Reservation](#addedit-dhcp-reservation) dialog to create a new manual reservation. Requires that an IP address and prefix length have been set (or are about to be set) so the dialog can validate the reservation against the scope.
+Opens the [Add/Edit DHCP Reservation](#addedit-dhcp-reservation) dialog to create a new manual reservation. Requires that an IP address and prefix length have been selected so the dialog can validate the reservation against the scope.
 
 #### Delete Lease
-Removes the selected lease(s) or reservation(s) from the server. Disabled when nothing is selected.
+Removes the selected lease(s) or reservation(s) from the server. Does not tell the client to get a new address, it only removes the lease/reservation.
 
 #### Edit Lease
 Opens the [Add/Edit DHCP Reservation](#addedit-dhcp-reservation) dialog pre-filled with the selected entry's MAC and IP. If multiple entries are selected, only the first is edited.
@@ -459,24 +463,24 @@ Same as the [Edit Lease](#edit-lease) toolbar button.
 Same as the [Delete Lease](#delete-lease) toolbar button. Pressing the `Delete` key on the lease list does the same thing.
 
 ### DHCP Server Stopped Warning
-If the bound adapter or its IP address is removed out from under the server while it's running — for example by `netsh`, by unplugging a USB-Ethernet adapter, by Windows resetting the adapter on sleep/wake, or by another tool changing the adapter's configuration — the server detects the disappearance and stops itself rather than continuing in a half-broken state. A warning dialog appears explaining what happened, and the [Enable DHCP server](#enable-dhcp-server) checkbox automatically un-checks itself.
+If the bound adapter or its IP address is removed out from under the server while it's running, the server detects the disappearance and stops itself rather than continuing in a half-broken state. A warning dialog appears explaining what happened, and the [Enable DHCP server](#enable-dhcp-server) checkbox automatically un-checks itself.
 
 The warning has two flavors depending on what was lost:
 
 ![DHCP Server stopped (adapter removed)](./images/dhcpserveradapterremovedwarning.png)
 
-The bound adapter itself is no longer present (typical for a USB-Ethernet adapter being unplugged, or an adapter being disabled in Windows network settings).
+The bound adapter itself is no longer present. Common causes are that a USB-Ethernet adapter was unplugged or an adapter was disabled in Windows network settings.
 
 ![DHCP Server stopped (address removed)](./images/dhcpserveraddressremovedwarning.png)
 
-The adapter is still there, but the server's IP address has been removed from it (typical for an external `netsh` call, or another tool changing the adapter's IP configuration).
+The adapter is still there, but the address the server was using was removed from it.
 
 This is defense-in-depth on top of the safeguards that prevent the application's own [shortcuts and adapter-paste actions](#adapter-context-menu) from clobbering a running server's adapter. It catches the case where something *outside* the application changes the adapter.
 
 ### Limitations and Design Notes
-A handful of things the DHCP server intentionally does not do, with rationale:
+A handful of things the DHCP server intentionally does not do:
 
-- **Sticky leases / no automatic expiry.** Once a MAC has been offered an IP, that IP stays allocated to that MAC for the rest of the session, even if the device never completes the DHCP handshake. Practical impact: a flaky client (or some embedded gear that sends probe DISCOVERs without ever REQUESTing — Crestron control-system processors are a known example) consumes a pool address until the server is stopped or the entry is manually deleted from the [lease list](#dhcp-lease-list). With a /16 scope this is harmless for any realistic client count; with a tighter scope you may eventually want to clean up unused entries by hand.
+- **No automatic expiry.** Once a MAC has been offered an IP, that IP stays allocated to that MAC for the rest of the session even if the device never completes the DHCP handshake. For the intended function of this program (testing, setting up equipment), this shouldn't matter even with a `/24` subnet. If the [Save DHCP addresses](#save-dhcp-leases) setting is set to "Save reserved and automatic addresses," you may need to manually delete some after a while.
 - **DHCPRELEASE intentionally ignored.** Same root cause as the sticky-lease behavior — the MAC→IP mapping is permanent. A device that releases its lease (via shutdown or explicit release) will still get the same IP the next time it asks.
 - **DHCP relays (`giaddr`) not handled.** The server only works on a single broadcast segment. If you're using a DHCP relay agent to forward requests from another subnet, this server won't talk to it.
 - **Client-identifier (Option 61) not used.** All clients are tracked by hardware address (chaddr/MAC). RFC 2131 §4.2 prefers client-id when present, but in practice almost every DHCP client uses a chaddr-based client-id, so this only matters in corner cases (some VM clones, certain enterprise DHCP clients with explicit DUIDs).
@@ -486,9 +490,9 @@ A handful of things the DHCP server intentionally does not do, with rationale:
 
 ![DHCP Server Busy Dialog](./images/dhcpserverbusy.png)
 
-While the DHCP server is being [enabled or disabled](#enable-dhcp-server), a busy dialog shows the current step (e.g. *Adding 10.0.0.1/24 to adapter*, *Starting DHCP listener*, *Waiting for stack to accept bind — attempt 4, 36 remaining*). The dialog is cancellable: click Cancel, click [X], or press Escape — all three funnel through the same cancellation path. Cancelling stops the sequence at the next checkpoint between operations; an in-flight CIM/WMI call is allowed to finish first to avoid leaving the adapter in an unknown intermediate state.
+While the DHCP server is being [enabled or disabled](#enable-dhcp-server), a busy dialog shows the current step. The dialog is cancellable: cancelling stops the sequence at the next checkpoint between operations; an in-flight CIM/WMI call is allowed to finish first to avoid leaving the adapter in an unknown intermediate state.
 
-Cancellation during the start sequence leaves the adapter in whatever partial state it had reached (e.g. DHCP disabled but no static IP added yet). Re-enabling the server picks back up from where the prior attempt stopped, so a cancelled-then-retried start usually completes cleanly. To fully restore the adapter to its prior DHCP-client state after a cancelled start, use the [Renew DHCP Lease](#renew-dhcp-lease) button or apply a DHCP shortcut.
+Cancellation during the start sequence leaves the adapter in whatever partial state it had reached (e.g. DHCP disabled but no static IP added yet). Re-enabling the server picks back up from where the prior attempt stopped, so a cancelled-then-retried start usually completes cleanly. To fully restore the adapter to a known state after cancelling, apply a shortcut to set the adapter's address or enable its DHCP client.
 
 ## Add/Edit DHCP Reservation
 
@@ -527,7 +531,7 @@ Controls what entries from the [DHCP server's lease list](#dhcp-lease-list) are 
 - **Only save reserved addresses** (default) — only manually-created reservations are saved. Server-issued leases (where the device contacted the server and was given an address dynamically) are forgotten when the application closes.
 - **Save reserved and automatic addresses** — all entries, both reservations and server-issued leases, are saved.
 
-A subtle round-trip note for the second option: when saved leases are reloaded on the next launch, they all come back as reservations regardless of which type they were originally. The MAC→IP mapping is preserved, but `Assigned` and `Expires` are not — a device that previously had a dynamic lease will have a permanent reservation pointing at its IP on next launch, until you manually delete it.
+A subtle round-trip note for the second option: when saved leases are reloaded on the next launch, they all come back as reservations regardless of which type they were originally. The MAC→IP mapping is preserved, but `Assigned` and `Expires` are not. A device that previously had a dynamic lease will have a reservation pointing at its IP on next launch.
 
 ### DHCP DISCOVER preflight check
 When checked, the [pre-flight DISCOVER probe](#dhcp-discover-preflight-check) runs before the server is enabled. Default is on. Uncheck if you're working in an environment where you knowingly want to start a second DHCP server on a segment that already has one (lab work, controlled testing, replacing an existing server in place) and don't want to dismiss the prompt every time.
@@ -535,7 +539,8 @@ When checked, the [pre-flight DISCOVER probe](#dhcp-discover-preflight-check) ru
 ### Resetting the Settings
 If for some reason your settings get hosed (for example, if somehow it stores the window size to be microscopically small), you can hold down the `Shift` key while the program launches to reset all of the settings to their default values.
 
-The files from `%LOCALAPPDATA%\IPAddressChanger` could also be deleted to eliminate the per-user settings and start fresh on the next launch.
+### Settings File Location
+Some settings are not able to be changed in the Settings window and must be edited manually. These settings _should_ not ever need to be changed, but they are configurable by advanced users for rare cases where it's necessary. The settings file is printed in the [debug messages window](#debug-messages-window) near the program start, it will be in `%LOCALAPPDATA%/Spectrum_Integrators/IPAddressChanger_Url_<id>/<version>/user.config`. Don't fiddle about with settings you don't understand.
 
 ## Debug Messages Window
 This window shows additional information about the actions the program is performing and the results of those actions. Note: this will delete all of your shortcuts too!
@@ -558,14 +563,12 @@ Saves the entire log to a file.
 #### Auto Scrolling
 Toggles whether the log jumps to the bottom each time a new message arrives. When the button is checked, each new message automatically scrolls into view; when unchecked, the view stays where it is and you can read older messages without being yanked back to the bottom.
 
-Auto-scroll is also disabled automatically the moment you scroll the log manually (mouse wheel, scrollbar, arrow keys, etc.) so you can pause the auto-scroll just by interacting with the list. To re-enable it, click the button again — the log will jump to the bottom and resume following new messages.
-
-The auto-scroll state is remembered across launches.
+Auto-scroll is disabled when you scroll the log manually (mouse wheel, scrollbar, arrow keys, etc.) so you can pause the auto-scroll just by interacting with the list.
 
 ### Debug Messages
-This list contains all of the debug messages. Clicking a line will select it, using `CTRL` and `Shift` will allow selecting multiple items.
+This list contains all of the debug messages. Clicking a line will select it, using `Ctrl` and `Shift` will allow selecting multiple items.
 
-`CTRL+C` will copy selected items to the clipboard. `CTRL+A` will select all items.
+`Ctrl+C` will copy selected items to the clipboard. `Ctrl+A` will select all items.
 
 ## Privilege Elevation & UAC Prompt
 
