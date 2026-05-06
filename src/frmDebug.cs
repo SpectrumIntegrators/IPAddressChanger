@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Text;
 using IPAddressChanger.Properties;
 
 namespace IPAddressChanger {
@@ -113,6 +105,7 @@ namespace IPAddressChanger {
 			sfd.CheckPathExists = true;
 			sfd.DefaultExt = ".log";
 			sfd.OverwritePrompt = true;
+			sfd.FileName = $"IPAddressChanger_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.log";
 			sfd.Title = "Save Debug Log";
 			sfd.ValidateNames = true;
 			if (sfd.ShowDialog() == DialogResult.OK) {
