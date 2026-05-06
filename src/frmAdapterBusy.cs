@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IPAddressChanger.Properties;
 
 namespace IPAddressChanger;
 
@@ -19,6 +20,7 @@ public partial class frmAdapterBusy : Form {
 
 	public frmAdapterBusy(string reason, AdapterInfo adapterInfo, frmMain frmMain) {
 		InitializeComponent();
+		helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 		_adapterInfo = adapterInfo;
 		lblBusyReason.Text = reason;
 		this.Text = $"{adapterInfo.Name} Busy...";

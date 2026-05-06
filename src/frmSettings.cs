@@ -88,6 +88,7 @@ namespace IPAddressChanger {
 		}
 
 		private void frmSettings_Load(object sender, EventArgs e) {
+			helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 			LoadSettings();
 		}
 

@@ -57,6 +57,7 @@ namespace IPAddressChanger {
 		}
 
 		private void frmDebug_Load(object sender, EventArgs e) {
+			helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 			tsbAutoScroll.Checked = Settings.Default.DebugAutoScroll;
 			_scrollWatcher.UserScrolled += OnUserScrolledListBox;
 			_scrollWatcher.AssignHandle(lsbDebug.Handle);

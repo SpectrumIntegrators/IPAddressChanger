@@ -39,37 +39,18 @@ namespace IPAddressChanger {
 		internal DHCPServer dhcpServer = new(); // The DHCP server (always exists, isn't runing by default)
 		private bool dhcpWarningShownThisSession = false; // we only want to show the DHCP warning once per session
 
-		internal static partial class IPValidator {
-			[GeneratedRegex(@"(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)/(?:3[0-2]|[12]?\d)$)|(?:^DHCP$)")]
-			public static partial Regex IpCidrOrDhcp();
-		}
+
 
 
 
 		public frmMain() {
 			InitializeComponent();
+			debugForm.AddMessage($"Starting {Application.ProductName} version {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
 			// ImageList contents loaded programmatically rather than persisted by the designer,
 			// because the designer serializes ImageList.ImageStream via BinaryFormatter, which is removed in .NET 9+.
 			netAdapterIcons.Images.Add("disabled", Resources.disabled);
 			netAdapterIcons.Images.Add("up", Resources.up);
 			netAdapterIcons.Images.Add("down", Resources.down);
-			debugForm.AddMessage($"Starting {Application.ProductName} version {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
-			if (Settings.Default.UpgradeRequired) {
-				// Carry forward settings from previous version
-				Settings.Default.Upgrade();
-				Settings.Default.UpgradeRequired = false;
-				Settings.Default.Save();
-			}
-			if (Control.ModifierKeys == Keys.Shift) {
-				// Reset settings to their default values
-				Settings.Default.Reset();
-				// UpgradeRequired defaults to true, which would cause the next launch to carry forward old settings
-				// We don't want that, so set it to false before saving
-				Settings.Default.UpgradeRequired = false;
-				Settings.Default.Save();
-			}
-			EnsureHiddenSettingsPersisted();
-			LoadSettings();
 			dhcpServer.DeviceCommunication += this.DhcpServer_DeviceCommunication;
 			dhcpServer.Log += this.DhcpServer_Log;
 			dhcpServer.ServerFaulted += this.DhcpServer_ServerFaulted;
@@ -291,6 +272,13 @@ namespace IPAddressChanger {
 						li.SubItems.Add(adapterInfo.ToString());
 						lsvAdapters.Items.Add(li);
 					}
+					if (
+						dhcpServer.Adapter is null
+						&& !string.IsNullOrEmpty(Settings.Default.DHCPServerSelectedAdapterId)
+						&& adapterInfo.DeviceID == Settings.Default.DHCPServerSelectedAdapterId
+					) {
+						dhcpServer.SetBoundAdapter(adapterInfo);
+					}
 				}
 				tsbRefresh.Image = Resources.Refresh_16x;
 				await DetectAddressConflictsAsync(adapters);
@@ -496,10 +484,15 @@ namespace IPAddressChanger {
 				} else if ((SaveDHCPLeaseOptions)(Settings.Default.SaveDHCPLeases) == SaveDHCPLeaseOptions.SaveReservationsAndLeases) {
 					Settings.Default.DHCPLeases = string.Join(";", dhcpServer.Leases.Select(x => $"{x.MACAddress}={x.IPAddress}"));
 				}
-				if (dhcpServer.Address != null) {
+				if (dhcpServer.Address is not null) {
 					Settings.Default.DHCPServerAddress = $"{dhcpServer.Address}/{dhcpServer.PrefixLength}";
 				} else {
 					Settings.Default.DHCPServerAddress = "";
+				}
+				if (dhcpServer.Adapter is not null) {
+					Settings.Default.DHCPServerSelectedAdapterId = dhcpServer.Adapter.DeviceID;
+				} else {
+					Settings.Default.DHCPServerSelectedAdapterId = "";
 				}
 			} catch (Exception ex) {
 				ShowAndLogError($"Error saving settings: {ex.Message}", "Error Saving Settings");
@@ -753,11 +746,28 @@ namespace IPAddressChanger {
 		}
 
 		private void frmMain_Load(object sender, EventArgs e) {
-
 			debugForm.AddMessage("Main form loading");
 			tsslVersion.Text = "Version " + Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN";
-
+			helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 			if (isClosing) return;
+			if (Settings.Default.UpgradeRequired) {
+				// Carry forward settings from previous version
+				debugForm.AddMessage("Carrying forward settings from previous version");
+				Settings.Default.Upgrade();
+				Settings.Default.UpgradeRequired = false;
+				Settings.Default.Save();
+			}
+			if (Control.ModifierKeys == Keys.Shift) {
+				// Reset settings to their default values
+				debugForm.AddMessage("Shift key held, resetting all settings to defaults");
+				Settings.Default.Reset();
+				// UpgradeRequired defaults to true, which would cause the next launch to carry forward old settings
+				// We don't want that, so set it to false before saving
+				Settings.Default.UpgradeRequired = false;
+				Settings.Default.Save();
+			}
+			EnsureHiddenSettingsPersisted();
+			LoadSettings();
 			adapterSnapshots = BuildAdapterSnapshot();
 			NetworkChange.NetworkAddressChanged += new
 			NetworkAddressChangedEventHandler(AddressChangedCallback);

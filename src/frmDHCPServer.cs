@@ -68,7 +68,28 @@ public partial class frmDHCPServer : Form {
 		prev.SelectionLength = 0;
 	}
 
-	private async void frmDHCPServer_Load(object sender, EventArgs e) {
+	private async void RefreshAdapters() {
+		this.UseWaitCursor = true;
+		List<AdapterInfo> adapters = await NetworkManager.GetAdaptersAsync();
+		int cboItemIdx = 0;
+		bool foundBoundAdapter = false;
+		cboAdapters.Items.Clear();
+		foreach (var adapter in adapters) {
+			cboAdapters.Items.Add(adapter);
+			if (adapter == _dhcpServer.Adapter) {
+				cboAdapters.SelectedIndex = cboItemIdx;
+				foundBoundAdapter = true;
+			}
+			cboItemIdx++;
+		}
+		if (!foundBoundAdapter && _dhcpServer.Adapter != null) {
+			// the combo box at this point should have adapters but none selected, and it will be disabled so the user can't change it until they disable the server
+			_debugForm.AddMessage($"DHCP server is bound to an adapter that doesn't exist anymore (currently bound to {_dhcpServer.Adapter})");
+		}
+		this.UseWaitCursor = false;
+	}
+	private void frmDHCPServer_Load(object sender, EventArgs e) {
+		helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 		_dhcpServer.ServerStarted += this._dhcpServer_ServerStarted;
 		_dhcpServer.ServerStopped += this._dhcpServer_ServerStopped;
 		_dhcpServer.LeaseAssigned += this._dhcpServer_LeaseAssigned;
@@ -103,21 +124,7 @@ public partial class frmDHCPServer : Form {
 		}
 
 
-		List<AdapterInfo> adapters = await NetworkManager.GetAdaptersAsync();
-		int cboItemIdx = 0;
-		bool foundBoundAdapter = false;
-		foreach (var adapter in adapters) {
-			cboAdapters.Items.Add(adapter);
-			if (adapter == _dhcpServer.Adapter) {
-				cboAdapters.SelectedIndex = cboItemIdx;
-				foundBoundAdapter = true;
-			}
-			cboItemIdx++;
-		}
-		if (!foundBoundAdapter && _dhcpServer.Adapter != null) {
-			// the combo box at this point should have adapters but none selected, and it will be disabled so the user can't change it until they disable the server
-			_debugForm.AddMessage($"DHCP server is bound to an adapter that doesn't exist anymore (currently bound to {_dhcpServer.Adapter})");
-		}
+		RefreshAdapters();
 
 
 	}
@@ -135,6 +142,7 @@ public partial class frmDHCPServer : Form {
 			}
 		});
 	}
+
 	private void _dhcpServer_LeaseAssigned(object? sender, LeaseEventArgs e) {
 		BeginInvoke(() => {
 			AddLeaseListViewItem(e.Lease);
@@ -149,6 +157,7 @@ public partial class frmDHCPServer : Form {
 			}
 		});
 	}
+
 	private void _dhcpServer_ServerStopped(object? sender, EventArgs e) {
 		BeginInvoke(() => chkEnableDHCPServer.Checked = false);
 	}
@@ -348,6 +357,7 @@ public partial class frmDHCPServer : Form {
 		}
 		txtPrefixLength.Enabled = !chkEnableDHCPServer.Checked;
 		cmdDHCPProbe.Enabled = !chkEnableDHCPServer.Checked && (cboAdapters.SelectedIndex >= 0);
+		cmdRefreshAdapters.Enabled = !chkEnableDHCPServer.Checked;
 	}
 
 	private void frmDHCPServer_FormClosing(object sender, FormClosingEventArgs e) {
@@ -738,5 +748,9 @@ public partial class frmDHCPServer : Form {
 			_debugForm.AddMessage($"Manual DHCP probe on {selectedAdapter.Name}: detected {probeResults.Count} other DHCP server(s): {string.Join(", ", probeResults.Select(r => r.ServerAddress))}");
 			MessageBox.Show($"Detected {probeResults.Count} other DHCP server(s) on {selectedAdapter.Name}:\r\n\r\n{summary}", "DHCP Probe Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
+	}
+
+	private void cmdRefreshAdapters_Click(object sender, EventArgs e) {
+		RefreshAdapters();
 	}
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IPAddressChanger.Properties;
 
 namespace IPAddressChanger;
 
@@ -14,6 +15,7 @@ public partial class frmAddressConflictWarning : Form {
 	private frmMain _frmMain;
 	public frmAddressConflictWarning(frmMain parent) {
 		InitializeComponent();
+		helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 		_frmMain = parent;
 	}
 

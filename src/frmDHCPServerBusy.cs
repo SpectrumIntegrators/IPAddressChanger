@@ -1,3 +1,5 @@
+using IPAddressChanger.Properties;
+
 namespace IPAddressChanger;
 
 /// <summary>
@@ -12,6 +14,7 @@ public partial class frmDHCPServerBusy : Form {
 
 	public frmDHCPServerBusy() {
 		InitializeComponent();
+		helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 	}
 
 	public frmDHCPServerBusy(string initialStatus) : this() {

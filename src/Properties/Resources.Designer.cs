@@ -150,6 +150,15 @@ namespace IPAddressChanger.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://spectrumintegrators.github.io/IPAddressChanger/.
+        /// </summary>
+        internal static string ReadmeUrl {
+            get {
+                return ResourceManager.GetString("ReadmeUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Refresh_16x {

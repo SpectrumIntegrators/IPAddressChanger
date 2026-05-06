@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Numerics;
 using System.Net;
+using IPAddressChanger.Properties;
 
 namespace IPAddressChanger {
 	public partial class frmEditShortcut : Form {
@@ -66,6 +67,7 @@ namespace IPAddressChanger {
 		}
 
 		private void frmEditShortcut_Load(object sender, EventArgs e) {
+			helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 			txtName.Select();
 		}
 

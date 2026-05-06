@@ -52,7 +52,7 @@ partial class frmDHCPWarning {
 		// 
 		// helpProvider1
 		// 
-		this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
+		this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 		// 
 		// tableLayoutPanel1
 		// 
@@ -71,12 +71,15 @@ partial class frmDHCPWarning {
 		this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
 		this.tableLayoutPanel1.Size = new Size(444, 173);
 		this.tableLayoutPanel1.TabIndex = 3;
-		// 
+		//
 		// cmdClose
-		// 
+		//
 		this.cmdClose.Anchor = AnchorStyles.Top;
+		this.helpProvider1.SetHelpKeyword(this.cmdClose, "first-use-warning");
+		this.helpProvider1.SetHelpNavigator(this.cmdClose, HelpNavigator.Topic);
 		this.cmdClose.Location = new Point(174, 105);
 		this.cmdClose.Name = "cmdClose";
+		this.helpProvider1.SetShowHelp(this.cmdClose, true);
 		this.cmdClose.Size = new Size(95, 37);
 		this.cmdClose.TabIndex = 2;
 		this.cmdClose.Text = "Close";
@@ -108,28 +111,34 @@ partial class frmDHCPWarning {
 		this.pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
 		this.pictureBox1.TabIndex = 1;
 		this.pictureBox1.TabStop = false;
-		// 
+		//
 		// chkSuppressMessages
-		// 
+		//
 		this.chkSuppressMessages.AutoSize = true;
+		this.helpProvider1.SetHelpKeyword(this.chkSuppressMessages, "first-use-warning");
+		this.helpProvider1.SetHelpNavigator(this.chkSuppressMessages, HelpNavigator.Topic);
 		this.chkSuppressMessages.Location = new Point(3, 151);
 		this.chkSuppressMessages.Name = "chkSuppressMessages";
+		this.helpProvider1.SetShowHelp(this.chkSuppressMessages, true);
 		this.chkSuppressMessages.Size = new Size(186, 19);
 		this.chkSuppressMessages.TabIndex = 4;
 		this.chkSuppressMessages.Text = "Don't show this warning again";
 		this.chkSuppressMessages.UseVisualStyleBackColor = true;
 		this.chkSuppressMessages.CheckedChanged += this.chkSuppressMessages_CheckedChanged;
-		// 
+		//
 		// frmDHCPWarning
-		// 
+		//
 		this.AutoScaleDimensions = new SizeF(7F, 15F);
 		this.AutoScaleMode = AutoScaleMode.Font;
 		this.ClientSize = new Size(444, 173);
 		this.Controls.Add(this.tableLayoutPanel1);
 		this.FormBorderStyle = FormBorderStyle.FixedDialog;
+		this.helpProvider1.SetHelpKeyword(this, "first-use-warning");
+		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
 		this.MaximizeBox = false;
 		this.MinimizeBox = false;
 		this.Name = "frmDHCPWarning";
+		this.helpProvider1.SetShowHelp(this, true);
 		this.StartPosition = FormStartPosition.CenterParent;
 		this.Text = "Warning";
 		this.tableLayoutPanel1.ResumeLayout(false);

@@ -2,6 +2,7 @@ using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 using IPAddressChanger.DHCP_Server;
+using IPAddressChanger.Properties;
 
 namespace IPAddressChanger;
 public partial class frmAddDHCPReservation : Form {
@@ -12,6 +13,7 @@ public partial class frmAddDHCPReservation : Form {
 	private readonly DHCPLease? _editLease;
 	public frmAddDHCPReservation(DHCPServer dhcpServer, frmDebug debugForm, IPAddress rangeStart, IPAddress rangeEnd, DHCPLease? editLease=null) {
 		InitializeComponent();
+		helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 		_dhcpServer = dhcpServer;
 		_debugForm = debugForm;
 		_rangeStart = rangeStart;

@@ -31,10 +31,10 @@ partial class frmAdapterBusy {
 		this.cmdClose = new Button();
 		this.tableLayoutPanel1.SuspendLayout();
 		this.SuspendLayout();
-		//
+		// 
 		// helpProvider1
-		//
-		this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
+		// 
+		this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 		// 
 		// tableLayoutPanel1
 		// 
@@ -92,11 +92,13 @@ partial class frmAdapterBusy {
 		this.CancelButton = this.cmdClose;
 		this.ClientSize = new Size(444, 139);
 		this.Controls.Add(this.tableLayoutPanel1);
-		this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+		this.FormBorderStyle = FormBorderStyle.FixedDialog;
 		this.helpProvider1.SetHelpKeyword(this, "adapter-busy-dialog");
 		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
-		this.helpProvider1.SetShowHelp(this, true);
+		this.MaximizeBox = false;
+		this.MinimizeBox = false;
 		this.Name = "frmAdapterBusy";
+		this.helpProvider1.SetShowHelp(this, true);
 		this.ShowIcon = false;
 		this.ShowInTaskbar = false;
 		this.SizeGripStyle = SizeGripStyle.Hide;

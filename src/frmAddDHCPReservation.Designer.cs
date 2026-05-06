@@ -32,6 +32,7 @@ partial class frmAddDHCPReservation {
 		this.cmdCancel = new Button();
 		this.txtMACAddress = new TextBox();
 		this.txtIPAddress = new TextBox();
+		this.helpProvider1 = new HelpProvider();
 		label1 = new Label();
 		label2 = new Label();
 		this.tableLayoutPanel1.SuspendLayout();
@@ -96,8 +97,11 @@ partial class frmAddDHCPReservation {
 		// cmdOK
 		// 
 		this.cmdOK.Dock = DockStyle.Fill;
+		this.helpProvider1.SetHelpKeyword(this.cmdOK, "addedit-dhcp-reservation");
+		this.helpProvider1.SetHelpNavigator(this.cmdOK, HelpNavigator.Topic);
 		this.cmdOK.Location = new Point(3, 3);
 		this.cmdOK.Name = "cmdOK";
+		this.helpProvider1.SetShowHelp(this.cmdOK, true);
 		this.cmdOK.Size = new Size(94, 28);
 		this.cmdOK.TabIndex = 3;
 		this.cmdOK.Text = "&OK";
@@ -108,8 +112,11 @@ partial class frmAddDHCPReservation {
 		// 
 		this.cmdCancel.DialogResult = DialogResult.Cancel;
 		this.cmdCancel.Dock = DockStyle.Fill;
+		this.helpProvider1.SetHelpKeyword(this.cmdCancel, "addedit-dhcp-reservation");
+		this.helpProvider1.SetHelpNavigator(this.cmdCancel, HelpNavigator.Topic);
 		this.cmdCancel.Location = new Point(103, 3);
 		this.cmdCancel.Name = "cmdCancel";
+		this.helpProvider1.SetShowHelp(this.cmdCancel, true);
 		this.cmdCancel.Size = new Size(94, 28);
 		this.cmdCancel.TabIndex = 2;
 		this.cmdCancel.Text = "&Cancel";
@@ -119,10 +126,13 @@ partial class frmAddDHCPReservation {
 		// 
 		this.txtMACAddress.Dock = DockStyle.Fill;
 		this.txtMACAddress.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+		this.helpProvider1.SetHelpKeyword(this.txtMACAddress, "addedit-dhcp-reservation");
+		this.helpProvider1.SetHelpNavigator(this.txtMACAddress, HelpNavigator.Topic);
 		this.txtMACAddress.Location = new Point(97, 3);
 		this.txtMACAddress.MaxLength = 17;
 		this.txtMACAddress.Name = "txtMACAddress";
 		this.txtMACAddress.PlaceholderText = "11:22:33:44:55:66";
+		this.helpProvider1.SetShowHelp(this.txtMACAddress, true);
 		this.txtMACAddress.Size = new Size(276, 22);
 		this.txtMACAddress.TabIndex = 0;
 		this.txtMACAddress.WordWrap = false;
@@ -131,13 +141,20 @@ partial class frmAddDHCPReservation {
 		// 
 		this.txtIPAddress.Dock = DockStyle.Top;
 		this.txtIPAddress.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+		this.helpProvider1.SetHelpKeyword(this.txtIPAddress, "addedit-dhcp-reservation");
+		this.helpProvider1.SetHelpNavigator(this.txtIPAddress, HelpNavigator.Topic);
 		this.txtIPAddress.Location = new Point(97, 34);
 		this.txtIPAddress.MaxLength = 15;
 		this.txtIPAddress.Name = "txtIPAddress";
 		this.txtIPAddress.PlaceholderText = "10.10.10.10";
+		this.helpProvider1.SetShowHelp(this.txtIPAddress, true);
 		this.txtIPAddress.Size = new Size(276, 22);
 		this.txtIPAddress.TabIndex = 1;
 		this.txtIPAddress.WordWrap = false;
+		// 
+		// helpProvider1
+		// 
+		this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 		// 
 		// frmAddDHCPReservation
 		// 
@@ -149,9 +166,12 @@ partial class frmAddDHCPReservation {
 		this.ControlBox = false;
 		this.Controls.Add(this.tableLayoutPanel1);
 		this.FormBorderStyle = FormBorderStyle.FixedDialog;
+		this.helpProvider1.SetHelpKeyword(this, "addedit-dhcp-reservation");
+		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
 		this.MaximizeBox = false;
 		this.MinimizeBox = false;
 		this.Name = "frmAddDHCPReservation";
+		this.helpProvider1.SetShowHelp(this, true);
 		this.ShowIcon = false;
 		this.ShowInTaskbar = false;
 		this.StartPosition = FormStartPosition.CenterParent;
@@ -170,4 +190,5 @@ partial class frmAddDHCPReservation {
 	private Button cmdCancel;
 	public TextBox txtMACAddress;
 	public TextBox txtIPAddress;
+	private HelpProvider helpProvider1;
 }

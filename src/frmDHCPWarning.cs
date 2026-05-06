@@ -4,6 +4,7 @@ namespace IPAddressChanger;
 public partial class frmDHCPWarning : Form {
 	public frmDHCPWarning() {
 		InitializeComponent();
+		helpProvider1.HelpNamespace = Resources.ReadmeUrl;
 	}
 
 	private void chkSuppressMessages_CheckedChanged(object sender, EventArgs e) {

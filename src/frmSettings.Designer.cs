@@ -443,10 +443,13 @@
 			this.cboSaveLeases.Anchor = AnchorStyles.Left;
 			this.cboSaveLeases.DropDownStyle = ComboBoxStyle.DropDownList;
 			this.cboSaveLeases.FormattingEnabled = true;
+			this.helpProvider1.SetHelpKeyword(this.cboSaveLeases, "save-dhcp-leases");
+			this.helpProvider1.SetHelpNavigator(this.cboSaveLeases, HelpNavigator.Topic);
 			this.cboSaveLeases.Items.AddRange(new object[] { "Only save reserved addresses", "Save reserved and automatic addresses" });
 			this.cboSaveLeases.Location = new Point(216, 196);
 			this.cboSaveLeases.Margin = new Padding(2);
 			this.cboSaveLeases.Name = "cboSaveLeases";
+			this.helpProvider1.SetShowHelp(this.cboSaveLeases, true);
 			this.cboSaveLeases.Size = new Size(302, 23);
 			this.cboSaveLeases.TabIndex = 10;
 			this.cboSaveLeases.SelectedIndexChanged += this.cboSaveLeases_SelectedIndexChanged;
@@ -455,8 +458,11 @@
 			// 
 			this.chkDHCPPreflightCheck.Anchor = AnchorStyles.Left;
 			this.chkDHCPPreflightCheck.AutoSize = true;
+			this.helpProvider1.SetHelpKeyword(this.chkDHCPPreflightCheck, "dhcp-discover-preflight-check");
+			this.helpProvider1.SetHelpNavigator(this.chkDHCPPreflightCheck, HelpNavigator.Topic);
 			this.chkDHCPPreflightCheck.Location = new Point(217, 233);
 			this.chkDHCPPreflightCheck.Name = "chkDHCPPreflightCheck";
+			this.helpProvider1.SetShowHelp(this.chkDHCPPreflightCheck, true);
 			this.chkDHCPPreflightCheck.Size = new Size(15, 14);
 			this.chkDHCPPreflightCheck.TabIndex = 11;
 			this.chkDHCPPreflightCheck.UseVisualStyleBackColor = true;
@@ -464,7 +470,7 @@
 			// 
 			// helpProvider1
 			// 
-			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
+			this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 			// 
 			// frmSettings
 			// 

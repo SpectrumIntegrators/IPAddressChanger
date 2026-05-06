@@ -113,7 +113,7 @@
 			// 
 			// helpProvider1
 			// 
-			this.helpProvider1.HelpNamespace = "https://spectrumintegrators.github.io/IPAddressChanger/";
+			this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 			// 
 			// frmDebug
 			// 

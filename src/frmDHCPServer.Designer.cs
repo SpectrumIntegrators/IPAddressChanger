@@ -65,6 +65,8 @@ partial class frmDHCPServer
 		this.lblEnableDHCPServer = new Label();
 		this.chkEnableDHCPServer = new CheckBox();
 		this.cmdDHCPProbe = new Button();
+		this.cmdRefreshAdapters = new Button();
+		this.helpProvider1 = new HelpProvider();
 		tableLayoutPanel1 = new TableLayoutPanel();
 		columnHeader1 = new ColumnHeader();
 		columnHeader2 = new ColumnHeader();
@@ -100,9 +102,12 @@ partial class frmDHCPServer
 		// 
 		// tsDHCPLeases
 		// 
+		this.helpProvider1.SetHelpKeyword(this.tsDHCPLeases, "tool-bar");
+		this.helpProvider1.SetHelpNavigator(this.tsDHCPLeases, HelpNavigator.Topic);
 		this.tsDHCPLeases.Items.AddRange(new ToolStripItem[] { this.tsbAddCustomReservation, this.tsbDeleteLease, this.tsbEditLease });
 		this.tsDHCPLeases.Location = new Point(0, 105);
 		this.tsDHCPLeases.Name = "tsDHCPLeases";
+		this.helpProvider1.SetShowHelp(this.tsDHCPLeases, true);
 		this.tsDHCPLeases.Size = new Size(800, 25);
 		this.tsDHCPLeases.TabIndex = 7;
 		this.tsDHCPLeases.TabStop = true;
@@ -146,8 +151,11 @@ partial class frmDHCPServer
 		this.lsvDHCPLeases.ContextMenuStrip = this.cmsLeases;
 		this.lsvDHCPLeases.Dock = DockStyle.Fill;
 		this.lsvDHCPLeases.FullRowSelect = true;
+		this.helpProvider1.SetHelpKeyword(this.lsvDHCPLeases, "dhcp-lease-list");
+		this.helpProvider1.SetHelpNavigator(this.lsvDHCPLeases, HelpNavigator.Topic);
 		this.lsvDHCPLeases.Location = new Point(3, 133);
 		this.lsvDHCPLeases.Name = "lsvDHCPLeases";
+		this.helpProvider1.SetShowHelp(this.lsvDHCPLeases, true);
 		this.lsvDHCPLeases.Size = new Size(794, 314);
 		this.lsvDHCPLeases.TabIndex = 8;
 		this.lsvDHCPLeases.UseCompatibleStateImageBehavior = false;
@@ -188,8 +196,11 @@ partial class frmDHCPServer
 		// 
 		// cmsLeases
 		// 
+		this.helpProvider1.SetHelpKeyword(this.cmsLeases, "lease-context-menu");
+		this.helpProvider1.SetHelpNavigator(this.cmsLeases, HelpNavigator.Topic);
 		this.cmsLeases.Items.AddRange(new ToolStripItem[] { this.tsmiCopyLease, this.tsmiEditLease, this.toolStripMenuItem1, this.tsmiDeleteLease });
 		this.cmsLeases.Name = "cmsLeases";
+		this.helpProvider1.SetShowHelp(this.cmsLeases, true);
 		this.cmsLeases.Size = new Size(108, 76);
 		this.cmsLeases.Opening += this.cmsLeases_Opening;
 		// 
@@ -231,7 +242,8 @@ partial class frmDHCPServer
 		tableLayoutPanel2.Controls.Add(this.label2, 0, 1);
 		tableLayoutPanel2.Controls.Add(this.lblEnableDHCPServer, 0, 2);
 		tableLayoutPanel2.Controls.Add(this.chkEnableDHCPServer, 1, 2);
-		tableLayoutPanel2.Controls.Add(this.cmdDHCPProbe, 2, 0);
+		tableLayoutPanel2.Controls.Add(this.cmdDHCPProbe, 2, 1);
+		tableLayoutPanel2.Controls.Add(this.cmdRefreshAdapters, 2, 0);
 		tableLayoutPanel2.Dock = DockStyle.Fill;
 		tableLayoutPanel2.Location = new Point(3, 3);
 		tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -257,8 +269,11 @@ partial class frmDHCPServer
 		this.cboAdapters.Dock = DockStyle.Fill;
 		this.cboAdapters.DropDownStyle = ComboBoxStyle.DropDownList;
 		this.cboAdapters.FormattingEnabled = true;
+		this.helpProvider1.SetHelpKeyword(this.cboAdapters, "adapter-selection");
+		this.helpProvider1.SetHelpNavigator(this.cboAdapters, HelpNavigator.Topic);
 		this.cboAdapters.Location = new Point(83, 3);
 		this.cboAdapters.Name = "cboAdapters";
+		this.helpProvider1.SetShowHelp(this.cboAdapters, true);
 		this.cboAdapters.Size = new Size(599, 23);
 		this.cboAdapters.TabIndex = 0;
 		this.cboAdapters.SelectedIndexChanged += this.cboAdapters_SelectedIndexChanged;
@@ -294,50 +309,65 @@ partial class frmDHCPServer
 		// txtAddressOctet4
 		// 
 		this.txtAddressOctet4.Font = new Font("Consolas", 9F);
+		this.helpProvider1.SetHelpKeyword(this.txtAddressOctet4, "address-and-prefix-entry");
+		this.helpProvider1.SetHelpNavigator(this.txtAddressOctet4, HelpNavigator.Topic);
 		this.txtAddressOctet4.Location = new Point(246, 3);
 		this.txtAddressOctet4.MaxLength = 3;
 		this.txtAddressOctet4.Name = "txtAddressOctet4";
 		this.txtAddressOctet4.PlaceholderText = "255";
+		this.helpProvider1.SetShowHelp(this.txtAddressOctet4, true);
 		this.txtAddressOctet4.Size = new Size(55, 22);
 		this.txtAddressOctet4.TabIndex = 4;
 		// 
 		// txtAddressOctet3
 		// 
 		this.txtAddressOctet3.Font = new Font("Consolas", 9F);
+		this.helpProvider1.SetHelpKeyword(this.txtAddressOctet3, "address-and-prefix-entry");
+		this.helpProvider1.SetHelpNavigator(this.txtAddressOctet3, HelpNavigator.Topic);
 		this.txtAddressOctet3.Location = new Point(165, 3);
 		this.txtAddressOctet3.MaxLength = 3;
 		this.txtAddressOctet3.Name = "txtAddressOctet3";
 		this.txtAddressOctet3.PlaceholderText = "255";
+		this.helpProvider1.SetShowHelp(this.txtAddressOctet3, true);
 		this.txtAddressOctet3.Size = new Size(55, 22);
 		this.txtAddressOctet3.TabIndex = 3;
 		// 
 		// txtAddressOctet2
 		// 
 		this.txtAddressOctet2.Font = new Font("Consolas", 9F);
+		this.helpProvider1.SetHelpKeyword(this.txtAddressOctet2, "address-and-prefix-entry");
+		this.helpProvider1.SetHelpNavigator(this.txtAddressOctet2, HelpNavigator.Topic);
 		this.txtAddressOctet2.Location = new Point(84, 3);
 		this.txtAddressOctet2.MaxLength = 3;
 		this.txtAddressOctet2.Name = "txtAddressOctet2";
 		this.txtAddressOctet2.PlaceholderText = "255";
+		this.helpProvider1.SetShowHelp(this.txtAddressOctet2, true);
 		this.txtAddressOctet2.Size = new Size(55, 22);
 		this.txtAddressOctet2.TabIndex = 2;
 		// 
 		// txtAddressOctet1
 		// 
 		this.txtAddressOctet1.Font = new Font("Consolas", 9F);
+		this.helpProvider1.SetHelpKeyword(this.txtAddressOctet1, "address-and-prefix-entry");
+		this.helpProvider1.SetHelpNavigator(this.txtAddressOctet1, HelpNavigator.Topic);
 		this.txtAddressOctet1.Location = new Point(3, 3);
 		this.txtAddressOctet1.MaxLength = 3;
 		this.txtAddressOctet1.Name = "txtAddressOctet1";
 		this.txtAddressOctet1.PlaceholderText = "255";
+		this.helpProvider1.SetShowHelp(this.txtAddressOctet1, true);
 		this.txtAddressOctet1.Size = new Size(55, 22);
 		this.txtAddressOctet1.TabIndex = 1;
 		// 
 		// txtPrefixLength
 		// 
 		this.txtPrefixLength.Font = new Font("Consolas", 9F);
+		this.helpProvider1.SetHelpKeyword(this.txtPrefixLength, "address-and-prefix-entry");
+		this.helpProvider1.SetHelpNavigator(this.txtPrefixLength, HelpNavigator.Topic);
 		this.txtPrefixLength.Location = new Point(327, 3);
 		this.txtPrefixLength.MaxLength = 2;
 		this.txtPrefixLength.Name = "txtPrefixLength";
 		this.txtPrefixLength.PlaceholderText = "32";
+		this.helpProvider1.SetShowHelp(this.txtPrefixLength, true);
 		this.txtPrefixLength.Size = new Size(56, 22);
 		this.txtPrefixLength.TabIndex = 5;
 		// 
@@ -409,8 +439,11 @@ partial class frmDHCPServer
 		// 
 		this.chkEnableDHCPServer.Anchor = AnchorStyles.Left;
 		this.chkEnableDHCPServer.AutoSize = true;
+		this.helpProvider1.SetHelpKeyword(this.chkEnableDHCPServer, "enable-dhcp-server");
+		this.helpProvider1.SetHelpNavigator(this.chkEnableDHCPServer, HelpNavigator.Topic);
 		this.chkEnableDHCPServer.Location = new Point(83, 74);
 		this.chkEnableDHCPServer.Name = "chkEnableDHCPServer";
+		this.helpProvider1.SetShowHelp(this.chkEnableDHCPServer, true);
 		this.chkEnableDHCPServer.Size = new Size(15, 14);
 		this.chkEnableDHCPServer.TabIndex = 6;
 		this.chkEnableDHCPServer.UseVisualStyleBackColor = true;
@@ -419,15 +452,35 @@ partial class frmDHCPServer
 		// 
 		// cmdDHCPProbe
 		// 
-		this.cmdDHCPProbe.Dock = DockStyle.Fill;
 		this.cmdDHCPProbe.Enabled = false;
-		this.cmdDHCPProbe.Location = new Point(688, 3);
+		this.helpProvider1.SetHelpKeyword(this.cmdDHCPProbe, "dhcp-discover-preflight-check");
+		this.helpProvider1.SetHelpNavigator(this.cmdDHCPProbe, HelpNavigator.Topic);
+		this.cmdDHCPProbe.Location = new Point(688, 35);
 		this.cmdDHCPProbe.Name = "cmdDHCPProbe";
+		this.helpProvider1.SetShowHelp(this.cmdDHCPProbe, true);
 		this.cmdDHCPProbe.Size = new Size(103, 26);
 		this.cmdDHCPProbe.TabIndex = 7;
 		this.cmdDHCPProbe.Text = "Probe";
 		this.cmdDHCPProbe.UseVisualStyleBackColor = true;
 		this.cmdDHCPProbe.Click += this.cmdDHCPProbe_Click;
+		// 
+		// cmdRefreshAdapters
+		// 
+		this.cmdRefreshAdapters.Dock = DockStyle.Fill;
+		this.helpProvider1.SetHelpKeyword(this.cmdRefreshAdapters, "adapter-selection");
+		this.helpProvider1.SetHelpNavigator(this.cmdRefreshAdapters, HelpNavigator.Topic);
+		this.cmdRefreshAdapters.Location = new Point(688, 3);
+		this.cmdRefreshAdapters.Name = "cmdRefreshAdapters";
+		this.helpProvider1.SetShowHelp(this.cmdRefreshAdapters, true);
+		this.cmdRefreshAdapters.Size = new Size(103, 26);
+		this.cmdRefreshAdapters.TabIndex = 8;
+		this.cmdRefreshAdapters.Text = "Refresh";
+		this.cmdRefreshAdapters.UseVisualStyleBackColor = true;
+		this.cmdRefreshAdapters.Click += this.cmdRefreshAdapters_Click;
+		// 
+		// helpProvider1
+		// 
+		this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 		// 
 		// frmDHCPServer
 		// 
@@ -435,7 +488,10 @@ partial class frmDHCPServer
 		this.AutoScaleMode = AutoScaleMode.Font;
 		this.ClientSize = new Size(800, 450);
 		this.Controls.Add(tableLayoutPanel1);
+		this.helpProvider1.SetHelpKeyword(this, "dhcp-server-1");
+		this.helpProvider1.SetHelpNavigator(this, HelpNavigator.Topic);
 		this.Name = "frmDHCPServer";
+		this.helpProvider1.SetShowHelp(this, true);
 		this.Text = "DHCP Server";
 		this.FormClosing += this.frmDHCPServer_FormClosing;
 		this.Load += this.frmDHCPServer_Load;
@@ -478,4 +534,6 @@ partial class frmDHCPServer
 	private ToolStripMenuItem tsmiDeleteLease;
 	private ToolStripButton tsbEditLease;
 	private Button cmdDHCPProbe;
+	private HelpProvider helpProvider1;
+	private Button cmdRefreshAdapters;
 }

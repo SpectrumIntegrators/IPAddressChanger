@@ -332,7 +332,9 @@ The first time the DHCP Server window is opened in a session, a warning appears 
 ### Adapter Selection
 The **Adapter** dropdown lists all enabled, connected network adapters and chooses which adapter the DHCP server will bind to. The choice is intentionally **not** saved across launches; you'll need to pick the adapter every time you open the window. Two reasons: USB-Ethernet adapters often come and go (a saved choice would frequently be wrong), and forcing the user to pick the adapter every time is a deliberate guardrail against accidentally binding the DHCP server to the wrong network on different sites.
 
-The dropdown is disabled while the server is running. To switch adapters, [disable the server](#enable-dhcp-server) first.
+The **Refresh** button next to the dropdown re-queries the system for the current list of adapters. Useful when you've plugged in a USB-Ethernet adapter (or otherwise changed the adapter inventory) after opening the DHCP Server window — without a refresh, the dropdown still shows the snapshot taken at form open.
+
+The dropdown and Refresh button are both disabled while the server is running. To switch adapters, [disable the server](#enable-dhcp-server) first.
 
 ### Address and Prefix Entry
 The four octet textboxes plus the prefix-length textbox specify the IP address the server will bind to and the subnet it serves. They behave as a single logical field for entry: typing `.`, `/`, or `\` advances focus to the next box, so you can enter `10.0.0.1/24`, `10/0/0/1/24`, or whatever feels natural. Pressing Backspace on an empty box jumps back to the previous box and trims a character off the end of its content. Auto-advance after typing a third digit is intentionally **not** done; the user controls the cursor.

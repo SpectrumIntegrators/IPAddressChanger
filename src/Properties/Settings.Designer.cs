@@ -334,5 +334,17 @@ namespace IPAddressChanger.Properties {
                 this["DHCPMaxBindAttempts"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DHCPServerSelectedAdapterId {
+            get {
+                return ((string)(this["DHCPServerSelectedAdapterId"]));
+            }
+            set {
+                this["DHCPServerSelectedAdapterId"] = value;
+            }
+        }
     }
 }
