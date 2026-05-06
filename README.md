@@ -579,7 +579,7 @@ The software isn't digitally signed, so the UAC prompt shows "unknown publisher.
 If you downloaded this file from the Internet, there's a good chance you'll see the Windows SmartScreen warning saying "Windows has protected your PC." This is because the application isn't digitally signed and known to be safe by Microsoft. The path to fixing this is too long and expensive for an in-house tool, so you'll just have to "trust me, bro."
 
 ## Reporting Bugs
-The fastest way to send feedback is the [Feedback](#feedback) toolbar button on the main window to open a browser to the bug report form. The form is at https://forms.zoho.com/spectrumintegrators/form/IPAddressChangerFeedback to go there directly.
+The fastest way to send feedback is the [Feedback](#feedback) toolbar button on the main window to open a browser to the bug report form. Using this method includes the software version and build information. To reach the form directly, go to https://forms.zoho.com/spectrumintegrators/form/IPAddressChangerFeedback.
 
 If you can include the stack trace and the debug log when something goes wrong, the bug becomes a *lot* easier to fix.
 

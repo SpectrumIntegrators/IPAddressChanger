@@ -8,7 +8,6 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace IPAddressChanger {
 
@@ -41,6 +40,8 @@ namespace IPAddressChanger {
 		private Stopwatch? startupStopwatch = new(); // stopwatch for profiling program start
 		private Stopwatch refreshAdaptersStopwatch = new(); // stopwatch for profiling network adapters refresh
 		private Stopwatch refreshAdapterDetailsStopwatch = new(); // Stopwatch for profiling adapter details refresh
+
+
 
 
 		public frmMain() {
@@ -964,7 +965,7 @@ namespace IPAddressChanger {
 			ProcessStartInfo psi = new() {
 				UseShellExecute = true,
 				Verb = "open",
-				FileName = Resources.FeedbackURL
+				FileName = $"{Resources.FeedbackURL}?ver={Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "UNKNOWN"}&buildDate={BuildInfo.CompilationTimestampUtc}"
 			};
 			try {
 				Process.Start(psi);
