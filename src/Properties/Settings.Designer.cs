@@ -346,5 +346,41 @@ namespace IPAddressChanger.Properties {
                 this["DHCPServerSelectedAdapterId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DHCPAutoPool {
+            get {
+                return ((bool)(this["DHCPAutoPool"]));
+            }
+            set {
+                this["DHCPAutoPool"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DHCPCustomPoolStart {
+            get {
+                return ((string)(this["DHCPCustomPoolStart"]));
+            }
+            set {
+                this["DHCPCustomPoolStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DHCPCustomPoolSize {
+            get {
+                return ((int)(this["DHCPCustomPoolSize"]));
+            }
+            set {
+                this["DHCPCustomPoolSize"] = value;
+            }
+        }
     }
 }

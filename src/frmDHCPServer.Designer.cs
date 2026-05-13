@@ -40,6 +40,9 @@ partial class frmDHCPServer
 		ColumnHeader columnHeader6;
 		TableLayoutPanel tableLayoutPanel2;
 		Label label1;
+		Label label7;
+		Label label8;
+		Label label9;
 		this.tsDHCPLeases = new ToolStrip();
 		this.tsbAddCustomReservation = new ToolStripButton();
 		this.tsbDeleteLease = new ToolStripButton();
@@ -62,10 +65,15 @@ partial class frmDHCPServer
 		this.label5 = new Label();
 		this.label6 = new Label();
 		this.label2 = new Label();
-		this.lblEnableDHCPServer = new Label();
-		this.chkEnableDHCPServer = new CheckBox();
 		this.cmdDHCPProbe = new Button();
 		this.cmdRefreshAdapters = new Button();
+		this.lblEnableDHCPServer = new Label();
+		this.chkEnableDHCPServer = new CheckBox();
+		this.tableLayoutPanel4 = new TableLayoutPanel();
+		this.txtPoolSize = new TextBox();
+		this.txtPoolStartAddress = new TextBox();
+		this.optAutoPool = new RadioButton();
+		this.optCustomPool = new RadioButton();
 		this.helpProvider1 = new HelpProvider();
 		tableLayoutPanel1 = new TableLayoutPanel();
 		columnHeader1 = new ColumnHeader();
@@ -76,11 +84,15 @@ partial class frmDHCPServer
 		columnHeader6 = new ColumnHeader();
 		tableLayoutPanel2 = new TableLayoutPanel();
 		label1 = new Label();
+		label7 = new Label();
+		label8 = new Label();
+		label9 = new Label();
 		tableLayoutPanel1.SuspendLayout();
 		this.tsDHCPLeases.SuspendLayout();
 		this.cmsLeases.SuspendLayout();
 		tableLayoutPanel2.SuspendLayout();
 		this.tableLayoutPanel3.SuspendLayout();
+		this.tableLayoutPanel4.SuspendLayout();
 		this.SuspendLayout();
 		// 
 		// tableLayoutPanel1
@@ -94,7 +106,7 @@ partial class frmDHCPServer
 		tableLayoutPanel1.Location = new Point(0, 0);
 		tableLayoutPanel1.Name = "tableLayoutPanel1";
 		tableLayoutPanel1.RowCount = 3;
-		tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 105F));
+		tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 140F));
 		tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
 		tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 		tableLayoutPanel1.Size = new Size(800, 450);
@@ -105,7 +117,7 @@ partial class frmDHCPServer
 		this.helpProvider1.SetHelpKeyword(this.tsDHCPLeases, "tool-bar");
 		this.helpProvider1.SetHelpNavigator(this.tsDHCPLeases, HelpNavigator.Topic);
 		this.tsDHCPLeases.Items.AddRange(new ToolStripItem[] { this.tsbAddCustomReservation, this.tsbDeleteLease, this.tsbEditLease });
-		this.tsDHCPLeases.Location = new Point(0, 105);
+		this.tsDHCPLeases.Location = new Point(0, 140);
 		this.tsDHCPLeases.Name = "tsDHCPLeases";
 		this.helpProvider1.SetShowHelp(this.tsDHCPLeases, true);
 		this.tsDHCPLeases.Size = new Size(800, 25);
@@ -153,10 +165,10 @@ partial class frmDHCPServer
 		this.lsvDHCPLeases.FullRowSelect = true;
 		this.helpProvider1.SetHelpKeyword(this.lsvDHCPLeases, "dhcp-lease-list");
 		this.helpProvider1.SetHelpNavigator(this.lsvDHCPLeases, HelpNavigator.Topic);
-		this.lsvDHCPLeases.Location = new Point(3, 133);
+		this.lsvDHCPLeases.Location = new Point(3, 168);
 		this.lsvDHCPLeases.Name = "lsvDHCPLeases";
 		this.helpProvider1.SetShowHelp(this.lsvDHCPLeases, true);
-		this.lsvDHCPLeases.Size = new Size(794, 314);
+		this.lsvDHCPLeases.Size = new Size(794, 279);
 		this.lsvDHCPLeases.TabIndex = 8;
 		this.lsvDHCPLeases.UseCompatibleStateImageBehavior = false;
 		this.lsvDHCPLeases.View = View.Details;
@@ -240,25 +252,28 @@ partial class frmDHCPServer
 		tableLayoutPanel2.Controls.Add(this.cboAdapters, 1, 0);
 		tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 1, 1);
 		tableLayoutPanel2.Controls.Add(this.label2, 0, 1);
-		tableLayoutPanel2.Controls.Add(this.lblEnableDHCPServer, 0, 2);
-		tableLayoutPanel2.Controls.Add(this.chkEnableDHCPServer, 1, 2);
 		tableLayoutPanel2.Controls.Add(this.cmdDHCPProbe, 2, 1);
 		tableLayoutPanel2.Controls.Add(this.cmdRefreshAdapters, 2, 0);
+		tableLayoutPanel2.Controls.Add(this.lblEnableDHCPServer, 0, 3);
+		tableLayoutPanel2.Controls.Add(this.chkEnableDHCPServer, 1, 3);
+		tableLayoutPanel2.Controls.Add(label7, 0, 2);
+		tableLayoutPanel2.Controls.Add(this.tableLayoutPanel4, 1, 2);
 		tableLayoutPanel2.Dock = DockStyle.Fill;
 		tableLayoutPanel2.Location = new Point(3, 3);
 		tableLayoutPanel2.Name = "tableLayoutPanel2";
-		tableLayoutPanel2.RowCount = 3;
-		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-		tableLayoutPanel2.Size = new Size(794, 99);
+		tableLayoutPanel2.RowCount = 4;
+		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+		tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+		tableLayoutPanel2.Size = new Size(794, 134);
 		tableLayoutPanel2.TabIndex = 2;
 		// 
 		// label1
 		// 
 		label1.Anchor = AnchorStyles.Right;
 		label1.AutoSize = true;
-		label1.Location = new Point(28, 8);
+		label1.Location = new Point(28, 9);
 		label1.Name = "label1";
 		label1.Size = new Size(49, 15);
 		label1.TabIndex = 0;
@@ -299,7 +314,7 @@ partial class frmDHCPServer
 		this.tableLayoutPanel3.Controls.Add(this.label4, 3, 0);
 		this.tableLayoutPanel3.Controls.Add(this.label5, 5, 0);
 		this.tableLayoutPanel3.Controls.Add(this.label6, 7, 0);
-		this.tableLayoutPanel3.Location = new Point(83, 35);
+		this.tableLayoutPanel3.Location = new Point(83, 36);
 		this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 		this.tableLayoutPanel3.RowCount = 1;
 		this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -419,43 +434,18 @@ partial class frmDHCPServer
 		// 
 		this.label2.Anchor = AnchorStyles.Right;
 		this.label2.AutoSize = true;
-		this.label2.Location = new Point(28, 40);
+		this.label2.Location = new Point(28, 42);
 		this.label2.Name = "label2";
 		this.label2.Size = new Size(49, 15);
 		this.label2.TabIndex = 3;
 		this.label2.Text = "Address";
-		// 
-		// lblEnableDHCPServer
-		// 
-		this.lblEnableDHCPServer.Anchor = AnchorStyles.Right;
-		this.lblEnableDHCPServer.AutoSize = true;
-		this.lblEnableDHCPServer.Location = new Point(35, 74);
-		this.lblEnableDHCPServer.Name = "lblEnableDHCPServer";
-		this.lblEnableDHCPServer.Size = new Size(42, 15);
-		this.lblEnableDHCPServer.TabIndex = 4;
-		this.lblEnableDHCPServer.Text = "Enable";
-		// 
-		// chkEnableDHCPServer
-		// 
-		this.chkEnableDHCPServer.Anchor = AnchorStyles.Left;
-		this.chkEnableDHCPServer.AutoSize = true;
-		this.helpProvider1.SetHelpKeyword(this.chkEnableDHCPServer, "enable-dhcp-server");
-		this.helpProvider1.SetHelpNavigator(this.chkEnableDHCPServer, HelpNavigator.Topic);
-		this.chkEnableDHCPServer.Location = new Point(83, 74);
-		this.chkEnableDHCPServer.Name = "chkEnableDHCPServer";
-		this.helpProvider1.SetShowHelp(this.chkEnableDHCPServer, true);
-		this.chkEnableDHCPServer.Size = new Size(15, 14);
-		this.chkEnableDHCPServer.TabIndex = 6;
-		this.chkEnableDHCPServer.UseVisualStyleBackColor = true;
-		this.chkEnableDHCPServer.CheckedChanged += this.chkEnableDHCPServer_CheckedChanged;
-		this.chkEnableDHCPServer.Click += this.chkEnableDHCPServer_Click;
 		// 
 		// cmdDHCPProbe
 		// 
 		this.cmdDHCPProbe.Enabled = false;
 		this.helpProvider1.SetHelpKeyword(this.cmdDHCPProbe, "dhcp-discover-preflight-check");
 		this.helpProvider1.SetHelpNavigator(this.cmdDHCPProbe, HelpNavigator.Topic);
-		this.cmdDHCPProbe.Location = new Point(688, 35);
+		this.cmdDHCPProbe.Location = new Point(688, 36);
 		this.cmdDHCPProbe.Name = "cmdDHCPProbe";
 		this.helpProvider1.SetShowHelp(this.cmdDHCPProbe, true);
 		this.cmdDHCPProbe.Size = new Size(103, 26);
@@ -472,11 +462,148 @@ partial class frmDHCPServer
 		this.cmdRefreshAdapters.Location = new Point(688, 3);
 		this.cmdRefreshAdapters.Name = "cmdRefreshAdapters";
 		this.helpProvider1.SetShowHelp(this.cmdRefreshAdapters, true);
-		this.cmdRefreshAdapters.Size = new Size(103, 26);
+		this.cmdRefreshAdapters.Size = new Size(103, 27);
 		this.cmdRefreshAdapters.TabIndex = 8;
 		this.cmdRefreshAdapters.Text = "Refresh";
 		this.cmdRefreshAdapters.UseVisualStyleBackColor = true;
 		this.cmdRefreshAdapters.Click += this.cmdRefreshAdapters_Click;
+		// 
+		// lblEnableDHCPServer
+		// 
+		this.lblEnableDHCPServer.Anchor = AnchorStyles.Right;
+		this.lblEnableDHCPServer.AutoSize = true;
+		this.lblEnableDHCPServer.Location = new Point(35, 109);
+		this.lblEnableDHCPServer.Name = "lblEnableDHCPServer";
+		this.lblEnableDHCPServer.Size = new Size(42, 15);
+		this.lblEnableDHCPServer.TabIndex = 4;
+		this.lblEnableDHCPServer.Text = "Enable";
+		// 
+		// chkEnableDHCPServer
+		// 
+		this.chkEnableDHCPServer.Anchor = AnchorStyles.Left;
+		this.chkEnableDHCPServer.AutoSize = true;
+		this.helpProvider1.SetHelpKeyword(this.chkEnableDHCPServer, "enable-dhcp-server");
+		this.helpProvider1.SetHelpNavigator(this.chkEnableDHCPServer, HelpNavigator.Topic);
+		this.chkEnableDHCPServer.Location = new Point(83, 109);
+		this.chkEnableDHCPServer.Name = "chkEnableDHCPServer";
+		this.helpProvider1.SetShowHelp(this.chkEnableDHCPServer, true);
+		this.chkEnableDHCPServer.Size = new Size(15, 14);
+		this.chkEnableDHCPServer.TabIndex = 6;
+		this.chkEnableDHCPServer.UseVisualStyleBackColor = true;
+		this.chkEnableDHCPServer.CheckedChanged += this.chkEnableDHCPServer_CheckedChanged;
+		this.chkEnableDHCPServer.Click += this.chkEnableDHCPServer_Click;
+		// 
+		// label7
+		// 
+		label7.Anchor = AnchorStyles.Right;
+		label7.AutoSize = true;
+		label7.Location = new Point(46, 75);
+		label7.Name = "label7";
+		label7.Size = new Size(31, 15);
+		label7.TabIndex = 9;
+		label7.Text = "Pool";
+		// 
+		// tableLayoutPanel4
+		// 
+		this.tableLayoutPanel4.ColumnCount = 6;
+		this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+		this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
+		this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
+		this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 75F));
+		this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
+		this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+		this.tableLayoutPanel4.Controls.Add(this.txtPoolSize, 5, 0);
+		this.tableLayoutPanel4.Controls.Add(label8, 4, 0);
+		this.tableLayoutPanel4.Controls.Add(label9, 2, 0);
+		this.tableLayoutPanel4.Controls.Add(this.txtPoolStartAddress, 3, 0);
+		this.tableLayoutPanel4.Controls.Add(this.optAutoPool, 0, 0);
+		this.tableLayoutPanel4.Controls.Add(this.optCustomPool, 1, 0);
+		this.tableLayoutPanel4.Dock = DockStyle.Fill;
+		this.tableLayoutPanel4.Location = new Point(80, 66);
+		this.tableLayoutPanel4.Margin = new Padding(0);
+		this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+		this.tableLayoutPanel4.RowCount = 1;
+		this.tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+		this.tableLayoutPanel4.Size = new Size(605, 33);
+		this.tableLayoutPanel4.TabIndex = 10;
+		// 
+		// txtPoolSize
+		//
+		this.txtPoolSize.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+		this.txtPoolSize.Enabled = false;
+		this.helpProvider1.SetHelpKeyword(this.txtPoolSize, "dhcp-pool");
+		this.helpProvider1.SetHelpNavigator(this.txtPoolSize, HelpNavigator.Topic);
+		this.txtPoolSize.Location = new Point(524, 5);
+		this.txtPoolSize.Name = "txtPoolSize";
+		this.txtPoolSize.PlaceholderText = "50";
+		this.helpProvider1.SetShowHelp(this.txtPoolSize, true);
+		this.txtPoolSize.Size = new Size(78, 23);
+		this.txtPoolSize.TabIndex = 0;
+		// 
+		// label8
+		// 
+		label8.Anchor = AnchorStyles.Right;
+		label8.AutoSize = true;
+		label8.Location = new Point(491, 9);
+		label8.Name = "label8";
+		label8.Size = new Size(27, 15);
+		label8.TabIndex = 1;
+		label8.Text = "Size";
+		// 
+		// label9
+		// 
+		label9.Anchor = AnchorStyles.Right;
+		label9.AutoSize = true;
+		label9.Location = new Point(176, 9);
+		label9.Name = "label9";
+		label9.Size = new Size(31, 15);
+		label9.TabIndex = 2;
+		label9.Text = "Start";
+		// 
+		// txtPoolStartAddress
+		//
+		this.txtPoolStartAddress.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+		this.txtPoolStartAddress.Enabled = false;
+		this.helpProvider1.SetHelpKeyword(this.txtPoolStartAddress, "dhcp-pool");
+		this.helpProvider1.SetHelpNavigator(this.txtPoolStartAddress, HelpNavigator.Topic);
+		this.txtPoolStartAddress.Location = new Point(213, 5);
+		this.txtPoolStartAddress.Name = "txtPoolStartAddress";
+		this.txtPoolStartAddress.PlaceholderText = "0.0.0.0";
+		this.helpProvider1.SetShowHelp(this.txtPoolStartAddress, true);
+		this.txtPoolStartAddress.Size = new Size(245, 23);
+		this.txtPoolStartAddress.TabIndex = 3;
+		// 
+		// optAutoPool
+		//
+		this.optAutoPool.Anchor = AnchorStyles.Left;
+		this.optAutoPool.AutoSize = true;
+		this.optAutoPool.Checked = true;
+		this.helpProvider1.SetHelpKeyword(this.optAutoPool, "dhcp-pool");
+		this.helpProvider1.SetHelpNavigator(this.optAutoPool, HelpNavigator.Topic);
+		this.optAutoPool.Location = new Point(3, 7);
+		this.optAutoPool.Name = "optAutoPool";
+		this.helpProvider1.SetShowHelp(this.optAutoPool, true);
+		this.optAutoPool.Size = new Size(51, 19);
+		this.optAutoPool.TabIndex = 4;
+		this.optAutoPool.TabStop = true;
+		this.optAutoPool.Text = "Auto";
+		this.optAutoPool.UseVisualStyleBackColor = true;
+		this.optAutoPool.CheckedChanged += this.optAutoPool_CheckedChanged;
+		//
+		// optCustomPool
+		//
+		this.optCustomPool.Anchor = AnchorStyles.Left;
+		this.optCustomPool.AutoSize = true;
+		this.helpProvider1.SetHelpKeyword(this.optCustomPool, "dhcp-pool");
+		this.helpProvider1.SetHelpNavigator(this.optCustomPool, HelpNavigator.Topic);
+		this.optCustomPool.Location = new Point(73, 7);
+		this.optCustomPool.Name = "optCustomPool";
+		this.helpProvider1.SetShowHelp(this.optCustomPool, true);
+		this.optCustomPool.Size = new Size(67, 19);
+		this.optCustomPool.TabIndex = 5;
+		this.optCustomPool.Text = "Custom";
+		this.optCustomPool.UseVisualStyleBackColor = true;
+		this.optCustomPool.CheckedChanged += this.optCustomPool_CheckedChanged;
 		// 
 		// helpProvider1
 		// 
@@ -504,6 +631,8 @@ partial class frmDHCPServer
 		tableLayoutPanel2.PerformLayout();
 		this.tableLayoutPanel3.ResumeLayout(false);
 		this.tableLayoutPanel3.PerformLayout();
+		this.tableLayoutPanel4.ResumeLayout(false);
+		this.tableLayoutPanel4.PerformLayout();
 		this.ResumeLayout(false);
 	}
 
@@ -536,4 +665,9 @@ partial class frmDHCPServer
 	private Button cmdDHCPProbe;
 	private HelpProvider helpProvider1;
 	private Button cmdRefreshAdapters;
+	private TableLayoutPanel tableLayoutPanel4;
+	private TextBox txtPoolSize;
+	private TextBox txtPoolStartAddress;
+	private RadioButton optAutoPool;
+	private RadioButton optCustomPool;
 }

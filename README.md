@@ -44,10 +44,13 @@ The ZIP contains a framework-dependent build, so the [.NET 8 Desktop Runtime](ht
     1. [First-Use Warning](#first-use-warning)
     1. [Adapter Selection](#adapter-selection)
     1. [Address and Prefix Entry](#address-and-prefix-entry)
+    1. [DHCP Pool](#dhcp-pool)
     1. [Enable DHCP Server](#enable-dhcp-server)
     1. [DHCP DISCOVER Preflight Check](#dhcp-discover-preflight-check)
+    1. [Adapter Reconfiguration Confirmation](#adapter-reconfiguration-confirmation)
     1. [Address Conflict on Server Start](#address-conflict-on-server-start)
     1. [Reservations Outside the Subnet](#reservations-outside-the-subnet)
+    1. [Server Address Reserved](#server-address-reserved)
     1. [Prefix Length Policy](#prefix-length-policy)
     1. [DHCP Lease List](#dhcp-lease-list)
     1. [Tool Bar](#tool-bar)
@@ -358,13 +361,29 @@ If the entered IP is the network address of the subnet (e.g. `10.0.0.0/24`), it 
 
 The IP address and prefix length are saved across launches and re-populated on the next open of the DHCP Server window. Bounds on the prefix length are documented in [Prefix Length Policy](#prefix-length-policy) below.
 
+### DHCP Pool
+The **Pool** controls choose the range of addresses the server hands out to new clients on DISCOVER. Two modes:
+
+- **Auto** — the pool is the entire subnet host range derived from the [address and prefix](#address-and-prefix-entry). For example, with `10.0.0.1/24` the pool is `10.0.0.1`–`10.0.0.254` (the server's own IP is excluded automatically).
+- **Custom** — you specify a **Start** address and a **Size**, and dynamic leases are handed out only from `Start` through `Start + Size - 1`. This is useful when you want to reserve part of the subnet for static devices outside the DHCP server's allocation. Manual [reservations](#add-reservation) are unaffected by the pool — they can be placed anywhere in the subnet, including outside the custom pool. If the server address is within the custom pool, it will not be assigned to a lease.
+
+Validation, applied when you enable the server:
+- Start must be a valid IPv4 address inside the subnet host range (not the network or broadcast).
+- Size must be a positive integer no larger than **65535**. (Sized as a hard cap — even a `/16` only contains 65534 host addresses.)
+- Start + Size − 1 must not extend past the last host address in the subnet.
+
+The mode, start, and size are saved across launches independently of each other — switching from Custom to Auto preserves the previously-entered Start and Size so you can switch back without re-entering them.
+
+The radio buttons and textboxes are disabled while the server is running. To change the pool, [stop the server](#enable-dhcp-server) first.
+
 ### Enable DHCP Server
 The **Enable DHCP server** checkbox starts and stops the server. Checking it runs through the configuration sequence:
 1. Optional [DISCOVER pre-flight check](#dhcp-discover-preflight-check) (described below).
-2. Disable Windows DHCP client on the bound adapter, if it's currently enabled there. (The DHCP server can't share the adapter with the DHCP client.)
-3. Add the configured IP address and prefix to the adapter, if it isn't already.
-4. Remove any other IPv4 addresses from the adapter, so the DHCP server is the only IPv4 identity on the wire.
-5. Bind the listener socket on UDP port 67. (There's a brief retry loop here — Windows can take a couple of seconds between "address visible in management" and "Bind() works.")
+2. Inspect the adapter's current IPv4 configuration and, if any changes need to be made, [ask the user to confirm](#adapter-reconfiguration-confirmation).
+3. Disable Windows DHCP client on the bound adapter, if it's currently enabled there. (The DHCP server can't share the adapter with the DHCP client.)
+4. Add the configured IP address and prefix to the adapter, if it isn't already.
+5. Remove any other IPv4 addresses from the adapter, so the DHCP server is the only IPv4 identity on the wire.
+6. Bind the listener socket on UDP port 67. (There's a brief retry loop here — Windows can take a couple of seconds between "address visible in management" and "Bind() works.")
 
 Each step shows progress in the [DHCP Server Busy Dialog](#dhcp-server-busy-dialog), and the user can cancel mid-sequence.
 
@@ -384,6 +403,13 @@ A non-responding probe almost always means no DHCP server is reachable on the se
 The probe also can't distinguish an authorized DHCP server from a rogue one. It detects whether *anything* on the segment is willing to issue a lease, not whether that something is supposed to be there. If you knowingly want to run a second server on a segment that already has an authorized one (lab work, controlled testing, replacing an existing server in place), the prompt is just a confirmation step to dismiss — or you can disable the pre-flight entirely from the [Settings Window](#settings-window).
 
 The listen-window duration defaults to 5 seconds, which is appropriate for most networks. If a particular network needs more or less, the duration is exposed as the `DHCPPreflightDuration` value (in seconds) in `user.config` (it is not in the Settings window, it must be edited manually).
+
+### Adapter Reconfiguration Confirmation
+Before applying any changes to the bound adapter, the application checks the adapter's current IPv4 configuration. If anything needs to change to bring up the server — the configured IP isn't present, an existing IP has the wrong prefix length, other IPv4 addresses need to be removed, or the Windows DHCP client needs to be disabled — a prompt lists each change as a bullet and asks whether to continue.
+
+Choosing **No** aborts the start cleanly. The adapter is left exactly as it was, with no changes applied. Choosing **Yes** proceeds with the rest of the start sequence.
+
+If the adapter already has exactly the right IPv4 configuration (the configured address and prefix, nothing else, DHCP already disabled), no prompt appears and the start proceeds straight to the listener bind.
 
 ### Address Conflict on Server Start
 The DISCOVER pre-flight catches *DHCP* servers on the segment, but it can't catch a non-DHCP device that simply happens to have the configured server IP. As a backstop, Windows runs Duplicate Address Detection (DAD) when the application adds the IP to the adapter — sending an ARP probe and watching for replies. If anything answers, the address goes into a `Duplicate` state and the listener bind fails.
@@ -410,6 +436,11 @@ When this is detected during server start, a prompt appears listing how many res
 - **Yes** — drop the out-of-scope reservations and continue starting the server with a clean lease list.
 - **No** — keep them in the list and start the server anyway. They won't break anything, but they won't be reachable until you switch the scope back.
 - **Cancel** — abort the start. The adapter is left untouched.
+
+### Server Address Reserved
+If the IP you've entered for the server is already used by a manual reservation or an existing lease, enabling the server is rejected with a "Could not configure DHCP server" error naming the conflicting MAC, and the debug log records the same message. The adapter is not touched.
+
+To resolve the conflict, either pick a different server IP, or [delete the conflicting reservation/lease](#delete-lease) from the lease list and try again. The reverse direction is already prevented — you can't add a reservation at the server's current IP either (the [Add Reservation](#add-reservation) dialog rejects it as "IP address already reserved").
 
 ### Prefix Length Policy
 By default, the DHCP server accepts prefix lengths from **/8 through /30** when configuring the scope.

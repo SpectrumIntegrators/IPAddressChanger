@@ -437,6 +437,23 @@ namespace IPAddressChanger {
 					debugForm.AddMessage($"Error retrieving DHCP server address from settings: {ex.Message}");
 				}
 
+				// DHCP custom pool — always populate the pool start/size on the server if valid
+				// values are stored, even when DHCPAutoPool is true. Otherwise switching modes in
+				// the form would lose previously-saved values: the form reads its textbox state
+				// from dhcpServer, and SaveSettings writes from there too. ClearCustomPool keeps
+				// the loaded start/size in place and just disables the custom-pool flag.
+				try {
+					if (IPAddress.TryParse(Settings.Default.DHCPCustomPoolStart, out IPAddress? poolStart)
+						&& Settings.Default.DHCPCustomPoolSize > 0) {
+						dhcpServer.SetCustomPool(poolStart, Settings.Default.DHCPCustomPoolSize);
+						if (Settings.Default.DHCPAutoPool) {
+							dhcpServer.ClearCustomPool();
+						}
+					}
+				} catch (Exception ex) {
+					debugForm.AddMessage($"Could not restore custom DHCP pool from settings: {ex.Message}");
+				}
+
 				// DHCP reservations
 				string[] dhcpLeases = (Settings.Default.DHCPLeases ?? "").Split(";", StringSplitOptions.RemoveEmptyEntries);
 				if (dhcpLeases.Length > 0) {
@@ -499,6 +516,13 @@ namespace IPAddressChanger {
 					Settings.Default.DHCPServerSelectedAdapterId = dhcpServer.Adapter.DeviceID;
 				} else {
 					Settings.Default.DHCPServerSelectedAdapterId = "";
+				}
+				Settings.Default.DHCPAutoPool = !dhcpServer.CustomDHCPPool;
+				Settings.Default.DHCPCustomPoolSize = dhcpServer.CustomPoolSize;
+				if (dhcpServer.CustomPoolStart is not null) {
+					Settings.Default.DHCPCustomPoolStart = dhcpServer.CustomPoolStart.ToString();
+				} else {
+					Settings.Default.DHCPCustomPoolStart = "";
 				}
 			} catch (Exception ex) {
 				ShowAndLogError($"Error saving settings: {ex.Message}", "Error Saving Settings");

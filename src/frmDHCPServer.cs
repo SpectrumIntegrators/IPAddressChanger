@@ -123,6 +123,10 @@ public partial class frmDHCPServer : Form {
 			_debugForm.AddMessage("No leases/reservations in the DHCP server, the list will be empty");
 		}
 
+		optAutoPool.Checked = !_dhcpServer.CustomDHCPPool;
+		optCustomPool.Checked = _dhcpServer.CustomDHCPPool;
+		txtPoolStartAddress.Text = _dhcpServer.CustomPoolStart?.ToString() ?? "";
+		txtPoolSize.Text = (_dhcpServer.CustomPoolSize > 0 ? _dhcpServer.CustomPoolSize.ToString() : "");
 
 		RefreshAdapters();
 
@@ -300,9 +304,43 @@ public partial class frmDHCPServer : Form {
 				_debugForm.AddMessage($"Adjusted server address to {serverAddress} (broadcast address is not a valid host)");
 			}
 
+			// Validate the custom pool BEFORE committing it to the server. Done in the user's
+			// units (textboxes) so error messages can point at the field that's wrong.
+			IPAddress? customPoolStart = null;
+			int customPoolSize = 0;
+			if (optCustomPool.Checked) {
+				if (!IPAddress.TryParse(txtPoolStartAddress.Text, out customPoolStart) || customPoolStart.AddressFamily != AddressFamily.InterNetwork) {
+					MessageBox.Show("Custom pool start must be a valid IPv4 address", "Invalid Pool Start", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+					goto EnableDHCPServerBailout;
+				}
+				if (!int.TryParse(txtPoolSize.Text, out customPoolSize) || customPoolSize <= 0) {
+					MessageBox.Show("Custom pool size must be a positive integer", "Invalid Pool Size", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+					goto EnableDHCPServerBailout;
+				}
+				if (customPoolSize > DHCPServer.MAX_POOL_SIZE) {
+					MessageBox.Show($"Custom pool size cannot exceed {DHCPServer.MAX_POOL_SIZE} addresses", "Invalid Pool Size", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+					goto EnableDHCPServerBailout;
+				}
+				byte[] poolBytes = customPoolStart.GetAddressBytes();
+				uint poolStartInt = (uint)((poolBytes[0] << 24) | (poolBytes[1] << 16) | (poolBytes[2] << 8) | poolBytes[3]);
+				if (poolStartInt <= network || poolStartInt >= broadcast) {
+					MessageBox.Show($"Custom pool start {customPoolStart} is not within the subnet host range", "Invalid Pool Start", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+					goto EnableDHCPServerBailout;
+				}
+				if (poolStartInt + (uint)(customPoolSize - 1) >= broadcast) {
+					MessageBox.Show($"Custom pool of size {customPoolSize} starting at {customPoolStart} would extend past the last host address in the subnet", "Invalid Pool Size", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+					goto EnableDHCPServerBailout;
+				}
+			}
+
 			try {
 				_dhcpServer.SetBoundAdapter(selectedAdapter);
 				_dhcpServer.SetLeaseRange(serverAddress, prefixLength);
+				if (optCustomPool.Checked) {
+					_dhcpServer.SetCustomPool(customPoolStart!, customPoolSize);
+				} else {
+					_dhcpServer.ClearCustomPool();
+				}
 			} catch (Exception ex) {
 				MessageBox.Show($"Could not configure DHCP server: {ex.Message}", "DHCP Server Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_debugForm.AddMessage($"Error configuring DHCP server: {ex.Message}");
@@ -358,6 +396,7 @@ public partial class frmDHCPServer : Form {
 		txtPrefixLength.Enabled = !chkEnableDHCPServer.Checked;
 		cmdDHCPProbe.Enabled = !chkEnableDHCPServer.Checked && (cboAdapters.SelectedIndex >= 0);
 		cmdRefreshAdapters.Enabled = !chkEnableDHCPServer.Checked;
+		UpdatePoolControlsEnabled();
 	}
 
 	private void frmDHCPServer_FormClosing(object sender, FormClosingEventArgs e) {
@@ -399,7 +438,7 @@ public partial class frmDHCPServer : Form {
 			return false;
 		}
 
-		_debugForm.AddMessage($"Starting DHCP server on adapter {_dhcpServer.Adapter.Name} with range {_dhcpServer.RangeStart?.ToString()}-{_dhcpServer.RangeEnd?.ToString()}");
+		_debugForm.AddMessage($"Starting DHCP server on adapter {_dhcpServer.Adapter.Name} with pool {_dhcpServer.PoolStart?.ToString()}-{_dhcpServer.PoolEnd?.ToString()}");
 
 		string desiredAddress = _dhcpServer.Address!.ToString();
 		byte desiredPrefix = (byte)_dhcpServer.PrefixLength!.Value;
@@ -446,30 +485,64 @@ public partial class frmDHCPServer : Form {
 				}
 			}
 
+			// Inspect adapter state FIRST (no mutations), build a single confirmation prompt that
+			// describes every change we're about to make, and bail out early if the user says no.
+			// Doing this before SetDhcpAsync ensures the adapter isn't half-reconfigured if the
+			// user cancels at the prompt.
 			busy.SetStatus("Checking adapter DHCP state");
 			bool boundAdapterDHCPEnabled = await NetworkManager.GetIPv4DhcpEnabledAsync(adapterIndex);
-			if (ct.IsCancellationRequested) return BailCancelled();
-
-			if (boundAdapterDHCPEnabled) {
-				_debugForm.AddMessage("Selected DHCP server adapter has DHCP enabled, we will disable it");
-				busy.SetStatus("Disabling DHCP on adapter");
-				await NetworkManager.SetDhcpAsync(adapterIndex, false);
-			}
 			if (ct.IsCancellationRequested) return BailCancelled();
 
 			busy.SetStatus($"Checking adapter for {desiredAddress}/{desiredPrefix}");
 			List<IPAddressInfo> boundAdapterAddresses = await NetworkManager.GetIPAddressesAsync(adapterIndex);
 			bool adapterHasTheRightAddress = false;
 			bool addressBoundWithDifferentPrefix = false;
+			byte existingPrefix = 0;
+			List<IPAddressInfo> otherIpv4Addresses = [];
 
 			foreach (IPAddressInfo addr in boundAdapterAddresses) {
 				if (addr.AddressFamily != 2) continue; // IPv4 only
-				if (addr.IPAddress != desiredAddress) continue;
-				if (addr.PrefixLength == desiredPrefix) {
-					adapterHasTheRightAddress = true;
+				if (addr.IPAddress == desiredAddress) {
+					if (addr.PrefixLength == desiredPrefix) {
+						adapterHasTheRightAddress = true;
+					} else {
+						addressBoundWithDifferentPrefix = true;
+						existingPrefix = addr.PrefixLength;
+					}
 				} else {
-					addressBoundWithDifferentPrefix = true;
+					otherIpv4Addresses.Add(addr);
 				}
+			}
+			if (ct.IsCancellationRequested) return BailCancelled();
+
+			bool willChangeAdapterAddress = !adapterHasTheRightAddress || addressBoundWithDifferentPrefix || otherIpv4Addresses.Count > 0;
+			if (willChangeAdapterAddress) {
+				List<string> bullets = [];
+				if (addressBoundWithDifferentPrefix) {
+					bullets.Add($"• Change {desiredAddress} from /{existingPrefix} to /{desiredPrefix}");
+				} else if (!adapterHasTheRightAddress) {
+					bullets.Add($"• Add {desiredAddress}/{desiredPrefix}");
+				}
+				foreach (var addr in otherIpv4Addresses) {
+					bullets.Add($"• Remove {addr.IPAddress}/{addr.PrefixLength}");
+				}
+				if (boundAdapterDHCPEnabled) {
+					bullets.Add("• Disable DHCP on this adapter");
+				}
+				string prompt = $"Starting the DHCP server will change the IP configuration on '{_dhcpServer.Adapter!.Name}':\r\n\r\n{string.Join("\r\n", bullets)}\r\n\r\nContinue?";
+				DialogResult answer = MessageBox.Show(busy, prompt, "Confirm Adapter Reconfiguration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (answer != DialogResult.Yes) {
+					_debugForm.AddMessage("User cancelled DHCP server start at adapter reconfiguration confirmation");
+					if (!busy.IsDisposed) busy.Close();
+					return false;
+				}
+				if (ct.IsCancellationRequested) return BailCancelled();
+			}
+
+			if (boundAdapterDHCPEnabled) {
+				_debugForm.AddMessage("Selected DHCP server adapter has DHCP enabled, we will disable it");
+				busy.SetStatus("Disabling DHCP on adapter");
+				await NetworkManager.SetDhcpAsync(adapterIndex, false);
 			}
 			if (ct.IsCancellationRequested) return BailCancelled();
 
@@ -752,5 +825,25 @@ public partial class frmDHCPServer : Form {
 
 	private void cmdRefreshAdapters_Click(object sender, EventArgs e) {
 		RefreshAdapters();
+	}
+
+
+	// Pool controls track both the selected mode and whether the server is running — the user
+	// can't edit the pool once the server is up. Centralized so the radio toggles and the
+	// chkEnableDHCPServer toggle don't disagree.
+	private void UpdatePoolControlsEnabled() {
+		bool customEditable = optCustomPool.Checked && !chkEnableDHCPServer.Checked;
+		txtPoolSize.Enabled = customEditable;
+		txtPoolStartAddress.Enabled = customEditable;
+		optAutoPool.Enabled = !chkEnableDHCPServer.Checked;
+		optCustomPool.Enabled = !chkEnableDHCPServer.Checked;
+	}
+
+	private void optAutoPool_CheckedChanged(object sender, EventArgs e) {
+		UpdatePoolControlsEnabled();
+	}
+
+	private void optCustomPool_CheckedChanged(object sender, EventArgs e) {
+		UpdatePoolControlsEnabled();
 	}
 }

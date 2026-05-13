@@ -32,6 +32,11 @@ public class DHCPServer : IDisposable {
 	public const int MIN_PREFIX_LENGTH = 0;
 	public const int MAX_PREFIX_LENGTH = 30;
 
+	// Hard cap on the custom DHCP pool size. /16 is the largest subnet we'd realistically run a
+	// single DHCP server on, and capping here also guarantees pool-end arithmetic can't overflow
+	// the uint we use to represent IPv4 addresses.
+	public const int MAX_POOL_SIZE = 65535;
+
 	private bool _disposed = false;
 
 	private readonly object _disposedLock = new();
@@ -63,6 +68,55 @@ public class DHCPServer : IDisposable {
 	public IPAddress? RangeEnd { get; private set; }
 	public IPAddress? Address { get; private set; }
 	public int? PrefixLength { get; private set; }
+	/// <summary>The first address handed out from the custom DHCP pool, or null if no custom pool has been set.</summary>
+	public IPAddress? CustomPoolStart { get; private set; }
+	/// <summary>The number of consecutive addresses handed out from the custom DHCP pool, starting at <see cref="CustomPoolStart"/>. 0 if no pool has been set.</summary>
+	public int CustomPoolSize { get; private set; }
+	/// <summary>True if a custom pool has been set and should be used in place of the full subnet host range for handing out new leases.</summary>
+	public bool CustomDHCPPool { get; private set; }
+
+	/// <summary>
+	/// First address in the allocation pool used for new dynamic leases — the custom pool start
+	/// clamped to the subnet host range, or <see cref="RangeStart"/> if no custom pool is set.
+	/// Null if no lease range has been configured yet.
+	/// </summary>
+	public IPAddress? PoolStart {
+		get {
+			(IPAddress, IPAddress)? r = TryGetEffectivePool();
+			return r?.Item1;
+		}
+	}
+
+	/// <summary>
+	/// Last address in the allocation pool used for new dynamic leases — see <see cref="PoolStart"/>.
+	/// </summary>
+	public IPAddress? PoolEnd {
+		get {
+			(IPAddress, IPAddress)? r = TryGetEffectivePool();
+			return r?.Item2;
+		}
+	}
+
+	private (IPAddress, IPAddress)? TryGetEffectivePool() {
+		if (RangeStart is null || RangeEnd is null) return null;
+		uint subnetStart = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
+		uint subnetEnd = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+		uint start = subnetStart;
+		uint end = subnetEnd;
+		if (CustomDHCPPool && CustomPoolStart is not null && CustomPoolSize > 0) {
+			uint poolStart = BinaryPrimitives.ReadUInt32BigEndian(CustomPoolStart.GetAddressBytes());
+			uint poolEnd = poolStart + (uint)(CustomPoolSize - 1);
+			start = Math.Max(poolStart, subnetStart);
+			end = Math.Min(poolEnd, subnetEnd);
+			if (start > end) return null;
+		}
+		byte[] startBytes = new byte[4];
+		BinaryPrimitives.WriteUInt32BigEndian(startBytes, start);
+		byte[] endBytes = new byte[4];
+		BinaryPrimitives.WriteUInt32BigEndian(endBytes, end);
+		return (new IPAddress(startBytes), new IPAddress(endBytes));
+	}
+
 	public AdapterInfo? Adapter {
 		get {
 			return _boundAdapter;
@@ -129,7 +183,9 @@ public class DHCPServer : IDisposable {
 	}
 
 	/// <summary>
-	/// Searches the reserved IP addresses and finds the next unused address within the subnet.
+	/// Searches the reserved IP addresses and finds the next unused address within the allocation
+	/// pool. The pool is either the full subnet host range (default) or the custom pool configured
+	/// via <see cref="SetCustomPool"/>.
 	/// </summary>
 	/// <returns>IPAddress for the next unused address, or null if all addresses are leased/reserved</returns>
 	/// <remarks>
@@ -139,10 +195,10 @@ public class DHCPServer : IDisposable {
 	/// </remarks>
 	private IPAddress? GetNextFreeAddress() {
 		ObjectDisposedException.ThrowIf(_disposed, this);
-		if (RangeStart is null || RangeEnd is null) return null;
+		if (TryGetEffectivePool() is not (IPAddress poolStartAddr, IPAddress poolEndAddr)) return null;
 
-		uint start = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
-		uint end = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+		uint start = BinaryPrimitives.ReadUInt32BigEndian(poolStartAddr.GetAddressBytes());
+		uint end = BinaryPrimitives.ReadUInt32BigEndian(poolEndAddr.GetAddressBytes());
 
 		for (uint i = start; i <= end; i++) {
 			byte[] octets = new byte[4];
@@ -171,6 +227,18 @@ public class DHCPServer : IDisposable {
 		}
 		if (Address is null) {
 			throw new InvalidOperationException("Server address has not been computed");
+		}
+		if (CustomDHCPPool && CustomPoolStart is not null && RangeStart is not null && RangeEnd is not null) {
+			// Re-check the custom pool against the current subnet — SetCustomPool may have been
+			// called before SetLeaseRange (or against a different range), in which case its
+			// own validation was deferred to here.
+			uint subnetStart = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
+			uint subnetEnd = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+			uint poolStart = BinaryPrimitives.ReadUInt32BigEndian(CustomPoolStart.GetAddressBytes());
+			uint poolEnd = poolStart + (uint)(CustomPoolSize - 1);
+			if (poolStart < subnetStart || poolStart > subnetEnd || poolEnd > subnetEnd) {
+				throw new InvalidOperationException($"Custom pool ({CustomPoolStart}+{CustomPoolSize}) does not fit within the subnet host range ({RangeStart}-{RangeEnd})");
+			}
 		}
 		if (Running) { return; }
 
@@ -451,6 +519,15 @@ public class DHCPServer : IDisposable {
 		BinaryPrimitives.WriteUInt32BigEndian(endBytes, broadcast - 1);
 
 		lock (_leasesLock) {
+			// Reject if an existing reservation or lease already holds the proposed server IP.
+			// Allowing the collision would cause the server to offer its own address to the
+			// conflicting MAC on DISCOVER, and deleting that lease later would silently remove
+			// the server's IP from _usedAddresses too.
+			DHCPLease? collision = _dhcpLeases.Values.FirstOrDefault(l => l.IPAddress.Equals(serverAddress));
+			if (collision is not null) {
+				throw new ArgumentException($"Server address {serverAddress} is already used by a reservation or lease (MAC {collision.MACAddress})", nameof(serverAddress));
+			}
+
 			// Drop the previous server address from used-addresses if we had one, so re-running
 			// SetLeaseRange with a different IP doesn't permanently reserve the old one.
 			if (Address is not null) {
@@ -481,6 +558,56 @@ public class DHCPServer : IDisposable {
 			throw new InvalidOperationException("Can't bind to a disabled adapter");
 		}
 		_boundAdapter = boundAdapter;
+	}
+
+	/// <summary>
+	/// Restricts dynamic lease allocation to the given <paramref name="size"/>-address window
+	/// starting at <paramref name="start"/>, instead of using the full subnet host range. Manual
+	/// reservations are still allowed anywhere in the subnet; only addresses handed out to new
+	/// DISCOVERs are constrained to the pool.
+	/// </summary>
+	/// <remarks>
+	/// If the lease range is already set, the pool is also validated against the subnet host
+	/// range. Otherwise validation against the subnet is deferred until <see cref="Start"/>.
+	/// </remarks>
+	public void SetCustomPool(IPAddress start, int size) {
+		ObjectDisposedException.ThrowIf(_disposed, this);
+		if (Running) {
+			throw new InvalidOperationException("Can't change the DHCP pool while server is running");
+		}
+		if (start.AddressFamily != AddressFamily.InterNetwork) {
+			throw new ArgumentOutOfRangeException(nameof(start), "Pool start address must be IPv4");
+		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(size, 1, nameof(size));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(size, MAX_POOL_SIZE, nameof(size));
+		if (RangeStart is not null && RangeEnd is not null) {
+			uint subnetStart = BinaryPrimitives.ReadUInt32BigEndian(RangeStart.GetAddressBytes());
+			uint subnetEnd = BinaryPrimitives.ReadUInt32BigEndian(RangeEnd.GetAddressBytes());
+			uint poolStart = BinaryPrimitives.ReadUInt32BigEndian(start.GetAddressBytes());
+			if (poolStart < subnetStart || poolStart > subnetEnd) {
+				throw new ArgumentOutOfRangeException(nameof(start), $"Pool start {start} is outside the subnet host range ({RangeStart}-{RangeEnd})");
+			}
+			uint poolEnd = poolStart + (uint)(size - 1);
+			if (poolEnd > subnetEnd) {
+				throw new ArgumentOutOfRangeException(nameof(size), $"Pool of size {size} starting at {start} extends past the subnet's last host address ({RangeEnd})");
+			}
+		}
+		CustomPoolStart = start;
+		CustomPoolSize = size;
+		CustomDHCPPool = true;
+	}
+
+	/// <summary>
+	/// Disables the custom DHCP pool so new leases are again allocated from the full subnet host
+	/// range. The previously-configured pool start and size are preserved so callers can re-enable
+	/// the same pool later without re-entering it.
+	/// </summary>
+	public void ClearCustomPool() {
+		ObjectDisposedException.ThrowIf(_disposed, this);
+		if (Running) {
+			throw new InvalidOperationException("Can't change the DHCP pool while server is running");
+		}
+		CustomDHCPPool = false;
 	}
 
 	/// <summary>

@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented in this file. The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The application's `AssemblyVersion` and `FileVersion` use the four-segment `Major.Minor.Patch.Build` scheme (Microsoft's convention for binary identity), but this changelog uses the three-segment `Major.Minor.Patch` form — the build segment exists to identify rebuilds and is not changelog-worthy on its own.
 
+## [1.2.1.0] - 2026-05-13
+- Added custom DHCP pool range
+- Added adapter address change confirmation when enabling DHCP server
+
 ## [1.2.0.0] - 2026-05-06
 - Added DHCP server
   - Minimally RFC 2131 compliant DHCP server
