@@ -51,6 +51,8 @@
 			this.cboSaveLeases = new ComboBox();
 			this.chkDHCPPreflightCheck = new CheckBox();
 			this.helpProvider1 = new HelpProvider();
+			this.label6 = new Label();
+			this.chkPingBeforeDHCPAssignment = new CheckBox();
 			lblHideWhenMinimized = new Label();
 			label2 = new Label();
 			lblStartMinimized = new Label();
@@ -173,7 +175,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
-			this.tableLayoutPanel1.Size = new Size(560, 306);
+			this.tableLayoutPanel1.Size = new Size(560, 365);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -185,7 +187,7 @@
 			this.tableLayoutPanel2.Controls.Add(this.cmdCancel, 2, 0);
 			this.tableLayoutPanel2.Controls.Add(this.cmdOK, 1, 0);
 			this.tableLayoutPanel2.Dock = DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new Point(2, 272);
+			this.tableLayoutPanel2.Location = new Point(2, 331);
 			this.tableLayoutPanel2.Margin = new Padding(2);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
@@ -223,6 +225,8 @@
 			this.tableLayoutPanel3.ColumnCount = 2;
 			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38.66499F));
 			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 61.3350143F));
+			this.tableLayoutPanel3.Controls.Add(this.label6, 0, 8);
+			this.tableLayoutPanel3.Controls.Add(this.chkPingBeforeDHCPAssignment, 1, 8);
 			this.tableLayoutPanel3.Controls.Add(lblHideWhenMinimized, 0, 0);
 			this.tableLayoutPanel3.Controls.Add(this.chkHideWhenMinimized, 1, 0);
 			this.tableLayoutPanel3.Controls.Add(label2, 0, 2);
@@ -243,7 +247,8 @@
 			this.tableLayoutPanel3.Location = new Point(2, 2);
 			this.tableLayoutPanel3.Margin = new Padding(2);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 9;
+			this.tableLayoutPanel3.RowCount = 10;
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
@@ -253,7 +258,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
 			this.tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new Size(556, 266);
+			this.tableLayoutPanel3.Size = new Size(556, 325);
 			this.tableLayoutPanel3.TabIndex = 0;
 			// 
 			// chkHideWhenMinimized
@@ -472,13 +477,33 @@
 			// 
 			this.helpProvider1.HelpNamespace = "(set at runtime from Resources.ReadmeUrl)";
 			// 
+			// label6
+			// 
+			this.label6.Anchor = AnchorStyles.Left;
+			this.label6.AutoSize = true;
+			this.label6.Location = new Point(3, 264);
+			this.label6.Name = "label6";
+			this.label6.Size = new Size(167, 15);
+			this.label6.TabIndex = 0;
+			this.label6.Text = "Ping before DHCP assignment";
+			// 
+			// chkPingBeforeDHCPAssignment
+			// 
+			this.chkPingBeforeDHCPAssignment.Anchor = AnchorStyles.Left;
+			this.chkPingBeforeDHCPAssignment.AutoSize = true;
+			this.chkPingBeforeDHCPAssignment.Location = new Point(217, 265);
+			this.chkPingBeforeDHCPAssignment.Name = "chkPingBeforeDHCPAssignment";
+			this.chkPingBeforeDHCPAssignment.Size = new Size(15, 14);
+			this.chkPingBeforeDHCPAssignment.TabIndex = 7;
+			this.chkPingBeforeDHCPAssignment.UseVisualStyleBackColor = true;
+			// 
 			// frmSettings
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new SizeF(7F, 15F);
 			this.AutoScaleMode = AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new Size(560, 306);
+			this.ClientSize = new Size(560, 365);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = FormBorderStyle.FixedDialog;
 			this.helpProvider1.SetHelpKeyword(this, "settings-window");
@@ -527,5 +552,7 @@
 		private CheckBox chkStartAtLogon;
 		private ComboBox cboSaveLeases;
 		private CheckBox chkDHCPPreflightCheck;
+		private Label label6;
+		private CheckBox chkPingBeforeDHCPAssignment;
 	}
 }

@@ -424,7 +424,7 @@ namespace IPAddressChanger {
 					if (subnetparts.Length == 2) {
 						bool goodPrefix = int.TryParse(subnetparts[1], out int prefixLength);
 						if (prefixLength < DHCPServer.MIN_PREFIX_LENGTH || prefixLength > DHCPServer.MAX_PREFIX_LENGTH) {
-							debugForm.AddMessage($"DHCP server address prefix length in settings is not valid; settings had {prefixLength} but it must be between {DHCPServer.MIN_PREFIX_LENGTH} and {DHCPServer.MAX_PREFIX_LENGTH} exclusive");
+							debugForm.AddMessage($"DHCP server address prefix length in settings is not valid; settings had {prefixLength} but it must be between {DHCPServer.MIN_PREFIX_LENGTH} and {DHCPServer.MAX_PREFIX_LENGTH} inclusive");
 							goodPrefix = false;
 						}
 						bool goodAddress = IPAddress.TryParse(subnetparts[0], out IPAddress? serverAddress);

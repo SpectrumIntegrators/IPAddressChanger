@@ -341,13 +341,6 @@ public class DHCPServer : IDisposable {
 	}
 
 	/// <summary>
-	/// Sets the network address and prefix length to use for assigning IP addresses.
-	/// </summary>
-	/// <param name="serverAddress">The IPv4 address the server (and the bound adapter) will use within the subnet.</param>
-	/// <param name="prefixLength">The subnet prefix length, 0–32.</param>
-	/// <exception cref="InvalidOperationException">The server is currently running.</exception>
-	/// <exception cref="ArgumentOutOfRangeException">The specified IPAddress does not represent an IPv4 address, or the prefix length is invalid.</exception>
-	/// <summary>
 	/// Result row from <see cref="ProbeForOtherServersAsync"/>: a DHCP OFFER we received in
 	/// response to our probe DISCOVER.
 	/// </summary>
@@ -474,6 +467,13 @@ public class DHCPServer : IDisposable {
 		return (new IPAddress(startBytes), new IPAddress(endBytes));
 	}
 
+	/// <summary>
+	/// Sets the network address and prefix length to use for assigning IP addresses.
+	/// </summary>
+	/// <param name="serverAddress">The IPv4 address the server (and the bound adapter) will use within the subnet.</param>
+	/// <param name="prefixLength">The subnet prefix length, from <see cref="MIN_PREFIX_LENGTH"/> to <see cref="MAX_PREFIX_LENGTH"/>. Those are the protocol bounds enforced here; the narrower user-facing policy bounds (DHCPPrefixMinLength / DHCPPrefixMaxLength, defaults 8 and 30) are enforced at the form layer.</param>
+	/// <exception cref="InvalidOperationException">The server is currently running.</exception>
+	/// <exception cref="ArgumentOutOfRangeException">The specified IPAddress does not represent an IPv4 address, or the prefix length is invalid.</exception>
 	public void SetLeaseRange(IPAddress serverAddress, int prefixLength) {
 		ObjectDisposedException.ThrowIf(_disposed, this);
 		if (Running) {
