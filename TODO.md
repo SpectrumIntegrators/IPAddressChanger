@@ -43,7 +43,7 @@ must stay `0`. The policy bound lives in the `DHCPPrefixMinLength` /
    fixed, restored leases would be immortal and the cull would look broken.
 3. DHCPRELEASE (section 3) — small, independent, can slot in anywhere after 1.
 4. Ping before assign + ghost entries. The Settings checkbox is already placed
-   and just needs wiring.
+   but disabled (`Enabled = false`); drop that when it's wired up.
 
 Then the ARP probe as phase two, reusing the ghost-entry machinery.
 
@@ -118,7 +118,9 @@ mistaken or spoofed RELEASE can't free another device's address.
 already placed on the Settings window (`frmSettings.Designer.cs:490`) — it's a
 general policy preference, not a per-session choice — but are UI-only: no help
 keyword, no load/save in `frmSettings.cs`, no entry in `Settings.settings`, no
-server-side property. Optional and off-by-default matches the field (Windows
+server-side property. The checkbox is therefore shipped with `Enabled = false`
+so it can't be toggled into a state that does nothing; remove that line as part
+of the wiring. Optional and off-by-default matches the field (Windows
 DHCP Server's conflict detection defaults to 0 attempts; ISC dhcpd's `ping-check`
 uses a 1-second timeout).
 

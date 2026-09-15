@@ -491,6 +491,7 @@
 			// 
 			this.chkPingBeforeDHCPAssignment.Anchor = AnchorStyles.Left;
 			this.chkPingBeforeDHCPAssignment.AutoSize = true;
+			this.chkPingBeforeDHCPAssignment.Enabled = false;
 			this.chkPingBeforeDHCPAssignment.Location = new Point(217, 265);
 			this.chkPingBeforeDHCPAssignment.Name = "chkPingBeforeDHCPAssignment";
 			this.chkPingBeforeDHCPAssignment.Size = new Size(15, 14);
