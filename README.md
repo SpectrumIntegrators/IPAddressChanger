@@ -5,6 +5,8 @@ This application allows changing IP address settings for network adapters from a
 
 The application requires [elevated privileges](#privilege-elevation--uac-prompt) and may only be run by a user who has administrator access to the system.
 
+This GitHub repository is a public mirror, kept so the [Releases](https://github.com/SpectrumIntegrators/IPAddressChanger/releases) page stays available for downloads. Development happens elsewhere, so issues and pull requests opened here may not be seen; please send bug reports and suggestions through the [feedback form](#reporting-bugs) instead.
+
 ## Installation, Uninstallation, and Dependencies
 This application is distributed as a ZIP archive, there is no installer. To install:
 
